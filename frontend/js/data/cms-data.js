@@ -45,10 +45,10 @@
             { icon: 'fa-solid fa-headset', text: '24/7 Expert Support' }
         ],
         topCategories: [
-            { icon: 'images/engine.jpg', name: 'Engine Components', href: 'categories.html?category=engine' },
-            { icon: 'images/brake.jpg', name: 'Brake Systems', href: 'categories.html?category=brakes' },
-            { icon: 'images/steering.jpg', name: 'Suspension & Steering', href: 'categories.html?category=suspension' },
-            { icon: 'images/battery.jpg', name: 'Electricals & Lighting', href: 'categories.html?category=electricals' }
+            { icon: '../public/images/engine.jpg', name: 'Engine Components', href: 'categories.html?category=engine' },
+            { icon: '../public/images/brake.jpg', name: 'Brake Systems', href: 'categories.html?category=brakes' },
+            { icon: '../public/images/steering.jpg', name: 'Suspension & Steering', href: 'categories.html?category=suspension' },
+            { icon: '../public/images/battery.jpg', name: 'Electricals & Lighting', href: 'categories.html?category=electricals' }
         ],
         ctaBanner: {
             headline: 'Need Help Finding The Right Part?',
@@ -56,17 +56,17 @@
             btnText: 'Contact Experts'
         },
         slides: [
-            { id: 1, bg: 'images/slider-suspension.jpg', badge: '100% Genuine Parts', headline: 'Performance Meets Reliability', highlight: 'Reliability', subtitle: 'The ultimate destination for premium car and SUV spare parts tailored for Indian roads.', cta: 'Shop Now', ctaLink: 'categories.html', cta2: 'Browse Categories', cta2Link: 'wholesale.html' },
-            { id: 2, bg: 'images/slider-brake-pad.jpg', badge: 'Monsoon Ready', headline: 'Upgrade Your Brakes', highlight: 'Brakes', subtitle: "Don't compromise on safety. Up to 20% off on premium brake pads and rotors.", cta: 'View Offers', ctaLink: 'categories.html?category=brakes', cta2: '', cta2Link: '' },
-            { id: 3, bg: 'images/slider-engine.jpg', badge: 'OEM Certified', headline: 'Keep Your Engine Pristine', highlight: 'Pristine', subtitle: 'Shop authentic oil filters and engine components from authorized distributors.', cta: 'Shop Engine Parts', ctaLink: 'categories.html?category=engine', cta2: '', cta2Link: '' }
+            { id: 1, bg: '../public/images/slider-suspension.jpg', badge: '100% Genuine Parts', headline: 'Performance Meets Reliability', highlight: 'Reliability', subtitle: 'The ultimate destination for premium car and SUV spare parts tailored for Indian roads.', cta: 'Shop Now', ctaLink: 'categories.html', cta2: 'Browse Categories', cta2Link: 'wholesale.html' },
+            { id: 2, bg: '../public/images/slider-brake-pad.jpg', badge: 'Monsoon Ready', headline: 'Upgrade Your Brakes', highlight: 'Brakes', subtitle: "Don't compromise on safety. Up to 20% off on premium brake pads and rotors.", cta: 'View Offers', ctaLink: 'categories.html?category=brakes', cta2: '', cta2Link: '' },
+            { id: 3, bg: '../public/images/slider-engine.jpg', badge: 'OEM Certified', headline: 'Keep Your Engine Pristine', highlight: 'Pristine', subtitle: 'Shop authentic oil filters and engine components from authorized distributors.', cta: 'Shop Engine Parts', ctaLink: 'categories.html?category=engine', cta2: '', cta2Link: '' }
         ],
         featuredProducts: [
-            { title: 'Chevrolet Cruze LED Headlights DRL Projector Lens (2009–2016)', brand: 'Chevrolet', price: 35000, mrp: 38000, img: 'images/products/cruze_headlights.png' },
-            { title: 'High-Quality Genuine Clutch Disc & Kit Set for Nissan', brand: 'Nissan', price: 18000, mrp: 19000, img: 'images/products/nissan_clutch_kit.png' },
-            { title: 'FF-5059M Fog Light with Bracket (RH) for Mahindra Scorpio S2/S3', brand: 'Mahindra', price: 975, mrp: 1255, img: 'images/products/scorpio_fog_light.png' },
-            { title: 'High-Performance Brake Caliper Piston 9040 with Big Brake Disc', brand: 'Brembo', price: 92000, mrp: 110000, img: 'images/products/brake_rotor.jpg' },
-            { title: 'BCM (Body Control Module) for Chevrolet Cruze – Automatic Used', brand: 'Chevrolet', price: 15000, mrp: 20000, img: 'images/products/fog_lamps.jpg' },
-            { title: 'Premium Alloy Wheels – Style, Strength, and Performance', brand: 'Universal', price: 18000, mrp: 25000, img: 'images/products/brake_rotor.jpg' }
+            { title: 'Chevrolet Cruze LED Headlights DRL Projector Lens (2009–2016)', brand: 'Chevrolet', price: 35000, mrp: 38000, img: '../public/images/products/cruze_headlights.png' },
+            { title: 'High-Quality Genuine Clutch Disc & Kit Set for Nissan', brand: 'Nissan', price: 18000, mrp: 19000, img: '../public/images/products/nissan_clutch_kit.png' },
+            { title: 'FF-5059M Fog Light with Bracket (RH) for Mahindra Scorpio S2/S3', brand: 'Mahindra', price: 975, mrp: 1255, img: '../public/images/products/scorpio_fog_light.png' },
+            { title: 'High-Performance Brake Caliper Piston 9040 with Big Brake Disc', brand: 'Brembo', price: 92000, mrp: 110000, img: '../public/images/products/brake_rotor.jpg' },
+            { title: 'BCM (Body Control Module) for Chevrolet Cruze – Automatic Used', brand: 'Chevrolet', price: 15000, mrp: 20000, img: '../public/images/products/fog_lamps.jpg' },
+            { title: 'Premium Alloy Wheels – Style, Strength, and Performance', brand: 'Universal', price: 18000, mrp: 25000, img: '../public/images/products/brake_rotor.jpg' }
         ],
         theme: {
             primary: '#e63900',
@@ -100,6 +100,37 @@
             d.siteIdentity.logoUrl = '../public/images/spareblaze-logo.png';
             localStorage.setItem(KEY, JSON.stringify(d));
         }
+
+        // Migrate broken 'images/...' paths to '../public/images/...' in stored data
+        let needsSave = false;
+        if (d.topCategories) {
+            d.topCategories = d.topCategories.map(c => {
+                if (c.icon && c.icon.startsWith('images/')) {
+                    needsSave = true;
+                    return { ...c, icon: '../public/' + c.icon };
+                }
+                return c;
+            });
+        }
+        if (d.slides) {
+            d.slides = d.slides.map(s => {
+                if (s.bg && s.bg.startsWith('images/')) {
+                    needsSave = true;
+                    return { ...s, bg: '../public/' + s.bg };
+                }
+                return s;
+            });
+        }
+        if (d.featuredProducts) {
+            d.featuredProducts = d.featuredProducts.map(p => {
+                if (p.img && p.img.startsWith('images/')) {
+                    needsSave = true;
+                    return { ...p, img: '../public/' + p.img };
+                }
+                return p;
+            });
+        }
+        if (needsSave) localStorage.setItem(KEY, JSON.stringify(d));
 
         // Patch stale trust bar values — update any record still referencing the old return label
         if (d.trustBar) {
