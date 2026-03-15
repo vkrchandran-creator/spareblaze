@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shipping Info - SpareBlaze | Premium Automotive Spare Parts</title>
+    <!-- Google Fonts -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23e63900'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial Black,Arial' font-weight='900' font-size='28' fill='white'>SB</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .page-header {
+            background: linear-gradient(135deg, var(--color-bg-base) 0%, #e2e8f0 100%);
+            padding: 8rem 1.5rem 4rem;
+            text-align: center;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            color: var(--color-text-main);
+            margin-bottom: 1rem;
+        }
+
+        .content-section {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--color-bg-surface);
+            padding: 3rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .info-block {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .info-block:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .info-block h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            color: var(--color-text-main);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-block h3 i {
+            color: var(--color-primary);
+        }
+
+        .info-block p,
+        .info-block ul {
+            color: var(--color-text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .info-block ul {
+            padding-left: 1.5rem;
+            list-style-type: disc;
+        }
+
+        .info-block li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar scrolled">
+        <div class="nav-container">
+            <a href="index.html" class="logo"><img src="../public/images/spareblaze-logo.png" alt="SpareBlaze Logo"
+                    style="height: 54px; width: auto; object-fit: contain;">
+            </a>
+
+            <div class="search-container">
+                <div class="search-category" id="custom-dropdown">
+                    <div class="dropdown-selected">
+                        <span id="dropdown-text">Select Vehicle</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <ul class="dropdown-options">
+                        <li data-value="">All Vehicles</li>
+                        <li data-value="maruti">MARUTI</li>
+                        <li data-value="hyundai">HYUNDAI</li>
+                        <li data-value="mahindra">MAHINDRA</li>
+                        <li data-value="tata">TATA</li>
+                        <li data-value="chevrolet">CHEVROLET</li>
+                        <li data-value="honda">HONDA</li>
+                        <li data-value="skoda">SKODA</li>
+                        <li data-value="vw">VW</li>
+                        <li data-value="toyota">TOYOTA</li>
+                        <li data-value="nissan">NISSAN</li>
+                        <li data-value="renault">RENAULT</li>
+                        <li data-value="ford">FORD</li>
+                        <li data-value="fiat">FIAT</li>
+                        <li data-value="kia">KIA</li>
+                    </ul>
+                </div>
+                <input type="text" id="search-input" placeholder="Search by part name, brand, or OEM number...">
+                <button class="search-btn" onclick="window.location.href='search.html'"><i
+                        class="fa-solid fa-search"></i></button>
+            </div>
+
+            <div class="nav-actions">
+                <a href="javascript:void(0);" class="nav-icon-btn"><i class="fa-regular fa-user"></i></a>
+                <button class="nav-icon-btn cart-btn" id="cart-toggle">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge" id="cart-count">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Secondary Navigation -->
+    <div class="nav-categories">
+        <div class="nav-container">
+            <button class="all-categories-btn" onclick="window.location.href='categories.html'">
+                <i class="fa-solid fa-bars-staggered"></i> All Categories
+            </button>
+            <ul class="category-links">
+                <li><a href="after-market.html">After Market</a></li>
+                <li><a href="refurbished.html">Refurbished</a></li>
+                <li><a href="used.html">Used</a></li>
+                <li><a href="oem.html">OEM</a></li>
+                <li><a href="wholesale.html">Wholesale</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <h1>Shipping <span class="highlight">Information</span></h1>
+        <p>Details about delivery times, tracking, and Pan-India coverage.</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="section-padding">
+        <div class="content-section">
+            <div class="info-block">
+                <h3><i class="fa-solid fa-truck-fast"></i> Pan-India Delivery</h3>
+                <p>SpareBlaze is proud to offer delivery to over 25,000 PIN codes across India. Whether you are in a
+                    major metro city or a remote town, our logistics partners ensure your spare parts reach you safely
+                    and on time.</p>
+            </div>
+
+            <div class="info-block">
+                <h3><i class="fa-regular fa-clock"></i> Delivery Timelines</h3>
+                <ul>
+                    <li><strong>Metro Cities (Tier 1):</strong> 2 to 4 business days.</li>
+                    <li><strong>Tier 2 & 3 Cities:</strong> 3 to 6 business days.</li>
+                    <li><strong>Remote Locations:</strong> 7 to 10 business days.</li>
+                </ul>
+                <p><em>Note: Heavy or oversized items (like engine blocks or large body panels) may take an additional
+                        2-3 days for special freight handling.</em></p>
+            </div>
+
+            <div class="info-block">
+                <h3><i class="fa-solid fa-box-open"></i> Shipping Charges</h3>
+                <p>We offer <strong>Free Shipping</strong> on all prepaid orders above ₹1,500. For orders below this
+                    amount, a standard shipping fee of ₹99 applies.</p>
+                <p>Cash on Delivery (COD) is available in select locations for an additional handling charge of ₹49.</p>
+            </div>
+
+            <div class="info-block">
+                <h3><i class="fa-solid fa-map-location-dot"></i> Order Tracking</h3>
+                <p>As soon as your order is dispatched from our warehouse, you will receive an email and SMS with your
+                    tracking link and AWB number. You can also visit our <a href="track-order.html"
+                        class="highlight">Track Order</a> page to check real-time updates.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">
+                    <img src="../public/images/spareblaze-logo-footer.png" alt="SpareBlaze Logo"
+                        style="width: 250px; height: auto;">
+                </a>
+                <p>India's trusted e-commerce platform for genuine car and SUV spare parts. Quality assured, delivered
+                    nationwide.</p>
+                <div class="social-links">
+                    <a href="javascript:void(0);"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="javascript:void(0);"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="javascript:void(0);"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="javascript:void(0);"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">About Us</a></li>
+                    <li><a href="track-order.html">Track Order</a></li>
+                    <li><a href="return-policy.html">Return Policy</a></li>
+                    <li><a href="shipping-info.html">Shipping Info</a></li>
+                    <li><a href="contact-us.html">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h3>Shop By Type</h3>
+                <ul>
+                    <li><a href="after-market.html">After Market</a></li>
+                    <li><a href="refurbished.html">Refurbished</a></li>
+                    <li><a href="used.html">Used</a></li>
+                    <li><a href="oem.html">OEM</a></li>
+                    <li><a href="wholesale.html">Wholesale</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-contact">
+                <h3>Contact</h3>
+                <p><i class="fa-solid fa-phone"></i> +91 1800 123 4567</p>
+                <p><i class="fa-solid fa-envelope"></i> support@spareblaze.in</p>
+                <p><i class="fa-solid fa-location-dot"></i> Bengaluru, Karnataka, India</p>
+
+                <h3 class="payment-title">Secure Payments</h3>
+                <div class="payment-icons">
+                    <i class="fa-brands fa-cc-visa"></i>
+                    <i class="fa-brands fa-cc-mastercard"></i>
+                    <span class="upi-text">UPI</span>
+                    <span class="rupay-text">RuPay</span>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 SpareBlaze. All rights reserved. Designed for Indian Automotive Market.</p>
+        </div>
+    </footer>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay" id="cart-overlay"></div>
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Your Cart</h3>
+            <button class="close-btn" id="close-cart"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="cart-items" id="cart-items-container">
+            <div class="empty-cart-msg">Your cart is currently empty.</div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span class="total-amount" id="cart-total-amount">₹0</span>
+            </div>
+            <button class="btn btn-primary w-100 checkout-btn" id="checkout-btn" disabled>Proceed to Secure
+                Checkout</button>
+        </div>
+    </div>
+
+    <script src="../js/script.js"></script>
+
+
+    <script src="https://code.tidio.co/sienbawteqdozz2om1mswgszpjxm6zxg.js" async></script>
+</body>
+
+</html>

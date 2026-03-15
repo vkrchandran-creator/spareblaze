@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results - SpareBlaze | Premium Automotive Spare Parts</title>
+    <!-- Google Fonts -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23e63900'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial Black,Arial' font-weight='900' font-size='28' fill='white'>SB</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+
+</head>
+
+<body>
+    <!-- Navigation (Simplified) -->
+    <nav class="navbar scrolled">
+        <div class="nav-container">
+            <a href="index.html" class="logo"><img src="../public/images/spareblaze-logo.png" alt="SpareBlaze Logo"
+                    style="height: 54px; width: auto; object-fit: contain;">
+            </a>
+
+            <div class="search-container">
+                <div class="search-category" id="custom-dropdown">
+                    <div class="dropdown-selected">
+                        <span id="dropdown-text">Select Vehicle</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <ul class="dropdown-options">
+                        <li data-value="">All Vehicles</li>
+                        <li data-value="maruti">MARUTI</li>
+                        <li data-value="hyundai">HYUNDAI</li>
+                        <li data-value="mahindra">MAHINDRA</li>
+                        <li data-value="tata">TATA</li>
+                        <li data-value="chevrolet">CHEVROLET</li>
+                        <li data-value="honda">HONDA</li>
+                        <li data-value="skoda">SKODA</li>
+                        <li data-value="vw">VW</li>
+                        <li data-value="toyota">TOYOTA</li>
+                        <li data-value="nissan">NISSAN</li>
+                        <li data-value="renault">RENAULT</li>
+                        <li data-value="ford">FORD</li>
+                        <li data-value="fiat">FIAT</li>
+                        <li data-value="kia">KIA</li>
+                        <li data-value="bmw">BMW</li>
+                        <li data-value="audi">AUDI</li>
+                        <li data-value="volvo">VOLVO</li>
+                    </ul>
+                </div>
+                <input type="text" id="search-input" placeholder="Search by part name, brand, or OEM number...">
+                <button class="search-btn" onclick="window.location.reload()"><i
+                        class="fa-solid fa-search"></i></button>
+            </div>
+
+            <div class="nav-actions">
+                <a href="javascript:void(0);" class="nav-icon-btn"><i class="fa-regular fa-user"></i></a>
+                <button class="nav-icon-btn cart-btn" id="cart-toggle">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge" id="cart-count">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Secondary Navigation -->
+    <div class="nav-categories">
+        <div class="nav-container">
+            <button class="all-categories-btn" onclick="window.location.href='categories.html'">
+                <i class="fa-solid fa-bars-staggered"></i> All Categories
+            </button>
+            <ul class="category-links">
+                <li><a href="after-market.html">After Market</a></li>
+                <li><a href="refurbished.html">Refurbished</a></li>
+                <li><a href="used.html">Used</a></li>
+                <li><a href="oem.html">OEM</a></li>
+                <li><a href="wholesale.html">Wholesale</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="nav-container">
+            <h1>Search <span class="highlight">Results</span></h1>
+            <div class="search-results-meta">Showing results for <span class="search-term">&quot;Brake
+                    Parts&quot;</span> (<strong id="product-count">8</strong> Items Found)</div>
+        </div>
+    </header>
+
+    <!-- Layout Container -->
+    <div class="layout-container">
+        <!-- Sidebar Filters -->
+        <aside class="sidebar-filters">
+            <div class="filter-group">
+                <h4>Fulfilled By SpareBlaze</h4>
+                <label class="filter-option"><input type="checkbox" checked> <i class="fa-solid fa-bolt"
+                        style="color:var(--color-warning)"></i> Fast Delivery</label>
+            </div>
+            <div class="filter-group">
+                <h4>Price Range</h4>
+                <label class="filter-option"><input type="radio" name="price" checked> All Prices</label>
+                <label class="filter-option"><input type="radio" name="price"> Under ₹1,000</label>
+                <label class="filter-option"><input type="radio" name="price"> ₹1,000 – ₹10,000</label>
+                <label class="filter-option"><input type="radio" name="price"> Over ₹10,000</label>
+            </div>
+            <div class="filter-group">
+                <h4>Vehicle Brand</h4>
+                <label class="filter-option"><input type="checkbox"> Tata</label>
+                <label class="filter-option"><input type="checkbox"> Maruti Suzuki</label>
+                <label class="filter-option"><input type="checkbox"> Hyundai</label>
+                <label class="filter-option"><input type="checkbox"> Mahindra</label>
+                <label class="filter-option"><input type="checkbox"> Toyota</label>
+                <label class="filter-option"><input type="checkbox"> Kia</label>
+                <label class="filter-option"><input type="checkbox"> BMW</label>
+                <label class="filter-option"><input type="checkbox"> Audi</label>
+                <label class="filter-option"><input type="checkbox"> Volvo</label>
+            </div>
+            <div class="filter-group">
+                <h4>Discount</h4>
+                <label class="filter-option"><input type="checkbox"> 10% and above</label>
+                <label class="filter-option"><input type="checkbox"> 20% and above</label>
+                <label class="filter-option"><input type="checkbox"> 30% and above</label>
+            </div>
+        </aside>
+
+        <!-- Product Grid -->
+        <main>
+            <div class="products-grid" id="featured-products">
+                <!-- Reusing JS population logic here -> It will dump all 8 products on this page too since it uses the same ID -->
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">
+                    <img src="../public/images/spareblaze-logo-footer.png" alt="SpareBlaze Logo"
+                        style="width: 250px; height: auto;">
+                </a>
+                <p>India's trusted e-commerce platform for genuine car and SUV spare parts. Quality assured, delivered
+                    nationwide.</p>
+                <div class="social-links">
+                    <a href="javascript:void(0);"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="javascript:void(0);"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="javascript:void(0);"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="javascript:void(0);"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">About Us</a></li>
+                    <li><a href="track-order.html">Track Order</a></li>
+                    <li><a href="return-policy.html">Return Policy</a></li>
+                    <li><a href="shipping-info.html">Shipping Info</a></li>
+                    <li><a href="contact-us.html">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h3>Shop By Type</h3>
+                <ul>
+                    <li><a href="after-market.html">After Market</a></li>
+                    <li><a href="refurbished.html">Refurbished</a></li>
+                    <li><a href="used.html">Used</a></li>
+                    <li><a href="oem.html">OEM</a></li>
+                    <li><a href="wholesale.html">Wholesale</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-contact">
+                <h3>Contact</h3>
+                <p><i class="fa-solid fa-phone"></i> +91 1800 123 4567</p>
+                <p><i class="fa-solid fa-envelope"></i> support@spareblaze.in</p>
+                <p><i class="fa-solid fa-location-dot"></i> Bengaluru, Karnataka, India</p>
+
+                <h3 class="payment-title">Secure Payments</h3>
+                <div class="payment-icons">
+                    <i class="fa-brands fa-cc-visa"></i>
+                    <i class="fa-brands fa-cc-mastercard"></i>
+                    <!-- SVG UPI Logo representation -->
+                    <span class="upi-text">UPI</span>
+                    <span class="rupay-text">RuPay</span>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 SpareBlaze. All rights reserved. Designed for Indian Automotive Market.</p>
+        </div>
+    </footer>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay" id="cart-overlay"></div>
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Your Cart</h3>
+            <button class="close-btn" id="close-cart"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="cart-items" id="cart-items-container">
+            <div class="empty-cart-msg">Your cart is currently empty.</div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span class="total-amount" id="cart-total-amount">₹0</span>
+            </div>
+            <button class="btn btn-primary w-100 checkout-btn" id="checkout-btn" disabled>Proceed to Secure
+                Checkout</button>
+        </div>
+    </div>
+
+    <!-- Script to populate the products grid via our mock DB -->
+    <script src="../js/data/cms-data.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="filter.js"></script>
+
+
+    <script src="https://code.tidio.co/sienbawteqdozz2om1mswgszpjxm6zxg.js" async></script>
+</body>
+
+</html>

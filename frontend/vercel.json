@@ -1,0 +1,24 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/", "destination": "/pages/index.html" },
+    { "source": "/product", "destination": "/pages/product.html" },
+    { "source": "/search", "destination": "/pages/search.html" },
+    { "source": "/categories", "destination": "/pages/categories.html" },
+    { "source": "/after-market", "destination": "/pages/after-market.html" },
+    { "source": "/oem", "destination": "/pages/oem.html" },
+    { "source": "/refurbished", "destination": "/pages/refurbished.html" },
+    { "source": "/wholesale", "destination": "/pages/wholesale.html" },
+    { "source": "/used", "destination": "/pages/used.html" },
+    { "source": "/brand", "destination": "/pages/brand.html" },
+    { "source": "/admin", "destination": "/pages/admin/index.html" },
+    { "source": "/contact-us", "destination": "/pages/contact-us.html" },
+    { "source": "/return-policy", "destination": "/pages/return-policy.html" },
+    { "source": "/shipping-info", "destination": "/pages/shipping-info.html" },
+    { "source": "/track-order", "destination": "/pages/track-order.html" }
+  ],
+  "env": {
+    "API_BASE_URL": "https://api.spareblaze.com"
+  }
+}

@@ -1,0 +1,1022 @@
+/**
+ * SpareBlaze JavaScript Logic
+ * Handles interactive elements, mock cart, and search filtering
+ */
+
+// --- Visitor Tracking (Best Practice Implementation) ---
+/**
+ * Simple Frontend Visitor Tracker
+ * In a production environment, this would integrate with a backend API or a service 
+ * like Google Analytics. For this CMS, we use a robust localStorage/sessionStorage 
+ * combination to simulate real-world tracking metrics.
+ */
+const VisitorTracker = (function () {
+    const TOTAL_KEY = 'sb_total_visits';
+    const SESSION_KEY = 'sb_session_active';
+    const BASE_METRIC = 14800; // Simulated historical data
+
+    function init() {
+        let total = parseInt(localStorage.getItem(TOTAL_KEY) || BASE_METRIC, 10);
+        if (!sessionStorage.getItem(SESSION_KEY)) {
+            total++;
+            localStorage.setItem(TOTAL_KEY, total.toString());
+            sessionStorage.setItem(SESSION_KEY, 'true');
+        }
+        return total;
+    }
+
+    return { getCount: () => localStorage.getItem(TOTAL_KEY) || BASE_METRIC, init };
+})();
+VisitorTracker.init();
+
+// --- Mock Data --- 
+const products = [
+    {
+        id: 1,
+        title: "Chevrolet Cruze LED Headlights DRL Projector Lens (2009–2016)",
+        brand: "Chevrolet",
+        compatibility: "Chevrolet Cruze (2009-2016)",
+        price: 35000,
+        originalPrice: 38000,
+        image: "images/products/cruze_headlights.png",
+        category: "electricals",
+        badge: "Premium Upgrade",
+        fastDelivery: true
+    },
+    {
+        id: 2,
+        title: "High-Quality Genuine Clutch Disc & Kit Set for Nissan",
+        brand: "Nissan",
+        compatibility: "Nissan Sylphy, Livina",
+        price: 18000,
+        originalPrice: 19000,
+        image: "images/products/nissan_clutch_kit.png",
+        category: "engine",
+        badge: "Genuine",
+        fastDelivery: true
+    },
+    {
+        id: 3,
+        title: "FF-5059M Fog Light with Bracket (RH) for Mahindra Scorpio S2/S3",
+        brand: "Mahindra",
+        compatibility: "Mahindra Scorpio S2, S3",
+        price: 975,
+        originalPrice: 1255,
+        image: "images/products/scorpio_fog_light.png",
+        category: "electricals",
+        badge: "Sale",
+        fastDelivery: true
+    },
+    {
+        id: 4,
+        title: "High-Performance Brake Caliper Piston 9040 with Big Brake Disc",
+        brand: "Brembo",
+        compatibility: "Universal High Performance",
+        price: 92000,
+        originalPrice: 110000,
+        image: "images/products/brake_rotor.jpg",
+        category: "brakes",
+        badge: "Extreme Performance",
+        fastDelivery: false
+    },
+    {
+        id: 5,
+        title: "BCM (Body Control Module) for Chevrolet Cruze – Automatic Used",
+        brand: "Chevrolet",
+        compatibility: "Chevrolet Cruze (AT)",
+        price: 15000,
+        originalPrice: 20000,
+        image: "images/products/fog_lamps.jpg",
+        category: "electricals",
+        badge: "Authentic Used",
+        fastDelivery: true
+    },
+    {
+        id: 6,
+        title: "Premium Alloy Wheels – Style, Strength, and Performance",
+        brand: "Universal",
+        compatibility: "Fits Most Car Models (17-19 inch)",
+        price: 18000,
+        originalPrice: 25000,
+        image: "images/products/brake_rotor.jpg",
+        category: "suspension",
+        badge: "Premium",
+        fastDelivery: true
+    },
+    {
+        id: 7,
+        title: "Brembo Premium Disc Brake Rotor Front",
+        brand: "Brembo",
+        compatibility: "Kia Seltos / Carens",
+        price: 4500,
+        originalPrice: 5200,
+        image: "images/products/brake_rotor.jpg",
+        category: "brakes",
+        badge: "Premium",
+        fastDelivery: false
+    },
+    {
+        id: 8,
+        title: "Gabriel Strut Mount Assembly",
+        brand: "Gabriel",
+        compatibility: "Toyota Innova Crysta",
+        price: 1250,
+        originalPrice: 1500,
+        image: "images/products/strut_mount.jpg",
+        category: "suspension",
+        badge: "",
+        fastDelivery: true
+    },
+    {
+        id: 9,
+        title: "BMW Genuine Oil Filter (High Performance)",
+        brand: "BMW",
+        compatibility: "BMW 3 Series, 5 Series, X1, X3",
+        price: 3200,
+        originalPrice: 3800,
+        image: "images/products/oil-filter.jpg",
+        category: "engine",
+        badge: "Performance",
+        fastDelivery: true
+    },
+    {
+        id: 10,
+        title: "Audi A4/A6 Front Brake Pads Set",
+        brand: "Audi",
+        compatibility: "Audi A4, A6, Q3, Q5",
+        price: 8500,
+        originalPrice: 10500,
+        image: "images/products/brake-pads.jpg",
+        category: "brakes",
+        badge: "Premium",
+        fastDelivery: true
+    },
+    {
+        id: 11,
+        title: "Volvo XC60/XC90 Air Filter Element",
+        brand: "Volvo",
+        compatibility: "Volvo XC60, XC90, S60, S90",
+        price: 4200,
+        originalPrice: 5200,
+        image: "images/products/air-filter.jpg",
+        category: "engine",
+        badge: "OEM Genuine",
+        fastDelivery: false
+    },
+    {
+        id: 12,
+        title: "BMW M-Performance Spark Plugs (Set of 6)",
+        brand: "BMW",
+        compatibility: "BMW M3, M5, X5 M, X6 M",
+        price: 12000,
+        originalPrice: 14500,
+        image: "images/products/spark-plug.jpg",
+        category: "electricals",
+        badge: "M-Performance",
+        fastDelivery: true
+    },
+    {
+        id: 13,
+        title: "Audi Genuine Fuel Filter",
+        brand: "Audi",
+        compatibility: "Audi A3, A4, A8, Q7",
+        price: 4800,
+        originalPrice: 5800,
+        image: "images/products/oil-filter.jpg",
+        category: "engine",
+        badge: "",
+        fastDelivery: true
+    },
+    {
+        id: 14,
+        title: "Volvo LED Headlamp Control Module",
+        brand: "Volvo",
+        compatibility: "Volvo XC40, V60, V90",
+        price: 15400,
+        originalPrice: 18500,
+        image: "images/products/fog_lamps.jpg",
+        category: "electricals",
+        badge: "New Arrival",
+        fastDelivery: true
+    },
+    {
+        id: 15,
+        title: "BMW Brake Disc Rotor Set (Front)",
+        brand: "BMW",
+        compatibility: "BMW 2 Series, 3 Series, 4 Series",
+        price: 18000,
+        originalPrice: 22500,
+        image: "images/products/brake_rotor.jpg",
+        category: "brakes",
+        badge: "",
+        fastDelivery: false
+    },
+    {
+        id: 16,
+        title: "Audi Cooling Fan Assembly",
+        brand: "Audi",
+        compatibility: "Audi Q5, Q7, A6",
+        price: 24500,
+        originalPrice: 29800,
+        image: "images/products/radiator_fan.jpg",
+        category: "engine",
+        badge: "",
+        fastDelivery: true
+    },
+    {
+        id: 17,
+        title: "Volvo Cabin AC Filter with Carbon",
+        brand: "Volvo",
+        compatibility: "Volvo S60, XC60, XC90",
+        price: 2100,
+        originalPrice: 2800,
+        image: "images/products/air-filter.jpg",
+        category: "engine",
+        badge: "Eco-Friendly",
+        fastDelivery: true
+    }
+];
+
+// --- DOM Elements & State ---
+let cart = [];
+
+// --- Initialization ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Visitor Tracker Already Init at top
+    initSlider();
+    initCustomDropdown();
+    renderFeaturedProducts();
+    setupCartListeners();
+    setupSearch();
+    setupScrollEffects();
+});
+
+// --- Move Tidio chat widget to bottom-LEFT ---
+// Tidio sets its own position via inline JS, so CSS alone can't override it.
+// We watch for the element to appear and forcibly reposition it.
+(function moveTidioToLeft() {
+    function applyTidioLeft() {
+        const el = document.getElementById('tidio-chat');
+        if (el) {
+            el.style.setProperty('left', '20px', 'important');
+            el.style.setProperty('right', 'auto', 'important');
+            // Also reposition the inner iframe if present
+            const iframe = document.getElementById('tidio-chat-code');
+            if (iframe) {
+                iframe.style.setProperty('left', '0', 'important');
+                iframe.style.setProperty('right', 'auto', 'important');
+            }
+        }
+    }
+
+    // Watch for Tidio being injected into the DOM
+    const observer = new MutationObserver(() => {
+        if (document.getElementById('tidio-chat')) {
+            applyTidioLeft();
+            // Keep watching in case Tidio repositions itself
+            setInterval(applyTidioLeft, 1000);
+            observer.disconnect();
+        }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+})();
+
+// --- Custom Dropdown Logic ---
+function initCustomDropdown() {
+    const customDropdown = document.getElementById('custom-dropdown');
+    if (!customDropdown) return;
+
+    const dropdownText = document.getElementById('dropdown-text');
+    const dropdownOptions = document.querySelectorAll('.dropdown-options li');
+
+    // Toggle dropdown
+    customDropdown.addEventListener('click', (e) => {
+        if (e.target.tagName.toLowerCase() === 'li') return;
+        customDropdown.classList.toggle('active');
+    });
+
+    // Select option
+    dropdownOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            const value = option.getAttribute('data-value');
+            if (value) {
+                const prefix = window.location.pathname.includes('/after-market-parts/') ? '../' : '';
+                window.location.href = prefix + `brand.html?id=${value}`;
+            } else if (!window.location.pathname.endsWith('index.html') && window.location.pathname !== '/') {
+                const prefix = window.location.pathname.includes('/after-market-parts/') ? '../' : '';
+                window.location.href = prefix + 'index.html';
+            }
+            if (dropdownText) dropdownText.textContent = option.textContent;
+            customDropdown.classList.remove('active');
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#custom-dropdown')) {
+            customDropdown.classList.remove('active');
+        }
+    });
+}
+
+// --- Slider Logic ---
+function initSlider() {
+    const heroSlider = document.getElementById('hero-slider');
+    if (!heroSlider) return;
+
+    const slides = heroSlider.querySelectorAll('.slide');
+    if (!slides.length) return;
+
+    const prevBtn = document.getElementById('slider-prev');
+    const nextBtn = document.getElementById('slider-next');
+    const dotsContainer = document.getElementById('slider-dots');
+
+    let currentSlide = 0;
+    let slideInterval;
+
+    // Create dots if container exists
+    if (dotsContainer) {
+        dotsContainer.innerHTML = ''; // Clear existing
+        slides.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.className = index === 0 ? 'dot active' : 'dot';
+            dot.addEventListener('click', () => goToSlide(index));
+            dotsContainer.appendChild(dot);
+        });
+    }
+
+    const updateSlider = () => {
+        const dots = dotsContainer ? dotsContainer.querySelectorAll('.dot') : [];
+        slides.forEach(slide => slide.classList.remove('active'));
+        dots.forEach(dot => dot.classList.remove('active'));
+
+        if (slides[currentSlide]) slides[currentSlide].classList.add('active');
+        if (dots[currentSlide]) dots[currentSlide].classList.add('active');
+    };
+
+    const nextSlide = () => {
+        currentSlide = (currentSlide + 1) % slides.length;
+        updateSlider();
+    };
+
+    const prevSlide = () => {
+        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+        updateSlider();
+    };
+
+    const goToSlide = (index) => {
+        currentSlide = index;
+        updateSlider();
+        resetInterval();
+    };
+
+    const resetInterval = () => {
+        clearInterval(slideInterval);
+        slideInterval = setInterval(nextSlide, 5000);
+    };
+
+    if (prevBtn) prevBtn.addEventListener('click', () => { prevSlide(); resetInterval(); });
+    if (nextBtn) nextBtn.addEventListener('click', () => { nextSlide(); resetInterval(); });
+
+    // Ensure first slide is active immediately
+    updateSlider();
+
+    // Start auto slider
+    resetInterval();
+}
+
+// --- Formatting ---
+const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        maximumFractionDigits: 0
+    }).format(amount);
+};
+
+// --- Product Rendering ---
+function renderFeaturedProducts() {
+    const featuredGrid = document.getElementById('featured-products');
+    if (!featuredGrid) return;
+
+    featuredGrid.innerHTML = '';
+
+    const params = new URLSearchParams(window.location.search);
+    const catParam = params.get('category');
+
+    if (catParam) {
+        window.ACTIVE_CATEGORY = catParam;
+        const pageTitle = document.querySelector('.page-header h1');
+        if (pageTitle) {
+            const displayTitle = catParam.charAt(0).toUpperCase() + catParam.slice(1) + " Components";
+            pageTitle.innerHTML = `${displayTitle.replace("Brakes Components", "Brake Systems").replace("Electricals Components", "Electricals & Lighting")}`;
+        }
+    }
+
+    let productsToRender = products;
+
+    // Support CMS-driven featured products if they exist and we're not on a category filter
+    if (window.__sbCmsFeatured && window.__sbCmsFeatured.length > 0 && !window.ACTIVE_CATEGORY) {
+        productsToRender = window.__sbCmsFeatured.map((p, idx) => ({
+            id: p.id || ('cms-' + idx),
+            title: p.title,
+            brand: p.brand,
+            price: p.price,
+            originalPrice: p.mrp || p.price,
+            image: p.img,
+            compatibility: 'Genuine Spare Part',
+            category: 'featured',
+            badge: '',
+            fastDelivery: true
+        }));
+    } else if (window.ACTIVE_CATEGORY) {
+        productsToRender = products.filter(p => p.category === window.ACTIVE_CATEGORY);
+    }
+
+    productsToRender.forEach((product, index) => {
+        // Add staggered animation delay
+        const delay = index * 0.1;
+
+        const card = document.createElement('div');
+        card.className = 'product-card fade-in';
+        card.style.animationDelay = `${delay}s`;
+
+        // Add data attributes for filtering
+        const discountVal = product.originalPrice > product.price
+            ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+            : 0;
+
+        card.setAttribute('data-price', product.price);
+        card.setAttribute('data-vehicles', product.compatibility.toLowerCase());
+        card.setAttribute('data-discount', discountVal);
+        card.setAttribute('data-fast-delivery', product.fastDelivery ? 'true' : 'false');
+
+        const badgeHtml = product.badge ? `<span class="product-badge">${product.badge}</span>` : '';
+
+        // Check if item is already in cart
+        const isInCart = cart.some(item => item.id === product.id);
+        const btnClass = isInCart ? 'add-cart-btn added' : 'add-cart-btn';
+        const btnIcon = isInCart ? 'fa-check' : 'fa-plus';
+
+        card.innerHTML = `
+            <div class="product-img-wrap">
+                ${badgeHtml}
+                <a href="product.html?id=${encodeURIComponent(product.title)}">
+                    <img src="${product.image}" alt="${product.title}" loading="lazy">
+                </a>
+            </div>
+            <div class="product-info">
+                <div class="product-brand">${product.brand}</div>
+                <h3 class="product-title"><a href="product.html?id=${encodeURIComponent(product.title)}">${product.title}</a></h3>
+                <div class="product-price">
+                    ${formatCurrency(product.price)}
+                    ${product.originalPrice > product.price ? `<span>${formatCurrency(product.originalPrice)}</span>` : ''}
+                </div>
+                <div class="product-compatibility">
+                    <i class="fa-solid fa-circle-check"></i> ${product.compatibility}
+                </div>
+                <div class="product-actions">
+                    <button class="btn view-details-btn" onclick="window.location.href='product.html?id=${product.id}'">
+                        <i class="fa-solid fa-eye"></i> View Details
+                    </button>
+                    <button class="btn btn-primary ${btnClass}" data-id="${product.id}" onclick="toggleCartItem(${product.id}, this)">
+                        <i class="fa-solid ${btnIcon}"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+        `;
+
+        featuredGrid.appendChild(card);
+    });
+}
+
+// --- Cart Logic ---
+function setupCartListeners() {
+    // Re-append cart elements to body so they come AFTER Tidio in DOM order,
+    // ensuring they naturally stack above it at the same z-index level.
+    const cartOverlayEl = document.getElementById('cart-overlay');
+    const cartSidebarEl = document.getElementById('cart-sidebar');
+    if (cartOverlayEl && cartSidebarEl) {
+        document.body.appendChild(cartOverlayEl);
+        document.body.appendChild(cartSidebarEl);
+    }
+
+    const cartToggle = document.getElementById('cart-toggle');
+    const cartOverlay = document.getElementById('cart-overlay');
+    const cartSidebar = document.getElementById('cart-sidebar');
+    const closeCartBtn = document.getElementById('close-cart');
+    const checkoutBtn = document.getElementById('checkout-btn');
+
+    // MutationObserver approach: watch the entire document for any Tidio element
+    // being added/shown while cart is open and immediately hide it.
+    let _cartIsOpen = false;
+    let _tidioObserver = null;
+
+    function suppressTidioNode(node) {
+        if (!node || node.nodeType !== 1) return;
+        const id = (node.id || '').toLowerCase();
+        const cls = (node.className || '').toLowerCase();
+        if (id.includes('tidio') || cls.includes('tidio')) {
+            node.style.setProperty('display', 'none', 'important');
+            node.style.setProperty('visibility', 'hidden', 'important');
+        }
+    }
+
+    window.hideTidio = () => {
+        _cartIsOpen = true;
+        document.body.classList.add('cart-open');
+
+        // Immediately hide all existing Tidio elements
+        document.querySelectorAll('[id*="tidio"], [class*="tidio"]').forEach(el => {
+            el.style.setProperty('display', 'none', 'important');
+            el.style.setProperty('visibility', 'hidden', 'important');
+        });
+
+        // Start mutation observer to re-hide any Tidio elements that appear later
+        if (!_tidioObserver) {
+            _tidioObserver = new MutationObserver(mutations => {
+                if (!_cartIsOpen) return;
+                mutations.forEach(m => {
+                    m.addedNodes.forEach(suppressTidioNode);
+                    if (m.type === 'attributes' && m.target) suppressTidioNode(m.target);
+                });
+            });
+            _tidioObserver.observe(document.body, {
+                childList: true,
+                subtree: true,
+                attributes: true,
+                attributeFilter: ['style', 'class']
+            });
+        }
+    };
+
+    window.showTidio = () => {
+        _cartIsOpen = false;
+        document.body.classList.remove('cart-open');
+
+        // Stop observer
+        if (_tidioObserver) {
+            _tidioObserver.disconnect();
+            _tidioObserver = null;
+        }
+
+        // Restore Tidio
+        document.querySelectorAll('[id*="tidio"], [class*="tidio"]').forEach(el => {
+            el.style.removeProperty('display');
+            el.style.removeProperty('visibility');
+        });
+    };
+
+    if (cartToggle && cartOverlay && cartSidebar) {
+        cartToggle.addEventListener('click', () => {
+            cartOverlay.classList.add('active');
+            cartSidebar.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            window.hideTidio();
+        });
+    }
+
+    const closeCart = () => {
+        if (cartOverlay) cartOverlay.classList.remove('active');
+        if (cartSidebar) cartSidebar.classList.remove('active');
+        document.body.style.overflow = '';
+        window.showTidio();
+    };
+
+    if (closeCartBtn) closeCartBtn.addEventListener('click', closeCart);
+    if (cartOverlay) cartOverlay.addEventListener('click', closeCart);
+
+    let proceedPayBtn = document.getElementById('proceed-pay-btn');
+    let checkoutModal = document.getElementById('checkout-modal');
+    let checkoutModalOverlay = document.getElementById('checkout-modal-overlay');
+    
+    // Dynamically inject checkout modal if missing
+    if (!checkoutModal) {
+        const modalHtml = `
+            <div class="checkout-modal-overlay" id="checkout-modal-overlay"></div>
+            <div class="checkout-modal" id="checkout-modal">
+                <div class="checkout-header">
+                    <h3>Complete Your Order</h3>
+                    <button class="close-btn" id="close-checkout"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="checkout-body">
+                    <form id="checkout-form">
+                        <div class="form-group">
+                            <label for="checkout-name">Full Name <span class="required">*</span></label>
+                            <input type="text" id="checkout-name" placeholder="Enter your full name">
+                            <div class="error-msg" id="error-name">Name is required</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="checkout-email">Email Address <span class="required">*</span></label>
+                            <input type="email" id="checkout-email" placeholder="Enter your email">
+                            <div class="error-msg" id="error-email">Valid email is required</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="checkout-phone">Phone Number <span class="required">*</span></label>
+                            <input type="tel" id="checkout-phone" placeholder="10-digit mobile number">
+                            <div class="error-msg" id="error-phone">Valid 10-digit phone is required</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="checkout-address">Delivery Address <span class="required">*</span></label>
+                            <textarea id="checkout-address" rows="3" placeholder="Enter full delivery address"></textarea>
+                            <div class="error-msg" id="error-address">Address is required</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="checkout-footer">
+                    <div class="checkout-amount-display">
+                        Total to Pay: <span id="checkout-final-amount">₹0</span>
+                    </div>
+                    <button type="button" class="btn btn-primary w-100" id="proceed-pay-btn">
+                        Proceed to Pay <i class="fa-solid fa-lock"></i>
+                    </button>
+                    <div class="payment-methods-icons">
+                        <i class="fa-brands fa-cc-visa"></i>
+                        <i class="fa-brands fa-cc-mastercard"></i>
+                        <span>UPI</span>
+                        <span>Net Banking</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        const div = document.createElement('div');
+        div.innerHTML = modalHtml;
+        document.body.appendChild(div);
+        
+        proceedPayBtn = document.getElementById('proceed-pay-btn');
+        checkoutModal = document.getElementById('checkout-modal');
+        checkoutModalOverlay = document.getElementById('checkout-modal-overlay');
+    }
+    
+    const closeCheckoutBtn = document.getElementById('close-checkout');
+
+    const closeCheckout = () => {
+        if (checkoutModal) checkoutModal.classList.remove('active');
+        if (checkoutModalOverlay) checkoutModalOverlay.classList.remove('active');
+    };
+
+    if (closeCheckoutBtn) closeCheckoutBtn.addEventListener('click', closeCheckout);
+    if (checkoutModalOverlay) checkoutModalOverlay.addEventListener('click', closeCheckout);
+
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', () => {
+            if (cart.length > 0) {
+                // Hide cart sidebar & open checkout modal
+                closeCart();
+                
+                // Set total
+                const totalAmount = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+                document.getElementById('checkout-final-amount').textContent = formatCurrency(totalAmount);
+                
+                // Show checkout modal
+                if (checkoutModalOverlay) checkoutModalOverlay.classList.add('active');
+                if (checkoutModal) checkoutModal.classList.add('active');
+            }
+        });
+    }
+
+    if (proceedPayBtn) {
+        proceedPayBtn.addEventListener('click', async () => {
+            // Validate form
+            const nameInput = document.getElementById('checkout-name');
+            const emailInput = document.getElementById('checkout-email');
+            const phoneInput = document.getElementById('checkout-phone');
+            const addressInput = document.getElementById('checkout-address');
+
+            let isValid = true;
+
+            // Name validation
+            if (!nameInput.value.trim()) {
+                nameInput.parentElement.classList.add('has-error');
+                isValid = false;
+            } else {
+                nameInput.parentElement.classList.remove('has-error');
+            }
+
+            // Email validation
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(emailInput.value.trim())) {
+                emailInput.parentElement.classList.add('has-error');
+                isValid = false;
+            } else {
+                emailInput.parentElement.classList.remove('has-error');
+            }
+
+            // Phone validation
+            const phonePattern = /^[0-9]{10}$/;
+            if (!phonePattern.test(phoneInput.value.trim().replace(/[^0-9]/g, ''))) {
+                phoneInput.parentElement.classList.add('has-error');
+                isValid = false;
+            } else {
+                phoneInput.parentElement.classList.remove('has-error');
+            }
+
+            // Address validation
+            if (!addressInput.value.trim()) {
+                addressInput.parentElement.classList.add('has-error');
+                isValid = false;
+            } else {
+                addressInput.parentElement.classList.remove('has-error');
+            }
+
+            if (isValid) {
+                proceedPayBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+                proceedPayBtn.disabled = true;
+
+                const totalAmount = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+
+                // PayU Form Submission
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'https://test.payu.in/_payment';
+
+                const txnid = 'Txn' + Math.floor(Math.random() * 10000000);
+                const amount = totalAmount;
+                const productinfo = 'SpareBlaze Auto Parts Order';
+                
+                // Sanitize user inputs rigorously for PayU to prevent hash format errors
+                const firstname = nameInput.value.trim().replace(/[^a-zA-Z\s]/g, '');
+                const email = emailInput.value.trim();
+                
+                // Ensure URLs are secure (force HTTPS unless localhost)
+                let returnUrl = window.location.href;
+                if (returnUrl.startsWith('http://') && !returnUrl.includes('localhost') && !returnUrl.includes('127.0.0.1')) {
+                    returnUrl = returnUrl.replace('http://', 'https://');
+                }
+                
+                // Generate Hash (Test Key and Salt)
+                const key = 'gtKFFx';
+                const salt = '4R38IvwiV57FwVpsgOvTXBdLE4tHUXFW';
+                const hashString = `${key}|${txnid}|${amount}|${productinfo}|${firstname}|${email}|||||||||||${salt}`;
+                
+                const encoder = new TextEncoder();
+                const data = encoder.encode(hashString);
+                const hashBuffer = await crypto.subtle.digest('SHA-512', data);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+                const params = {
+                    key: key, 
+                    txnid: txnid,
+                    amount: amount,
+                    productinfo: productinfo,
+                    firstname: firstname,
+                    email: email,
+                    phone: phoneInput.value.trim().replace(/[^0-9]/g, ''),
+                    surl: returnUrl,
+                    furl: returnUrl,
+                    hash: hashHex
+                };
+
+                for (let paramKey in params) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = paramKey;
+                    input.value = params[paramKey];
+                    form.appendChild(input);
+                }
+
+                document.body.appendChild(form);
+                setTimeout(() => form.submit(), 800);
+            }
+        });
+    }
+}
+
+window.addToCart = function (productData) {
+    let existingItemIndex = cart.findIndex(item => item.id === productData.id);
+
+    if (existingItemIndex > -1) {
+        cart[existingItemIndex].quantity += 1;
+    } else {
+        cart.push({ ...productData, quantity: 1 });
+    }
+
+    updateCartUI();
+    document.getElementById('cart-overlay').classList.add('active');
+    document.getElementById('cart-sidebar').classList.add('active');
+};
+
+window.buyNow = function (productData) {
+    // Add item if not exist
+    let existingItemIndex = cart.findIndex(item => item.id === productData.id);
+    if (existingItemIndex === -1) {
+        cart.push({ ...productData, quantity: 1 });
+        updateCartUI();
+    }
+    
+    // Simulate clicking the checkout button immediately
+    const checkoutBtn = document.getElementById('checkout-btn');
+    if (checkoutBtn && !checkoutBtn.disabled) {
+        checkoutBtn.click();
+    }
+};
+
+window.toggleCartItem = function (productId, btnElement) {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+
+    const existingItemIndex = cart.findIndex(item => item.id === productId);
+
+    if (existingItemIndex > -1) {
+        // Remove from cart
+        cart.splice(existingItemIndex, 1);
+        btnElement.classList.remove('added');
+        btnElement.querySelector('i').className = 'fa-solid fa-plus';
+    } else {
+        // Add to cart with default qty 1
+        cart.push({ ...product, quantity: 1 });
+        btnElement.classList.add('added');
+        btnElement.querySelector('i').className = 'fa-solid fa-check';
+
+        // Optional: Auto open cart on first add
+        if (cart.length === 1) {
+            cartOverlay.classList.add('active');
+            cartSidebar.classList.add('active');
+        }
+    }
+
+    updateCartUI();
+};
+
+window.updateQuantity = function (productId, change) {
+    // productId could be int from mockup or string from generate_pages.js payload
+    const item = cart.find(i => i.id == productId);
+    if (item) {
+        if (change > 0) {
+            item.quantity += 1;
+        } else if (change < 0 && item.quantity > 1) {
+            item.quantity -= 1;
+        }
+        updateCartUI();
+    }
+};
+
+window.removeFromCart = function (productId) {
+    cart = cart.filter(item => item.id != productId);
+
+    // Update product card button if it exists on page
+    const btnElement = document.querySelector(`.add-cart-btn[data-id="${productId}"]`);
+    if (btnElement) {
+        btnElement.classList.remove('added');
+        btnElement.querySelector('i').className = 'fa-solid fa-plus';
+    }
+
+    updateCartUI();
+};
+
+function updateCartUI() {
+    const cartCountElements = document.querySelectorAll('#cart-count');
+    const cartItemsContainer = document.getElementById('cart-items-container');
+    const cartTotalAmount = document.getElementById('cart-total-amount');
+    const checkoutBtn = document.getElementById('checkout-btn');
+
+    // Update badge numbers
+    const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+    cartCountElements.forEach(el => {
+        el.textContent = totalItems;
+        // Pulse animation
+        el.style.transform = 'scale(1.2)';
+        setTimeout(() => el.style.transform = 'scale(1)', 200);
+    });
+
+    // Update cart items container
+    if (!cartItemsContainer) return;
+
+    if (cart.length === 0) {
+        cartItemsContainer.innerHTML = '<div class="empty-cart-msg">Your cart is currently empty.</div>';
+        if (cartTotalAmount) cartTotalAmount.textContent = formatCurrency(0);
+        if (checkoutBtn) checkoutBtn.disabled = true;
+        return;
+    }
+
+    cartItemsContainer.innerHTML = '';
+    let totalAmount = 0;
+
+    cart.forEach(item => {
+        totalAmount += item.price * item.quantity;
+        let pIdString = typeof item.id === 'string' ? `'${item.id}'` : item.id;
+
+        const itemEl = document.createElement('div');
+        itemEl.className = 'cart-item fade-in';
+        itemEl.innerHTML = `
+            <div class="cart-item-img">
+                <img src="${item.image}" alt="${item.title}" style="width:50px; height:50px; object-fit:contain;">
+            </div>
+            <div class="cart-item-details">
+                <h4 class="cart-item-title">${item.title}</h4>
+                <div class="cart-item-price">${formatCurrency(item.price)}</div>
+                <div class="cart-item-actions">
+                    <div class="qty-control">
+                        <button class="qty-btn" onclick="updateQuantity(${pIdString}, -1)">-</button>
+                        <span>${item.quantity}</span>
+                        <button class="qty-btn" onclick="updateQuantity(${pIdString}, 1)">+</button>
+                    </div>
+                    <button class="remove-btn" onclick="removeFromCart(${pIdString})">Remove</button>
+                </div>
+            </div>
+        `;
+        cartItemsContainer.appendChild(itemEl);
+    });
+
+    if (cartTotalAmount) cartTotalAmount.textContent = formatCurrency(totalAmount);
+    if (checkoutBtn) checkoutBtn.disabled = false;
+}
+
+// --- Search Logic ---
+function setupSearch() {
+    const searchInput = document.getElementById('search-input');
+    const searchResults = document.getElementById('search-results');
+    if (!searchInput || !searchResults) return;
+
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+
+        if (query.length < 2) {
+            searchResults.classList.remove('active');
+            return;
+        }
+
+        const filtered = products.filter(p =>
+            p.title.toLowerCase().includes(query) ||
+            p.brand.toLowerCase().includes(query) ||
+            p.compatibility.toLowerCase().includes(query)
+        );
+
+        if (filtered.length > 0) {
+            searchResults.innerHTML = filtered.slice(0, 5).map(p => `
+            <div class="search-result-item" onclick="window.location.href='search.html'">
+                    <i class="fa-solid fa-cog" style="font-size: 1.5rem; color: var(--color-text-muted);"></i>
+                    <div class="search-result-info">
+                        <h4>${p.title}</h4>
+                        <p>${p.brand} · ${formatCurrency(p.price)}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add view all link if there are many results
+            if (filtered.length > 5) {
+                searchResults.innerHTML += `
+            <div class="search-result-item" style="justify-content: center; color: var(--color-primary); font-weight: 500;" onclick="window.location.href='search.html'">
+                View all ${filtered.length} results
+            </div>
+            `;
+            }
+        } else {
+            searchResults.innerHTML = `
+            <div class="search-result-item" style="justify-content: center; color: var(--color-text-muted);">
+                No parts found for "${query}"
+            </div>
+            `;
+        }
+
+        searchResults.classList.add('active');
+    });
+
+    // Close search results when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-container')) {
+            searchResults.classList.remove('active');
+        }
+    });
+}
+
+// --- Scroll Effects ---
+function setupScrollEffects() {
+    const navbar = document.querySelector('.navbar');
+    if (!navbar) return;
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+}
+
+// --- Global CTA Logic ---
+window.addToCart = function (product) {
+    const cartOverlay = document.getElementById('cart-overlay');
+    const cartSidebar = document.getElementById('cart-sidebar');
+
+    const existingItem = cart.find(item => item.id === product.id);
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cart.push({ ...product, quantity: 1, image: product.img || product.image });
+    }
+    updateCartUI();
+
+    // Open cart
+    if (cartOverlay && cartSidebar) {
+        cartOverlay.classList.add('active');
+        cartSidebar.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+};
+
+window.buyNow = function (product) {
+    window.addToCart(product);
+};
+
+
+

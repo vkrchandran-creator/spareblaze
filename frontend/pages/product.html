@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Product Details - SpareBlaze</title>
+    <!-- Google Fonts -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23e63900'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial Black,Arial' font-weight='900' font-size='28' fill='white'>SB</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .breadcrumbs {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+        }
+
+        .breadcrumbs a {
+            color: var(--color-primary);
+        }
+
+        .breadcrumbs a:hover {
+            text-decoration: underline;
+        }
+
+        .product-overview-container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 1rem 1.5rem 3rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        @media (max-width: 900px) {
+            .product-overview-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Gallery Column */
+        .product-gallery {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .main-image-box {
+            background: var(--color-bg-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            height: 450px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .main-image-box img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            mix-blend-mode: multiply;
+        }
+
+        .thumbnail-strip {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+        }
+
+        .thumb-box {
+            width: 80px;
+            height: 80px;
+            border: 2px solid transparent;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            background: var(--color-bg-surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            transition: border-color var(--transition-fast);
+        }
+
+        .thumb-box:hover,
+        .thumb-box.active {
+            border-color: var(--color-primary);
+        }
+
+        .thumb-box img {
+            max-height: 100%;
+            max-width: 100%;
+            mix-blend-mode: multiply;
+        }
+
+        /* Info Column */
+        .product-info-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .brand-link-box {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 500;
+        }
+
+        .brand-link-box img {
+            height: 30px;
+            width: auto;
+            max-width: 100px;
+            object-fit: contain;
+        }
+
+        .product-title {
+            font-size: 2rem;
+            font-family: var(--font-heading);
+            color: var(--color-text-main);
+            line-height: 1.2;
+        }
+
+        .price-block {
+            padding: 1.5rem;
+            background: rgba(230, 57, 0, 0.05);
+            border-radius: var(--radius-md);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .price-current {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #0b5fc9;
+            /* Boodmo blue style for price */
+        }
+
+        .price-mrp {
+            font-size: 1.1rem;
+            color: var(--color-text-muted);
+            text-decoration: line-through;
+            margin-right: 1rem;
+        }
+
+        .price-saving {
+            color: var(--color-success);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn-add-cart {
+            background-color: transparent;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+            font-size: 1.1rem;
+            padding: 1rem;
+        }
+
+        .btn-add-cart:hover {
+            background-color: var(--color-primary-light);
+        }
+
+        .btn-buy-now {
+            font-size: 1.1rem;
+            padding: 1rem;
+        }
+
+        /* Badges list */
+        .trust-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .trust-list-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-weight: 500;
+        }
+
+        .trust-list-item i {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+            border-radius: 50%;
+            font-size: 0.8rem;
+        }
+
+        /* Details Section */
+        .details-container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 1.5rem 5rem;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .section-box {
+            background: var(--color-bg-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-box h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .info-table th,
+        .info-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .info-table th {
+            color: var(--color-text-muted);
+            font-weight: 500;
+            width: 35%;
+            background: var(--color-bg-base);
+        }
+
+        .info-table tr:last-child th,
+        .info-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Fitment Table */
+        .fitment-table-wrapper {
+            overflow-x: auto;
+        }
+
+        .fitment-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        .fitment-table th {
+            background: var(--color-bg-base);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--color-border);
+        }
+
+        .fitment-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .fitment-table tbody tr:hover {
+            background: var(--color-primary-light);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar scrolled">
+        <div class="nav-container">
+            <a href="index.html" class="logo"><img src="../public/images/spareblaze-logo.png" alt="SpareBlaze Logo"
+                    style="height: 54px; width: auto; object-fit: contain;">
+            </a>
+
+            <div class="search-container">
+                <div class="search-category" id="custom-dropdown">
+                    <div class="dropdown-selected">
+                        <span id="dropdown-text">Select Vehicle</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <ul class="dropdown-options">
+                        <li data-value="">All Vehicles</li>
+                        <li data-value="maruti">MARUTI</li>
+                        <li data-value="hyundai">HYUNDAI</li>
+                        <li data-value="mahindra">MAHINDRA</li>
+                        <li data-value="tata">TATA</li>
+                        <li data-value="chevrolet">CHEVROLET</li>
+                        <li data-value="honda">HONDA</li>
+                        <li data-value="skoda">SKODA</li>
+                        <li data-value="vw">VW</li>
+                        <li data-value="toyota">TOYOTA</li>
+                        <li data-value="nissan">NISSAN</li>
+                        <li data-value="renault">RENAULT</li>
+                        <li data-value="ford">FORD</li>
+                        <li data-value="fiat">FIAT</li>
+                        <li data-value="kia">KIA</li>
+                    </ul>
+                </div>
+                <input type="text" id="search-input" placeholder="Search by part name, brand, or OEM number...">
+                <button class="search-btn" onclick="window.location.href='search.html'"><i
+                        class="fa-solid fa-search"></i></button>
+            </div>
+
+            <div class="nav-actions">
+                <a href="javascript:void(0);" class="nav-icon-btn"><i class="fa-regular fa-user"></i></a>
+                <button class="nav-icon-btn cart-btn" id="cart-toggle">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge" id="cart-count">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Secondary Navigation -->
+    <div class="nav-categories">
+        <div class="nav-container">
+            <button class="all-categories-btn" onclick="window.location.href='categories.html'">
+                <i class="fa-solid fa-bars-staggered"></i> All Categories
+            </button>
+            <ul class="category-links">
+                <li><a href="after-market.html">After Market</a></li>
+                <li><a href="refurbished.html">Refurbished</a></li>
+                <li><a href="used.html">Used</a></li>
+                <li><a href="oem.html">OEM</a></li>
+                <li><a href="wholesale.html">Wholesale</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Breadcrumbs -->
+    <div class="breadcrumbs">
+        <a href="index.html">Home</a> &gt; Brands &gt; <a href="javascript:void(0);" id="bc-brand-link"><span
+                id="bc-brand-name">Brand</span></a> &gt; <span id="bc-product-name">Product</span>
+    </div>
+
+    <!-- Product Overview Section -->
+    <section class="product-overview-container">
+        <!-- Left: Image Gallery -->
+        <div class="product-gallery">
+            <div class="main-image-box">
+                <div class="discount-badge"
+                    style="position: absolute; top: 1.5rem; left: 1.5rem; background: var(--color-error); color: white; padding: 0.3rem 0.8rem; font-weight: bold; border-radius: var(--radius-sm);"
+                    id="product-badge">-15%</div>
+                <img id="main-product-img" src="" alt="Product Image">
+            </div>
+            <div class="thumbnail-strip">
+                <div class="thumb-box active"><img id="thumb-1" src="" alt="Thumb 1"></div>
+                <div class="thumb-box"><img id="thumb-2" src="" alt="Thumb 2"></div>
+                <div class="thumb-box"><img id="thumb-3" src="" alt="Thumb 3"></div>
+            </div>
+        </div>
+
+        <!-- Right: Info Panel -->
+        <div class="product-info-panel">
+            <div class="brand-link-box">
+                <img id="panel-brand-logo" src="" alt="Brand Logo">
+                <a href="javascript:void(0);" id="view-brand-catalog" style="color: #0b5fc9;">View all <span
+                        id="panel-brand-name">Brand</span> products ></a>
+            </div>
+
+            <h1 class="product-title" id="product-title">Product Title Loading...</h1>
+
+            <div class="price-block">
+                <div class="price-current" id="product-price">₹0.00</div>
+                <div>
+                    <span class="price-mrp" id="product-mrp">MRP ₹0.00</span>
+                    <span class="price-saving" id="product-saving">(Save 0%)</span>
+                </div>
+                <span style="font-size: 0.85rem; color: var(--color-text-muted);">Inclusive of all taxes</span>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-add-cart" id="page-add-cart"><i class="fa-solid fa-cart-plus"></i> Add to
+                    Cart</button>
+                <button class="btn btn-primary btn-buy-now" id="page-buy-now"><i class="fa-solid fa-bolt"></i> Buy
+                    Now</button>
+            </div>
+
+            <div class="trust-list">
+                <div class="trust-list-item">
+                    <i class="fa-solid fa-check"></i>
+                    <span>Fulfilled by <strong>SpareBlaze</strong></span>
+                </div>
+                <div class="trust-list-item">
+                    <i class="fa-solid fa-truck"></i>
+                    <span><strong>Free Delivery</strong> across India</span>
+                </div>
+                <div class="trust-list-item">
+                    <i class="fa-solid fa-arrow-rotate-left"></i>
+                    <span><strong>10 Days</strong> Return Policy</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Details Bottom Area -->
+    <section class="details-container">
+        <div class="details-grid">
+
+            <!-- Left Column: Specs & Fitment -->
+            <div class="main-details">
+                <div class="section-box">
+                    <h3>Description</h3>
+                    <p id="product-description" style="color: var(--color-text-muted); line-height: 1.6;">
+                        Loading description...
+                    </p>
+                </div>
+
+                <div class="section-box">
+                    <h3>Features & Specifications</h3>
+                    <table class="info-table">
+                        <tbody>
+                            <tr>
+                                <th>Part Number</th>
+                                <td id="spec-part-no" style="font-family: monospace; font-weight: bold;">UNKNOWN</td>
+                            </tr>
+                            <tr>
+                                <th>Origin</th>
+                                <td>Aftermarket (OEM Quality)</td>
+                            </tr>
+                            <tr>
+                                <th>Class / Category</th>
+                                <td id="spec-class">Unknown</td>
+                            </tr>
+                            <tr>
+                                <th>Net Quantity</th>
+                                <td>1 Unit</td>
+                            </tr>
+                            <tr>
+                                <th>Manufacturer</th>
+                                <td id="spec-mfg">Brand Name Corp.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section-box">
+                    <h3>Compatibility (Fitment)</h3>
+                    <div class="fitment-table-wrapper">
+                        <table class="fitment-table">
+                            <thead>
+                                <tr>
+                                    <th>Maker</th>
+                                    <th>Model</th>
+                                    <th>Year</th>
+                                    <th>Engine</th>
+                                    <th>Fuel</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fitment-tbody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Additional Info -->
+            <div class="side-details">
+                <div class="section-box" style="padding: 1.5rem;">
+                    <h3 style="font-size: 1.2rem; margin-bottom: 1rem;">Why buy from us?</h3>
+                    <ul
+                        style="display: flex; flex-direction: column; gap: 1rem; color: var(--color-text-muted); font-size: 0.9rem;">
+                        <li><i class="fa-solid fa-shield-halved"
+                                style="color: var(--color-success); margin-right: 0.5rem; width: 16px;"></i> 100%
+                            Genuine Parts</li>
+                        <li><i class="fa-solid fa-credit-card"
+                                style="color: var(--color-success); margin-right: 0.5rem; width: 16px;"></i> Secure SSL
+                            Payments</li>
+                        <li><i class="fa-solid fa-headset"
+                                style="color: var(--color-success); margin-right: 0.5rem; width: 16px;"></i> 24/7 Expert
+                            Support</li>
+                        <li><i class="fa-solid fa-handshake"
+                                style="color: var(--color-success); margin-right: 0.5rem; width: 16px;"></i>
+                            Manufacturer Warranty</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">
+                    <img src="../public/images/spareblaze-logo-footer.png" alt="SpareBlaze Logo"
+                        style="width: 250px; height: auto;">
+                </a>
+                <p>India's trusted e-commerce platform for genuine car and SUV spare parts. Quality assured, delivered
+                    nationwide.</p>
+                <div class="social-links">
+                    <a href="javascript:void(0);"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="javascript:void(0);"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="javascript:void(0);"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="javascript:void(0);"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">About Us</a></li>
+                    <li><a href="track-order.html">Track Order</a></li>
+                    <li><a href="return-policy.html">Return Policy</a></li>
+                    <li><a href="shipping-info.html">Shipping Info</a></li>
+                    <li><a href="contact-us.html">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h3>Shop By Type</h3>
+                <ul>
+                    <li><a href="after-market.html">After Market</a></li>
+                    <li><a href="refurbished.html">Refurbished</a></li>
+                    <li><a href="used.html">Used</a></li>
+                    <li><a href="oem.html">OEM</a></li>
+                    <li><a href="wholesale.html">Wholesale</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-contact">
+                <h3>Contact</h3>
+                <p><i class="fa-solid fa-phone"></i> +91 1800 123 4567</p>
+                <p><i class="fa-solid fa-envelope"></i> support@spareblaze.in</p>
+                <p><i class="fa-solid fa-location-dot"></i> Bengaluru, Karnataka, India</p>
+
+                <h3 class="payment-title">Secure Payments</h3>
+                <div class="payment-icons">
+                    <i class="fa-brands fa-cc-visa"></i>
+                    <i class="fa-brands fa-cc-mastercard"></i>
+                    <span class="upi-text">UPI</span>
+                    <span class="rupay-text">RuPay</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/data/cms-data.js"></script>
+    <script src="../js/data/after-market-data-local.js"></script>
+    <script src="../js/data/oem-data-local.js"></script>
+    <script src="../js/data/used-data-local.js"></script>
+    <script src="../js/data/wholesale-data-local.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id') || '';
+
+            // 1. Data Merging / Identification
+            const allDatasets = [
+                ...(typeof afterMarketProducts !== 'undefined' ? afterMarketProducts : []),
+                ...(typeof oemProducts !== 'undefined' ? oemProducts : []),
+                ...(typeof usedProducts !== 'undefined' ? usedProducts : []),
+                ...(typeof wholesaleProducts !== 'undefined' ? wholesaleProducts : []),
+                ...(window.__sbCmsFeatured || []),
+                ...((JSON.parse(localStorage.getItem('sb_cms_data') || '{}').categories || []).flatMap(c => c.products || []))
+            ];
+
+            let p = allDatasets.find(item => (item.name || item.title) === productId);
+
+            // 2. Fallback logic for query params (backward compatibility)
+            if (!p) {
+                p = {
+                    name: productId || urlParams.get('title') || 'Genuine Spare Part',
+                    brand: urlParams.get('brand') || 'SpareBlaze',
+                    price: parseInt(urlParams.get('price')) || 450,
+                    mrp: parseInt(urlParams.get('mrp')) || 550,
+                    img: urlParams.get('img') || 'https://dummyimage.com/600x600/f8f9fa/a3a3a3.png&text=Product',
+                    vehicle: urlParams.get('vehicle') || 'Universal Fit',
+                    partNo: urlParams.get('partNo') || 'SB-' + Math.floor(Math.random() * 90000 + 10000)
+                };
+            } else {
+                // Normalize keys
+                p.name = p.name || p.title;
+                p.img = p.img || p.image;
+                p.price = typeof p.price === 'number' ? p.price : parseFloat(String(p.amount || p.price || 0).replace(/[^0-9.]/g,
+                    ''));
+                p.mrp = typeof p.mrp === 'number' ? p.mrp : parseFloat(String(p.originalPrice || p.mrp || 0).replace(/[^0-9.]/g,
+                    ''));
+                p.partNo = p.partNo || 'SB-' + Math.floor(Math.random() * 90000 + 10000);
+            }
+
+            // 3. Populate Page Content
+            const brandId = (p.brand || 'spareblaze').toLowerCase().replace(/\s+/g, '-');
+            const brandName = p.brand || 'SpareBlaze';
+
+            // Document & Breadcrumbs
+            document.title = `${p.name} - SpareBlaze`;
+            document.getElementById('bc-brand-name').textContent = brandName;
+            document.getElementById('bc-brand-link').href = `brand.html?id=${brandId}`;
+            document.getElementById('bc-product-name').textContent = p.name;
+            document.getElementById('product-title').textContent = p.name;
+
+            // Brand Panel
+            const pngBrands = ['bmw', 'audi', 'volvo', 'mahindra', 'hyundai', 'honda', 'toyota', 'vw', 'tata', 'ford', 'fiat', 'chevrolet', 'maruti', 'maruti-suzuki'];
+            const svgBrands = ['kia', 'nissan', 'renault', 'skoda', 'mg', 'jeep'];
+            let finalLogo = `images/${brandId}.webp`;
+            if (pngBrands.includes(brandId)) {
+                finalLogo = `images/${brandId}.png`;
+                if (brandId === 'maruti') finalLogo = `images/maruti-suzuki.png`;
+            } else if (svgBrands.includes(brandId)) {
+                finalLogo = `images/${brandId}.svg`;
+            }
+
+            const brandIcon = document.getElementById('panel-brand-logo');
+            brandIcon.src = finalLogo;
+            brandIcon.onerror = function () { this.src = 'images/spareblaze-logo.png'; };
+            document.getElementById('panel-brand-name').textContent = brandName;
+            document.getElementById('view-brand-catalog').href = `brand.html?id=${brandId}`;
+
+            // Images
+            document.getElementById('main-product-img').src = p.img;
+            document.getElementById('thumb-1').src = p.img;
+            document.getElementById('thumb-2').src = p.img;
+            document.getElementById('thumb-3').src = p.img;
+
+            // Price & Saving
+            const formatter = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
+            document.getElementById('product-price').textContent = formatter.format(p.price);
+            document.getElementById('product-mrp').textContent = `MRP ${formatter.format(p.mrp)}`;
+
+            if (p.mrp > p.price) {
+                const saving = p.mrp - p.price;
+                const percent = Math.round((saving / p.mrp) * 100);
+                document.getElementById('product-saving').textContent = `(Save ${percent}%)`;
+                document.getElementById('product-badge').textContent = `-${percent}%`;
+                document.getElementById('product-saving').style.display = 'block';
+                document.getElementById('product-badge').style.display = 'inline-block';
+                document.getElementById('product-mrp').style.display = 'inline';
+            } else {
+                document.getElementById('product-saving').style.display = 'none';
+                document.getElementById('product-badge').style.display = 'none';
+                document.getElementById('product-mrp').style.display = 'none';
+            }
+
+            // Specs
+            document.getElementById('spec-part-no').textContent = p.partNo || 'N/A';
+            document.getElementById('spec-class').textContent = p.category || 'Automotive Part';
+            document.getElementById('spec-mfg').textContent = `${brandName} Genuine`;
+
+            // Description
+            document.getElementById('product-description').textContent =
+                `High-quality ${p.name} from ${brandName}. This genuine spare part is specifically designed for ${p.vehicle || 'your vehicle'}, ensuring perfect fitment and reliable performance. Precision-engineered to meet OEM standards and built to withstand rigorous Indian road conditions.`;
+
+            // Thumbnails
+            const thumbs = document.querySelectorAll('.thumb-box');
+            thumbs.forEach(thumb => {
+                thumb.addEventListener('click', function () {
+                    thumbs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    document.getElementById('main-product-img').src = this.querySelector('img').src;
+                });
+            });
+
+            // Cart Actions
+            const cartData = { id: p.partNo, title: p.name, price: p.price, img: p.img };
+            document.getElementById('page-add-cart').addEventListener('click', () => {
+                if (window.addToCart) window.addToCart(cartData);
+                else if (window.toggleCartItem) {
+                    const btn = document.getElementById('page-add-cart');
+                    if (!btn.classList.contains('added')) {
+                        // Dummy product mapping or use the existing toggle logic
+                        // Need to ensure the item adds properly, script.js handles product IDs so we might need to push directly
+                        let existing = cart.find(c => c.id === cartData.id);
+                        if (!existing) {
+                             cart.push({...cartData, quantity: 1});
+                             updateCartUI();
+                             document.getElementById('cart-overlay').classList.add('active');
+                             document.getElementById('cart-sidebar').classList.add('active');
+                        }
+                    }
+                }
+            });
+            document.getElementById('page-buy-now').addEventListener('click', () => {
+                if (window.buyNow) window.buyNow(cartData);
+            });
+        });
+    </script>
+
+    <!-- Cart Modal (Slide over) -->
+    <div class="cart-overlay" id="cart-overlay"></div>
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Your Cart</h3>
+            <button class="close-btn" id="close-cart"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="cart-items" id="cart-items-container">
+            <!-- Items populated by JS -->
+            <div class="empty-cart-msg">Your cart is currently empty.</div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span class="total-amount" id="cart-total-amount">₹0</span>
+            </div>
+            <button class="btn btn-primary w-100 checkout-btn" id="checkout-btn" disabled>Proceed to Secure Checkout</button>
+            <div class="checkout-trust">
+                <i class="fa-solid fa-lock"></i> SSL Secured Payment
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Form Modal -->
+    <div class="checkout-modal-overlay" id="checkout-modal-overlay"></div>
+    <div class="checkout-modal" id="checkout-modal">
+        <div class="checkout-header">
+            <h3>Complete Your Order</h3>
+            <button class="close-btn" id="close-checkout"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="checkout-body">
+            <form id="checkout-form">
+                <div class="form-group">
+                    <label for="checkout-name">Full Name <span class="required">*</span></label>
+                    <input type="text" id="checkout-name" placeholder="Enter your full name">
+                    <div class="error-msg" id="error-name">Name is required</div>
+                </div>
+                <div class="form-group">
+                    <label for="checkout-email">Email Address <span class="required">*</span></label>
+                    <input type="email" id="checkout-email" placeholder="Enter your email">
+                    <div class="error-msg" id="error-email">Valid email is required</div>
+                </div>
+                <div class="form-group">
+                    <label for="checkout-phone">Phone Number <span class="required">*</span></label>
+                    <input type="tel" id="checkout-phone" placeholder="10-digit mobile number">
+                    <div class="error-msg" id="error-phone">Valid 10-digit phone is required</div>
+                </div>
+                <div class="form-group">
+                    <label for="checkout-address">Delivery Address <span class="required">*</span></label>
+                    <textarea id="checkout-address" rows="3" placeholder="Enter full delivery address"></textarea>
+                    <div class="error-msg" id="error-address">Address is required</div>
+                </div>
+            </form>
+        </div>
+        <div class="checkout-footer">
+            <div class="checkout-amount-display">
+                Total to Pay: <span id="checkout-final-amount">₹0</span>
+            </div>
+            <button type="button" class="btn btn-primary w-100" id="proceed-pay-btn">
+                Proceed to Pay <i class="fa-solid fa-lock"></i>
+            </button>
+            <div class="payment-methods-icons">
+                <i class="fa-brands fa-cc-visa"></i>
+                <i class="fa-brands fa-cc-mastercard"></i>
+                <span>UPI</span>
+                <span>Net Banking</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/script.js"></script>
+
+    <script src=" https://code.tidio.co/sienbawteqdozz2om1mswgszpjxm6zxg.js" async>
+    </script>
+</body>
+
+</html>
