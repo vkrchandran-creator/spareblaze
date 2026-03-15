@@ -6,7 +6,7 @@
     const KEY = 'sb_cms_data';
     const DEFAULT_DATA = {
         siteIdentity: {
-            logoUrl: 'images/spareblaze-logo.png',
+            logoUrl: '../public/images/spareblaze-logo.png',
             siteName: 'SpareBlaze',
             tagline: "India's trusted e-commerce platform for genuine car and SUV spare parts. Quality assured, delivered nationwide.",
             copyright: "© 2026 SpareBlaze. All rights reserved. Designed for Indian Automotive Market."
@@ -92,9 +92,12 @@
         if (!d.slides || !d.slides.length) d.slides = DEFAULT_DATA.slides;
         if (!d.featuredProducts || !d.featuredProducts.length) d.featuredProducts = DEFAULT_DATA.featuredProducts;
 
-        // Fix for logo extension migration
-        if (d.siteIdentity && d.siteIdentity.logoUrl === 'images/spareblaze-logo.jpg') {
-            d.siteIdentity.logoUrl = 'images/spareblaze-logo.png';
+        // Fix for logo path/extension migration
+        if (d.siteIdentity && (
+            d.siteIdentity.logoUrl === 'images/spareblaze-logo.jpg' ||
+            d.siteIdentity.logoUrl === 'images/spareblaze-logo.png'
+        )) {
+            d.siteIdentity.logoUrl = '../public/images/spareblaze-logo.png';
             localStorage.setItem(KEY, JSON.stringify(d));
         }
 
@@ -117,7 +120,6 @@
         (root || document).querySelectorAll(sel).forEach(el => { if (val !== undefined && val !== '') el[prop] = val; });
     }
     function txt(sel, val, root) { set(sel, 'textContent', val, root); }
-    function html(sel, val, root) { set(sel, 'innerHTML', val, root); }
 
     // ── 0. Theme & Branding ──
     function applyTheme() {
@@ -145,7 +147,7 @@
 
         // Header Logo
         document.querySelectorAll('nav .logo img').forEach(img => {
-            img.src = si.logoUrl || 'images/spareblaze-logo.png';
+            img.src = si.logoUrl || '../public/images/spareblaze-logo.png';
             img.style.height = '54px';
             img.style.width = 'auto';
             img.style.objectFit = 'contain';
