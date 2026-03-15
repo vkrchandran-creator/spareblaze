@@ -45,10 +45,10 @@
             { icon: 'fa-solid fa-headset', text: '24/7 Expert Support' }
         ],
         topCategories: [
-            { icon: '../public/images/engine.jpg', name: 'Engine Components', href: 'categories.html?category=engine' },
-            { icon: '../public/images/brake.jpg', name: 'Brake Systems', href: 'categories.html?category=brakes' },
-            { icon: '../public/images/steering.jpg', name: 'Suspension & Steering', href: 'categories.html?category=suspension' },
-            { icon: '../public/images/battery.jpg', name: 'Electricals & Lighting', href: 'categories.html?category=electricals' }
+            { icon: '../public/images/engine.jpg', name: 'Engine Components', href: 'after-market.html' },
+            { icon: '../public/images/brake.jpg', name: 'Brake Systems', href: 'after-market.html' },
+            { icon: '../public/images/steering.jpg', name: 'Suspension & Steering', href: 'after-market.html' },
+            { icon: '../public/images/battery.jpg', name: 'Electricals & Lighting', href: 'after-market.html' }
         ],
         ctaBanner: {
             headline: 'Need Help Finding The Right Part?',
@@ -105,11 +105,17 @@
         let needsSave = false;
         if (d.topCategories) {
             d.topCategories = d.topCategories.map(c => {
+                let updated = { ...c };
                 if (c.icon && c.icon.startsWith('images/')) {
                     needsSave = true;
-                    return { ...c, icon: '../public/' + c.icon };
+                    updated.icon = '../public/' + c.icon;
                 }
-                return c;
+                // Migrate stale hrefs that pointed to non-functional categories.html?category=* URLs
+                if (c.href && c.href.startsWith('categories.html?category=')) {
+                    needsSave = true;
+                    updated.href = 'after-market.html';
+                }
+                return updated;
             });
         }
         if (d.slides) {
