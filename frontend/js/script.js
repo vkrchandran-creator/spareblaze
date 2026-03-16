@@ -249,6 +249,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setupCartListeners();
     setupSearch();
     setupScrollEffects();
+    setupMobileMenu();
+    setupMobileSearch();
     checkPaymentStatus();
 });
 
@@ -1012,6 +1014,106 @@ function setupScrollEffects() {
             navbar.classList.add('scrolled');
         } else {
             navbar.classList.remove('scrolled');
+        }
+    });
+}
+
+// --- Mobile Menu (hamburger) ---
+function setupMobileMenu() {
+    const btn = document.getElementById('mobile-menu-btn');
+    if (!btn) return;
+
+    // Build the mobile nav menu element dynamically (avoids duplicate HTML in every page)
+    let menu = document.getElementById('mobile-nav-menu');
+    if (!menu) {
+        menu = document.createElement('div');
+        menu.id = 'mobile-nav-menu';
+        menu.className = 'mobile-nav-menu';
+        menu.innerHTML = `
+            <div class="mobile-nav-header">Shop By Type</div>
+            <ul>
+                <li><a href="categories.html"><i class="fa-solid fa-bars-staggered" style="width:1.2em"></i> All Categories</a></li>
+                <li><a href="after-market.html">After Market</a></li>
+                <li><a href="refurbished.html">Refurbished</a></li>
+                <li><a href="used.html">Used</a></li>
+                <li><a href="oem.html">OEM</a></li>
+                <li><a href="wholesale.html">Wholesale</a></li>
+            </ul>`;
+        document.body.appendChild(menu);
+    }
+
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = menu.classList.toggle('open');
+        btn.classList.toggle('active', isOpen);
+        btn.setAttribute('aria-expanded', isOpen);
+    });
+
+    // Close when clicking outside the menu or the button
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#mobile-nav-menu') && !e.target.closest('#mobile-menu-btn')) {
+            menu.classList.remove('open');
+            btn.classList.remove('active');
+            btn.setAttribute('aria-expanded', 'false');
+        }
+    });
+}
+
+// --- Mobile Search (vehicle select + search input) ---
+function setupMobileSearch() {
+    const mobileInput   = document.getElementById('mobile-search-input');
+    const mobileResults = document.getElementById('mobile-search-results');
+    const mobileSelect  = document.getElementById('mobile-vehicle-select');
+    if (!mobileInput) return;
+
+    // Vehicle select: navigate to brand page (same logic as desktop dropdown)
+    if (mobileSelect) {
+        mobileSelect.addEventListener('change', () => {
+            const value = mobileSelect.value;
+            if (!value) return;
+            const prefix = window.location.pathname.includes('/after-market-parts/') ? '../' : '';
+            window.location.href = prefix + `brand.html?id=${value}`;
+        });
+    }
+
+    // Search input: reuse the shared search logic
+    if (!mobileResults) return;
+
+    mobileInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        if (query.length < 2) {
+            mobileResults.classList.remove('active');
+            return;
+        }
+
+        const filtered = products.filter(p =>
+            p.title.toLowerCase().includes(query) ||
+            p.brand.toLowerCase().includes(query) ||
+            (p.compatibility && p.compatibility.toLowerCase().includes(query))
+        );
+
+        if (filtered.length > 0) {
+            mobileResults.innerHTML = filtered.slice(0, 5).map(p => `
+                <div class="search-result-item" onclick="window.location.href='search.html'">
+                    <i class="fa-solid fa-cog" style="font-size:1.3rem;color:var(--color-text-muted)"></i>
+                    <div class="search-result-info">
+                        <h4>${p.title}</h4>
+                        <p>${p.brand} · ${formatCurrency(p.price)}</p>
+                    </div>
+                </div>`).join('');
+        } else {
+            mobileResults.innerHTML = `
+                <div class="search-result-item" style="justify-content:center;color:var(--color-text-muted)">
+                    No parts found for "${query}"
+                </div>`;
+        }
+        mobileResults.classList.add('active');
+    });
+
+    // Close results on outside click
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.mobile-search')) {
+            mobileResults.classList.remove('active');
         }
     });
 }

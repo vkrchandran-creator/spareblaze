@@ -168,10 +168,42 @@
                 <button class="nav-icon-btn cart-btn" id="cart-toggle">
                     <i class="fa-solid fa-cart-shopping"></i>
                     <span class="cart-badge" id="cart-count">0</span>
-                </button>
+                
+                                </button>
+                <button class="mobile-menu-btn" id="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
             </div>
         </div>
     </nav>
+        <!-- Mobile Search + Vehicle Select (Visible on small screens) -->
+        <div class="mobile-search">
+            <div class="mobile-search-row">
+                <select class="mobile-vehicle-select" id="mobile-vehicle-select">
+                    <option value="">All Vehicles</option>
+                    <option value="maruti">MARUTI</option>
+                    <option value="hyundai">HYUNDAI</option>
+                    <option value="mahindra">MAHINDRA</option>
+                    <option value="tata">TATA</option>
+                    <option value="chevrolet">CHEVROLET</option>
+                    <option value="honda">HONDA</option>
+                    <option value="skoda">SKODA</option>
+                    <option value="vw">VW</option>
+                    <option value="toyota">TOYOTA</option>
+                    <option value="nissan">NISSAN</option>
+                    <option value="renault">RENAULT</option>
+                    <option value="ford">FORD</option>
+                    <option value="fiat">FIAT</option>
+                    <option value="kia">KIA</option>
+                    <option value="bmw">BMW</option>
+                    <option value="audi">AUDI</option>
+                    <option value="volvo">VOLVO</option>
+                </select>
+                <div class="mobile-search-wrap">
+                    <input type="text" id="mobile-search-input" placeholder="Search parts...">
+                    <button class="mobile-search-btn"><i class="fa-solid fa-search"></i></button>
+                </div>
+            </div>
+            <div class="search-results" id="mobile-search-results"></div>
+        </div>
     <div class="nav-categories">
         <div class="nav-container">
             <button class="all-categories-btn" onclick="window.location.href='categories.html'">
@@ -18880,7 +18912,7 @@
     <footer>
         <div class="footer-container">
             <div class="footer-brand">
-                <a href="index.html" class="logo"><img src="../public/images/spareblaze-logo-footer.png" alt="SpareBlaze Logo"
+                <a href="index.html" class="logo"><img src="../public/images/spareblaze-logo.png" alt="SpareBlaze Logo"
                         style="width: 250px; height: auto;"></a>
                 <p>India's trusted e-commerce platform for genuine car and SUV spare parts. Quality assured, delivered
                     nationwide.</p>
