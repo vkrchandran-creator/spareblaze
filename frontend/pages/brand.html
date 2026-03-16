@@ -602,7 +602,7 @@
             document.title = `${displayName} Auto Parts - SpareBlaze`;
             document.getElementById('bc-brand-name').textContent = displayName;
             document.getElementById('brand-title').textContent = `${displayName} Auto Parts`;
-            document.getElementById('brand-logo-img').src = `images/${imageFilename}`;
+            document.getElementById('brand-logo-img').src = `../public/images/${imageFilename}`;
             document.getElementById('brand-logo-img').alt = displayName;
 
             // Generate Boodmo-style description
@@ -617,14 +617,14 @@
             const grid = document.getElementById('brand-products-grid');
 
             const productTypes = [
-                { cat: 'Filters', name: 'Oil Filter', price: 299, mrp: 350, img: 'images/products/oil-filter.jpg' },
-                { cat: 'Filters', name: 'Air Filter Element', price: 450, mrp: 550, img: 'images/products/air-filter.jpg' },
-                { cat: 'Brake Systems', name: 'Front Brake Pad Set', price: 1250, mrp: 1600, img: 'images/products/brake-pads.jpg' },
-                { cat: 'Suspension', name: 'Shock Absorber Assembly', price: 2400, mrp: 2850, img: 'images/products/shock-absorber.jpg' },
-                { cat: 'Electricals', name: 'Spark Plug Platinum', price: 450, mrp: 550, img: 'images/products/spark-plug.jpg' },
-                { cat: 'Engine Parts', name: 'Timing Belt Kit', price: 3200, mrp: 3800, img: 'images/products/timing-belt.jpg' },
-                { cat: 'Lighting', name: 'Halogen Bulb H4', price: 250, mrp: 300, img: 'images/products/headlamp.jpg' },
-                { cat: 'Filters', name: 'Cabin AC Filter', price: 380, mrp: 450, img: 'images/products/cabin-filter.jpg' }
+                { cat: 'Filters', name: 'Oil Filter', price: 299, mrp: 350, img: '../public/images/products/oil-filter.jpg' },
+                { cat: 'Filters', name: 'Air Filter Element', price: 450, mrp: 550, img: '../public/images/products/air-filter.jpg' },
+                { cat: 'Brake Systems', name: 'Front Brake Pad Set', price: 1250, mrp: 1600, img: '../public/images/products/brake-pads.jpg' },
+                { cat: 'Suspension', name: 'Shock Absorber Assembly', price: 2400, mrp: 2850, img: '../public/images/products/shock-absorber.jpg' },
+                { cat: 'Electricals', name: 'Spark Plug Platinum', price: 450, mrp: 550, img: '../public/images/products/spark-plug.jpg' },
+                { cat: 'Engine Parts', name: 'Timing Belt Kit', price: 3200, mrp: 3800, img: '../public/images/products/timing-belt.jpg' },
+                { cat: 'Lighting', name: 'Halogen Bulb H4', price: 250, mrp: 300, img: '../public/images/products/headlamp.jpg' },
+                { cat: 'Filters', name: 'Cabin AC Filter', price: 380, mrp: 450, img: '../public/images/products/cabin-filter.jpg' }
             ];
 
             // Render 8 products with filter data attributes
