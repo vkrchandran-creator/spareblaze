@@ -17,9 +17,8 @@ app.use(cors({
 }));
 
 // ── Body parsing ──────────────────────────────────────────────────────────────
-// Webhook needs raw body for Razorpay signature verification — before json()
-app.use('/api/v1/payments/webhook', express.raw({ type: 'application/json' }));
 app.use(express.json());
+// PayU callbacks are url-encoded form POSTs
 app.use(express.urlencoded({ extended: true }));
 
 // ── General rate limiting ─────────────────────────────────────────────────────

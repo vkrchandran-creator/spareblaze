@@ -2,30 +2,24 @@ const router     = require('express').Router();
 const { body }   = require('express-validator');
 const controller = require('../controllers/payment.controller');
 const validate   = require('../middleware/validate.middleware');
-const auth       = require('../middleware/auth.middleware');
 
-// POST /api/v1/payments/initiate  — creates Razorpay order
+// POST /api/v1/payments/initiate — generate PayU hash (no auth, guest checkout)
 router.post('/initiate',
-  auth,
-  [body('orderId').notEmpty().withMessage('orderId is required')],
+  [
+    body('firstname').notEmpty().withMessage('firstname is required'),
+    body('email').isEmail().withMessage('Valid email is required'),
+    body('phone').notEmpty().withMessage('phone is required'),
+    body('amount').isNumeric().withMessage('amount must be numeric'),
+    body('productinfo').notEmpty().withMessage('productinfo is required'),
+  ],
   validate,
   controller.initiate,
 );
 
-// POST /api/v1/payments/verify  — verify Razorpay signature after payment
-router.post('/verify',
-  auth,
-  [
-    body('orderId').notEmpty(),
-    body('razorpay_order_id').notEmpty(),
-    body('razorpay_payment_id').notEmpty(),
-    body('razorpay_signature').notEmpty(),
-  ],
-  validate,
-  controller.verify,
-);
+// POST /api/v1/payments/success — PayU success callback (browser redirect)
+router.post('/success', controller.success);
 
-// POST /api/v1/payments/webhook  — Razorpay async webhook (no auth — IP-verified)
-router.post('/webhook', controller.webhook);
+// POST /api/v1/payments/failure — PayU failure callback (browser redirect)
+router.post('/failure', controller.failure);
 
 module.exports = router;

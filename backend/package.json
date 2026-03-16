@@ -22,8 +22,7 @@
     "express-validator": "^7.0.1",
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.2",
-    "nodemailer": "^8.0.2",
-    "razorpay": "^2.9.2"
+    "nodemailer": "^8.0.2"
   },
   "prisma": {
     "seed": "node prisma/seed.js"

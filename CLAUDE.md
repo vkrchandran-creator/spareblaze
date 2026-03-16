@@ -8,9 +8,7 @@ The platform focuses on selling genuine OEM and aftermarket automotive parts.
 The project is a **full-stack monorepo** consisting of:
 - A **frontend** — Vanilla HTML/CSS/JS served via Vercel (currently in Phase 1; product data still in JS files)
 - A **backend** — Node.js/Express REST API with JWT auth, Prisma ORM, and PostgreSQL (Phases 2–8 built out)
-- **Razorpay** is the payment gateway — all payment logic lives server-side in the backend
-
-> Legacy frontend files (`script.js`) still contain an old PayU form submission flow that predates the Razorpay backend. That code is deprecated and will be removed when the frontend migrates to call the backend payment API (Phase 8 frontend integration).
+- **PayU** is the payment gateway — hash generation and callback verification live server-side in the backend; the frontend POSTs directly to PayU using params returned by the backend.
 
 ---
 
@@ -21,7 +19,7 @@ The project is a **full-stack monorepo** consisting of:
 * Node.js + Express
 * Prisma ORM → PostgreSQL
 * JWT authentication (`jsonwebtoken` + `bcrypt`)
-* **Razorpay** payment gateway (server-side: order creation, HMAC-SHA256 signature verification, webhook handling)
+* **PayU** payment gateway (server-side: SHA-512 hash generation, response hash verification; redirect-based flow)
 * `express-validator` for request validation
 * `express-rate-limit` for rate limiting
 
@@ -226,36 +224,39 @@ Address
 
 ## Payment Gateway
 
-The payment system uses **Razorpay** (best-in-class for Indian market — supports UPI, cards, wallets, NetBanking).
+The payment system uses **PayU** (supports UPI, cards, wallets, NetBanking — ideal for Indian market).
 
-### Backend payment flow (`backend/src/`)
+### Payment flow
 
-| Step | File | Description |
-|------|------|-------------|
-| 1. Initiate | `services/payment.service.js → initiate()` | Creates a Razorpay order (amount in paise) and stores `gatewayOrderId` in the `payments` DB table |
-| 2. Frontend modal | `frontend JS (to be built)` | Opens Razorpay checkout modal using `razorpayOrderId`, `amount`, `currency`, `keyId` returned from Step 1 |
-| 3. Verify | `services/payment.service.js → verify()` | Verifies the HMAC-SHA256 signature using `crypto.timingSafeEqual`; on match updates payment to `captured` and order to `confirmed` |
-| 4. Webhook | `services/payment.service.js → handleWebhook()` | Handles async Razorpay events: `payment.captured`, `payment.failed`, `refund.processed` |
+| Step | Where | Description |
+|------|-------|-------------|
+| 1. Initiate | `POST /api/v1/payments/initiate` (backend) | Generates `txnid` + SHA-512 hash server-side; returns PayU form params to the browser |
+| 2. Redirect | Frontend (`script.js`) | Auto-submits a hidden form to the PayU gateway endpoint |
+| 3. PayU processes | PayU servers | User completes payment on PayU-hosted page |
+| 4. Success callback | `POST /api/v1/payments/success` (backend) | Verifies response hash with `crypto.timingSafeEqual`; redirects to frontend with `?payment=success` |
+| 5. Failure callback | `POST /api/v1/payments/failure` (backend) | Redirects to frontend with `?payment=failed` |
+| 6. Toast | Frontend (`script.js → checkPaymentStatus()`) | Reads URL param, shows success/failure toast, then cleans up the URL |
 
 ### API endpoints
 
 ```
-POST /api/v1/payments/initiate   — Auth required — creates Razorpay order
-POST /api/v1/payments/verify     — Auth required — verifies signature, confirms order
-POST /api/v1/payments/webhook    — Public (Razorpay IP) — handles async events
+POST /api/v1/payments/initiate   — Public (no auth) — returns PayU form params + hash
+POST /api/v1/payments/success    — Public — PayU success callback → redirect to frontend
+POST /api/v1/payments/failure    — Public — PayU failure callback → redirect to frontend
 ```
 
 ### Environment variables required
 
 ```
-RAZORPAY_KEY_ID=
-RAZORPAY_KEY_SECRET=
-RAZORPAY_WEBHOOK_SECRET=
+PAYU_MERCHANT_KEY=          # From PayU Merchant Dashboard
+PAYU_MERCHANT_SALT=         # From PayU Merchant Dashboard
+BACKEND_URL=                # Your deployed backend URL (used to build surl/furl)
+FRONTEND_URL=               # Your deployed frontend URL (used for post-payment redirect)
 ```
 
-**Security:** Credentials are stored only in server environment variables. The `RAZORPAY_KEY_SECRET` never leaves the backend. The frontend only receives `RAZORPAY_KEY_ID` (public key) to open the checkout modal.
+**Security:** `PAYU_MERCHANT_SALT` never leaves the server. The frontend receives only the pre-computed hash, not the salt.
 
-> **Note:** The legacy `script.js` in the frontend still contains an old PayU form-post flow. This is dead code — it will be removed when the frontend migrates to the Razorpay backend API (Phase 8).
+**Test vs Production:** Set `NODE_ENV=production` in the backend to switch the PayU endpoint from `test.payu.in` to `secure.payu.in` automatically.
 
 ---
 
@@ -318,7 +319,7 @@ When working on this codebase, Claude should prioritize:
 * The **backend is built** (`backend/src/`) but not yet connected to the frontend (Phase 2–8 complete server-side; frontend integration pending)
 * The frontend still loads product data from local JS files — this will be replaced by API calls in Phase 5
 * The frontend cart is still in-memory (`let cart = []`) — persistent DB cart is designed and ready in Phase 6
-* The old PayU frontend code in `script.js` is **deprecated** — do not extend it; all new payment work goes through the Razorpay backend API
+* Payment uses **PayU** — hash generation is server-side (`backend/src/services/payment.service.js`); never move salt to client-side JS
 
 ---
 
@@ -334,7 +335,7 @@ backend/src/
 ├── routes/                      auth, product, cart, order, payment, admin
 ├── controllers/                 Parse req → call service → send response
 ├── services/                    Business logic + Prisma queries
-│   └── payment.service.js       Razorpay: initiate / verify / webhook
+│   └── payment.service.js       PayU: initiate (hash gen) / handleSuccess / handleFailure
 ├── middleware/
 │   ├── auth.middleware.js        JWT verification
 │   ├── admin.middleware.js       Role check
@@ -354,7 +355,7 @@ When working on this codebase:
 
 1. **Backend work** → edit files under `backend/src/`; follow controller → service → Prisma pattern
 2. **Frontend styling** → edit `frontend/css/style.css`
-3. **Frontend logic** → edit files under `frontend/js/`; do NOT extend legacy `script.js` PayU code
+3. **Frontend logic** → edit files under `frontend/js/`; set `window.BACKEND_URL` in HTML if backend is on a different domain
 4. **Product data** (interim) → edit `frontend/js/data/*.js` files until Phase 5 migration
-5. **Payment changes** → edit `backend/src/services/payment.service.js` only; keep credentials in `.env`
+5. **Payment changes** → edit `backend/src/services/payment.service.js` only; keep `PAYU_MERCHANT_SALT` in `.env` — never in client JS
 6. **After any change** → update the relevant documentation file (`CLAUDE.md`, `ARCHITECTURE.md`, `README.md`)

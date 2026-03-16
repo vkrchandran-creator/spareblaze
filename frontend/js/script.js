@@ -249,7 +249,36 @@ document.addEventListener('DOMContentLoaded', () => {
     setupCartListeners();
     setupSearch();
     setupScrollEffects();
+    checkPaymentStatus();
 });
+
+// Show a toast based on PayU callback redirect params (?payment=success|failed)
+function checkPaymentStatus() {
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get('payment');
+    if (!status) return;
+
+    const isSuccess = status === 'success';
+    const message   = isSuccess
+        ? 'Payment successful! Your order is confirmed.'
+        : 'Payment failed or was cancelled. Please try again.';
+
+    const toast = document.createElement('div');
+    toast.style.cssText = [
+        'position:fixed', 'bottom:24px', 'left:50%', 'transform:translateX(-50%)',
+        'background:' + (isSuccess ? '#22c55e' : '#ef4444'),
+        'color:#fff', 'padding:14px 28px', 'border-radius:8px',
+        'font-weight:600', 'font-size:0.95rem', 'z-index:9999',
+        'box-shadow:0 4px 16px rgba(0,0,0,0.18)', 'transition:opacity .4s',
+    ].join(';');
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    // Remove after 5 s and clean up URL params
+    setTimeout(() => { toast.style.opacity = '0'; }, 4600);
+    setTimeout(() => { toast.remove(); }, 5000);
+    window.history.replaceState({}, '', window.location.pathname);
+}
 
 // --- Move Tidio chat widget to bottom-LEFT ---
 // Tidio sets its own position via inline JS, so CSS alone can't override it.
@@ -722,61 +751,55 @@ function setupCartListeners() {
                 proceedPayBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
                 proceedPayBtn.disabled = true;
 
-                const totalAmount = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+                // Backend URL — update this to your deployed backend URL in production
+                const BACKEND_URL = window.BACKEND_URL || 'http://localhost:5000';
 
-                // PayU Form Submission
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = 'https://test.payu.in/_payment';
+                try {
+                    const totalAmount = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+                    const firstname   = nameInput.value.trim().replace(/[^a-zA-Z\s]/g, '');
+                    const email       = emailInput.value.trim();
+                    const phone       = phoneInput.value.trim().replace(/[^0-9]/g, '');
 
-                const txnid = 'Txn' + Math.floor(Math.random() * 10000000);
-                const amount = totalAmount;
-                const productinfo = 'SpareBlaze Auto Parts Order';
-                
-                // Sanitize user inputs rigorously for PayU to prevent hash format errors
-                const firstname = nameInput.value.trim().replace(/[^a-zA-Z\s]/g, '');
-                const email = emailInput.value.trim();
-                
-                // Ensure URLs are secure (force HTTPS unless localhost)
-                let returnUrl = window.location.href;
-                if (returnUrl.startsWith('http://') && !returnUrl.includes('localhost') && !returnUrl.includes('127.0.0.1')) {
-                    returnUrl = returnUrl.replace('http://', 'https://');
+                    // Get PayU form params (including hash) from the backend.
+                    // The salt never leaves the server — this keeps credentials secure.
+                    const res = await fetch(`${BACKEND_URL}/api/v1/payments/initiate`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            firstname,
+                            email,
+                            phone,
+                            amount:      totalAmount,
+                            productinfo: 'SpareBlaze Auto Parts Order',
+                        }),
+                    });
+
+                    if (!res.ok) throw new Error('Backend payment initiation failed');
+
+                    const { data: { payuEndpoint, params } } = await res.json();
+
+                    // Submit form directly to PayU with server-generated hash
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = payuEndpoint;
+
+                    for (const [name, value] of Object.entries(params)) {
+                        const input = document.createElement('input');
+                        input.type  = 'hidden';
+                        input.name  = name;
+                        input.value = value;
+                        form.appendChild(input);
+                    }
+
+                    document.body.appendChild(form);
+                    form.submit();
+
+                } catch (err) {
+                    console.error('Payment initiation error:', err);
+                    proceedPayBtn.innerHTML = 'Proceed to Pay 🔒';
+                    proceedPayBtn.disabled  = false;
+                    alert('Unable to initiate payment. Please try again.');
                 }
-                
-                // Generate Hash (Test Key and Salt)
-                const key = 'gtKFFx';
-                const salt = '4R38IvwiV57FwVpsgOvTXBdLE4tHUXFW';
-                const hashString = `${key}|${txnid}|${amount}|${productinfo}|${firstname}|${email}|||||||||||${salt}`;
-                
-                const encoder = new TextEncoder();
-                const data = encoder.encode(hashString);
-                const hashBuffer = await crypto.subtle.digest('SHA-512', data);
-                const hashArray = Array.from(new Uint8Array(hashBuffer));
-                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-                const params = {
-                    key: key, 
-                    txnid: txnid,
-                    amount: amount,
-                    productinfo: productinfo,
-                    firstname: firstname,
-                    email: email,
-                    phone: phoneInput.value.trim().replace(/[^0-9]/g, ''),
-                    surl: returnUrl,
-                    furl: returnUrl,
-                    hash: hashHex
-                };
-
-                for (let paramKey in params) {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = paramKey;
-                    input.value = params[paramKey];
-                    form.appendChild(input);
-                }
-
-                document.body.appendChild(form);
-                setTimeout(() => form.submit(), 800);
             }
         });
     }
