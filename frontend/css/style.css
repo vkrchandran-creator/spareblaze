@@ -250,6 +250,7 @@ button {
     width: 250px !important;
     height: auto !important;
     max-width: 100%;
+    filter: invert(1);
 }
 
 .search-container {
