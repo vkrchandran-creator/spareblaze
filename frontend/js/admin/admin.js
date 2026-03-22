@@ -13,7 +13,7 @@ const DEFAULT_SA = 'spareblaze';
 // Default CMS Data
 const DEFAULT_DATA = {
     siteIdentity: {
-        logoUrl: 'images/spareblaze-logo.png',
+        logoUrl: '../public/images/spareblaze-logo.png',
         siteName: 'SpareBlaze',
         tagline: "India's trusted e-commerce platform for genuine car and SUV spare parts. Quality assured, delivered nationwide.",
         copyright: "© 2026 SpareBlaze. All rights reserved. Designed for Indian Automotive Market."
@@ -52,10 +52,10 @@ const DEFAULT_DATA = {
         { icon: 'fa-solid fa-headset', text: '24/7 Expert Support' }
     ],
     topCategories: [
-        { icon: 'images/engine.jpg', color: '#e63900', name: 'Engine Components', href: 'categories.html?category=engine' },
-        { icon: 'images/brake.jpg', color: '#c0392b', name: 'Brake Systems', href: 'categories.html?category=brakes' },
-        { icon: 'images/steering.jpg', color: '#2980b9', name: 'Suspension & Steering', href: 'categories.html?category=suspension' },
-        { icon: 'images/battery.jpg', color: '#f39c12', name: 'Electricals & Lighting', href: 'categories.html?category=electricals' }
+        { icon: '../public/images/engine.jpg', color: '#e63900', name: 'Engine Components', href: 'after-market.html' },
+        { icon: '../public/images/brake.jpg', color: '#c0392b', name: 'Brake Systems', href: 'after-market.html' },
+        { icon: '../public/images/steering.jpg', color: '#2980b9', name: 'Suspension & Steering', href: 'after-market.html' },
+        { icon: '../public/images/battery.jpg', color: '#f39c12', name: 'Electricals & Lighting', href: 'after-market.html' }
     ],
     ctaBanner: {
         headline: 'Need Help Finding The Right Part?',
@@ -63,17 +63,17 @@ const DEFAULT_DATA = {
         btnText: 'Contact Experts'
     },
     slides: [
-        { id: 1, bg: 'images/slider-suspension.jpg', badge: '100% Genuine Parts', headline: 'Performance Meets Reliability', highlight: 'Reliability', subtitle: 'The ultimate destination for premium car and SUV spare parts tailored for Indian roads.', cta: 'Shop Now', ctaLink: 'categories.html', cta2: 'Browse Categories', cta2Link: 'wholesale.html' },
-        { id: 2, bg: 'images/slider-brake-pad.jpg', badge: 'Monsoon Ready', headline: 'Upgrade Your Brakes', highlight: 'Brakes', subtitle: "Don't compromise on safety. Up to 20% off on premium brake pads and rotors.", cta: 'View Offers', ctaLink: 'categories.html?category=brakes', cta2: '', cta2Link: '' },
-        { id: 3, bg: 'images/slider-engine.jpg', badge: 'OEM Certified', headline: 'Keep Your Engine Pristine', highlight: 'Pristine', subtitle: 'Shop authentic oil filters and engine components from authorized distributors.', cta: 'Shop Engine Parts', ctaLink: 'categories.html?category=engine', cta2: '', cta2Link: '' }
+        { id: 1, bg: '../public/images/slider-suspension.jpg', badge: '100% Genuine Parts', headline: 'Performance Meets Reliability', highlight: 'Reliability', subtitle: 'The ultimate destination for premium car and SUV spare parts tailored for Indian roads.', cta: 'Shop Now', ctaLink: 'categories.html', cta2: 'Browse Categories', cta2Link: 'wholesale.html' },
+        { id: 2, bg: '../public/images/slider-brake-pad.jpg', badge: 'Monsoon Ready', headline: 'Upgrade Your Brakes', highlight: 'Brakes', subtitle: "Don't compromise on safety. Up to 20% off on premium brake pads and rotors.", cta: 'View Offers', ctaLink: 'after-market.html', cta2: '', cta2Link: '' },
+        { id: 3, bg: '../public/images/slider-engine.jpg', badge: 'OEM Certified', headline: 'Keep Your Engine Pristine', highlight: 'Pristine', subtitle: 'Shop authentic oil filters and engine components from authorized distributors.', cta: 'Shop Engine Parts', ctaLink: 'after-market.html', cta2: '', cta2Link: '' }
     ],
     featuredProducts: [
-        { title: 'Chevrolet Cruze LED Headlights DRL Projector Lens (2009–2016)', brand: 'Chevrolet', price: 35000, mrp: 38000, img: 'images/products/cruze_headlights.png' },
-        { title: 'High-Quality Genuine Clutch Disc & Kit Set for Nissan', brand: 'Nissan', price: 18000, mrp: 19000, img: 'images/products/nissan_clutch_kit.png' },
-        { title: 'FF-5059M Fog Light with Bracket (RH) for Mahindra Scorpio S2/S3', brand: 'Mahindra', price: 975, mrp: 1255, img: 'images/products/scorpio_fog_light.png' },
-        { title: 'High-Performance Brake Caliper Piston 9040 with Big Brake Disc', brand: 'Brembo', price: 92000, mrp: 110000, img: 'images/products/brake_rotor.jpg' },
-        { title: 'BCM (Body Control Module) for Chevrolet Cruze – Automatic Used', brand: 'Chevrolet', price: 15000, mrp: 20000, img: 'images/products/fog_lamps.jpg' },
-        { title: 'Premium Alloy Wheels – Style, Strength, and Performance', brand: 'Universal', price: 18000, mrp: 25000, img: 'images/products/brake_rotor.jpg' }
+        { title: 'Chevrolet Cruze LED Headlights DRL Projector Lens (2009–2016)', brand: 'Chevrolet', price: 35000, mrp: 38000, img: '../public/images/products/cruze_headlights.png' },
+        { title: 'High-Quality Genuine Clutch Disc & Kit Set for Nissan', brand: 'Nissan', price: 18000, mrp: 19000, img: '../public/images/products/nissan_clutch_kit.png' },
+        { title: 'FF-5059M Fog Light with Bracket (RH) for Mahindra Scorpio S2/S3', brand: 'Mahindra', price: 975, mrp: 1255, img: '../public/images/products/scorpio_fog_light.png' },
+        { title: 'High-Performance Brake Caliper Piston 9040 with Big Brake Disc', brand: 'Brembo', price: 92000, mrp: 110000, img: '../public/images/products/brake_rotor.jpg' },
+        { title: 'BCM (Body Control Module) for Chevrolet Cruze – Automatic Used', brand: 'Chevrolet', price: 15000, mrp: 20000, img: '../public/images/products/fog_lamps.jpg' },
+        { title: 'Premium Alloy Wheels – Style, Strength, and Performance', brand: 'Universal', price: 18000, mrp: 25000, img: '../public/images/products/brake_rotor.jpg' }
     ],
     categories: [
         {
@@ -148,10 +148,35 @@ function init() {
     if (!data.slides) data.slides = DEFAULT_DATA.slides;
     if (!data.featuredProducts) data.featuredProducts = DEFAULT_DATA.featuredProducts;
 
-    // Fix for logo extension migration
-    if (data.siteIdentity && data.siteIdentity.logoUrl === 'images/spareblaze-logo.jpg') {
-        data.siteIdentity.logoUrl = 'images/spareblaze-logo.png';
+    // Fix stale logo paths saved by older DEFAULT_DATA versions
+    if (data.siteIdentity && (
+        data.siteIdentity.logoUrl === 'images/spareblaze-logo.jpg' ||
+        data.siteIdentity.logoUrl === 'images/spareblaze-logo.png'
+    )) {
+        data.siteIdentity.logoUrl = '../public/images/spareblaze-logo.png';
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    // Fix stale images/ paths saved by older DEFAULT_DATA versions
+    if (data.slides) {
+        data.slides = data.slides.map(s => {
+            if (s.bg && s.bg.startsWith('images/')) return { ...s, bg: '../public/' + s.bg };
+            return s;
+        });
+    }
+    if (data.featuredProducts) {
+        data.featuredProducts = data.featuredProducts.map(p => {
+            if (p.img && p.img.startsWith('images/')) return { ...p, img: '../public/' + p.img };
+            return p;
+        });
+    }
+    if (data.topCategories) {
+        data.topCategories = data.topCategories.map(c => {
+            let updated = { ...c };
+            if (c.icon && c.icon.startsWith('images/')) updated.icon = '../public/' + c.icon;
+            if (c.href && c.href.startsWith('categories.html?category=')) updated.href = 'after-market.html';
+            return updated;
+        });
     }
 
     // Patch stale trust bar entries that still reference the old "7 Days Easy Return" text
@@ -320,46 +345,6 @@ function handleLogout() {
     window.location.reload();
 }
 
-function showPanel(id) {
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.getElementById('panel-' + id).classList.add('active');
-    const nav = document.querySelector(`[onclick="showPanel('${id}')"]`);
-    if (nav) nav.classList.add('active');
-}
-
-function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = '✓ ' + msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-function saveAll() {
-    collectAll();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    showToast('Changes saved! Open any page to see updates live.');
-}
-
-function resetAll() {
-    if (!confirm('Reset ALL content to factory defaults? Cannot be undone.')) return;
-    localStorage.removeItem(STORAGE_KEY);
-    data = JSON.parse(JSON.stringify(DEFAULT_DATA));
-    renderAll();
-    showToast('Reset to defaults.');
-}
-
-function exportData() {
-    saveAll();
-    const b = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const a = document.createElement('a'); a.href = URL.createObjectURL(b);
-    a.download = 'spareblaze-cms-data.json'; a.click();
-}
-
-// NOTE: collectAll() is defined further below using individual collector functions
-// (collectIdentity, collectNav, collectTrust, etc.) which safely read from DOM rows
-// rather than using stale array indices. Do NOT add a second collectAll() here.
-
 // ------ Array & Reordering Utils ------
 function arrDel(key, idx) { collectAll(); data[key].splice(idx, 1); }
 
@@ -514,7 +499,7 @@ function renderTopCats() {
     }).join('');
 }
 
-function updateTcPreview(input, i) {
+function updateTcPreview(input, _i) {
     const val = input.value;
     const preview = input.previousElementSibling;
     const isImg = val && (val.includes('.') || val.includes('/') || val.startsWith('data:'));
@@ -697,10 +682,7 @@ function renderSlides() {
 }
 
 
-// ------ Array & Reordering Utils ------
-function arrDel(key, idx) { collectAll(); data[key].splice(idx, 1); }
-
-// ------ Array Utils (Handled by Rerendering Functions) ------
+// ------ File Upload Utils ------
 
 // ------ File Upload Utils ------
 function fileToDataUrl(file) {
@@ -790,7 +772,7 @@ async function dropProdImage(e, section, idx) {
     showToast('Image updated via drop');
 }
 
-// ------ Missing Core UI Logic ------
+// ------ UI Core ------
 function showPanel(id) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -848,7 +830,7 @@ function showToast(msg) {
     setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-// ------ Individual Collectors (Missing/Extended) ------
+// ------ Individual Collectors ------
 function collectIdentity() {
     data.siteIdentity.siteName = document.getElementById('si-name').value;
     data.siteIdentity.tagline = document.getElementById('si-tagline').value;
@@ -859,7 +841,7 @@ function collectIdentity() {
 
 function collectNav() {
     data.navLinks = [];
-    document.querySelectorAll('#nav-links-tbody tr').forEach((tr, i) => {
+    document.querySelectorAll('#nav-links-tbody tr').forEach((_tr, i) => {
         data.navLinks.push({
             label: document.getElementById(`nl-${i}-lbl`).value,
             href: document.getElementById(`nl-${i}-href`).value
@@ -893,7 +875,7 @@ function collectSlides() {
 
 function collectTrust() {
     data.trustBar = [];
-    document.querySelectorAll('#trust-tbody tr').forEach((tr, i) => {
+    document.querySelectorAll('#trust-tbody tr').forEach((_tr, i) => {
         data.trustBar.push({
             icon: document.getElementById(`tb-${i}-ico`).value,
             text: document.getElementById(`tb-${i}-txt`).value
@@ -903,7 +885,7 @@ function collectTrust() {
 
 function collectBrands() {
     data.carBrands = [];
-    document.querySelectorAll('#brands-tbody tr').forEach((tr, i) => {
+    document.querySelectorAll('#brands-tbody tr').forEach((_tr, i) => {
         data.carBrands.push({
             label: document.getElementById(`cb-${i}-lbl`).value,
             id: document.getElementById(`cb-${i}-id`).value
@@ -913,7 +895,7 @@ function collectBrands() {
 
 function collectTopCats() {
     data.topCategories = [];
-    document.querySelectorAll('#topcats-tbody tr').forEach((tr, i) => {
+    document.querySelectorAll('#topcats-tbody tr').forEach((_tr, i) => {
         data.topCategories.push({
             icon: document.getElementById(`tc-${i}-ico`).value,
             color: document.getElementById(`tc-${i}-clr`).value,

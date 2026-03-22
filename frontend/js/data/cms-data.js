@@ -153,6 +153,7 @@
         }
     }
 
+    function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
     function set(sel, prop, val, root) {
         (root || document).querySelectorAll(sel).forEach(el => { if (val !== undefined && val !== '') el[prop] = val; });
     }
@@ -192,7 +193,7 @@
 
         // Footer Logo
         document.querySelectorAll('.footer-brand .logo img').forEach(img => {
-            img.src = 'images/spareblaze-logo-footer.png';
+            img.src = '../public/images/spareblaze-logo-footer.png';
             img.style.width = '250px';
             img.style.height = 'auto';
             img.style.objectFit = 'contain';
@@ -204,7 +205,7 @@
         const nl = d.navLinks; if (!nl || !nl.length) return;
         const ul = document.querySelector('.category-links');
         if (!ul) return;
-        ul.innerHTML = nl.map(l => `<li><a href="${l.href}">${l.label}</a></li>`).join('');
+        ul.innerHTML = nl.map(l => `<li><a href="${esc(l.href)}">${esc(l.label)}</a></li>`).join('');
     }
 
     // ── 3. Trust Bar ──
@@ -220,7 +221,7 @@
         const cb = d.carBrands; if (!cb || !cb.length) return;
         const grid = document.querySelector('.makers-grid');
         if (!grid) return;
-        grid.innerHTML = cb.map(b => `<a href="brand.html?id=${b.id}" class="maker-card">${b.label}</a>`).join('');
+        grid.innerHTML = cb.map(b => `<a href="brand.html?id=${esc(b.id)}" class="maker-card">${esc(b.label)}</a>`).join('');
     }
 
     // ── 5. Top Categories ──
@@ -320,9 +321,23 @@
         if (d.featuredProducts) window.__sbCmsFeatured = d.featuredProducts;
     }
 
+    // ── Image Path Remapper ──
+    // Converts legacy relative paths from old directory structure to new public/ structure.
+    function remapImagePath(rawPath) {
+        if (!rawPath) return rawPath;
+        return rawPath
+            .replace('after-market-parts/images/', '../public/product-images/aftermarket/')
+            .replace('oem-parts/images/products/', '../public/product-images/oem/products/')
+            .replace('oem-parts/images/', '../public/product-images/oem/')
+            .replace('used-parts/images/products/', '../public/product-images/used/products/')
+            .replace('used-parts/images/', '../public/product-images/used/')
+            .replace('wholesale-parts/images/products/', '../public/product-images/wholesale/products/')
+            .replace('wholesale-parts/images/', '../public/product-images/wholesale/');
+    }
+
     // ── 10. Category Page (Dynamic Rendering) ──
     function applyCategoryPage() {
-        const cats = d.categories; if (!cats) return;
+        const cats = d.categories || [];
         const pageFile = (window.location.pathname.split('/').pop() || 'index.html').replace('.html', '');
 
         // Find existing global data if available
@@ -343,11 +358,10 @@
                 title: pageFile.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
                 products: globalDataMap[pageFile].map(p => ({
                     name: p.title || p.name,
-                    price: parseFloat(String(p.amount || p.price).replace(/[^0-9.]/g, '')),
-                    mrp: parseFloat(String(p.originalPrice || p.mrp || 0).replace(/[^0-9.]/g, '')),
+                    price: parseFloat(String(p.amount || p.price).replace(/[^0-9.]/g, '')) || 0,
+                    mrp: parseFloat(String(p.originalPrice || p.mrp || 0).replace(/[^0-9.]/g, '')) || 0,
                     brand: p.brand,
-                    img: p.image || p.img,
-                    link: p.link,
+                    img: remapImagePath(p.image || p.img),
                     vehicle: p.vehicle || ''
                 }))
             };
@@ -364,12 +378,14 @@
         if (!grid) return;
 
         grid.innerHTML = catData.products.map(p => {
-            const detailUrl = p.link || `product.html?id=${encodeURIComponent(p.name)}`;
+            // Always route through the dynamic product detail page
+            const detailUrl = `product.html?id=${encodeURIComponent(p.name)}`;
+            const imgSrc = remapImagePath(p.img) || 'https://dummyimage.com/300x300/20243a/888';
             return `
-                <div class="product-card">
+                <div class="product-card" data-price="${p.price}" data-discount="${p.mrp && p.mrp > p.price ? Math.round(((p.mrp - p.price) / p.mrp) * 100) : 0}" data-vehicles="${(p.vehicle || '').toLowerCase()}" data-fast-delivery="true">
                     ${p.label ? `<div class="product-badge">${p.label}</div>` : ''}
                     <a href="${detailUrl}" class="product-img-wrap">
-                        <img src="${p.img || 'https://dummyimage.com/300x300/20243a/888'}" alt="${p.name}" loading="lazy" onerror="this.src='https://dummyimage.com/300x300/ececec/000000.png&text=No%20Image'">
+                        <img src="${imgSrc}" alt="${p.name}" loading="lazy" onerror="this.src='https://dummyimage.com/300x300/ececec/000000.png&text=No%20Image'">
                     </a>
                     <div class="product-info">
                         ${p.brand ? `<div class="product-cat">${p.brand}</div>` : ''}

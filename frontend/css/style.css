@@ -250,7 +250,6 @@ button {
     width: 250px !important;
     height: auto !important;
     max-width: 100%;
-    filter: invert(1);
 }
 
 .search-container {
@@ -659,6 +658,153 @@ button {
 .category-links a.highlight {
     color: var(--color-primary);
     font-weight: 600;
+}
+
+/* ── Help Nav Dropdown ─────────────────────────────────────── */
+/* help-nav-item lives directly inside .nav-container (sibling of
+   .category-links), so it is NOT clipped by category-links' overflow-x:auto */
+.help-nav-item {
+    position: relative;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+/* Invisible bridge covering the 4px gap between button and dropdown
+   so the hover state is not lost when moving the mouse downward */
+.help-nav-item::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 4px;
+}
+
+.help-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-primary) !important;
+    cursor: pointer;
+    white-space: nowrap;
+    padding: 0.3rem 0.8rem;
+    border: 1.5px solid var(--color-primary);
+    border-radius: var(--radius-sm);
+    transition: background var(--transition-fast), color var(--transition-fast);
+    line-height: 1.4;
+}
+
+.help-nav-link:hover {
+    background: var(--color-primary);
+    color: #fff !important;
+}
+
+.help-chevron {
+    font-size: 0.65rem;
+    transition: transform 0.2s;
+}
+
+.help-nav-item:hover .help-chevron {
+    transform: rotate(180deg);
+}
+
+.help-dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;        /* flush with the button — no gap for the mouse to fall through */
+    margin-top: 4px;  /* visual breathing room achieved via margin, not a hover-gap */
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+    min-width: 210px;
+    z-index: 200;
+    padding: 0.4rem 0;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Shown via JS .open class (click/touch) OR CSS hover on desktop */
+.help-nav-item.open .help-dropdown-menu,
+.help-nav-item:hover .help-dropdown-menu {
+    display: flex;
+}
+
+.help-dropdown-menu li {
+    display: block;
+    list-style: none;
+}
+
+.help-dropdown-menu a {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-text-main) !important;
+    white-space: nowrap;
+    border-radius: 0;
+    transition: background 0.15s, color 0.15s;
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.help-dropdown-menu li:last-child a {
+    border-bottom: none;
+}
+
+.help-dropdown-menu a:hover {
+    background: var(--color-bg-base);
+    color: var(--color-primary) !important;
+}
+
+.help-dropdown-menu a i {
+    color: var(--color-primary);
+    width: 16px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+/* ── Help Pages – shared layout styles ─────────────────────── */
+.help-page-header {
+    background: linear-gradient(135deg, var(--color-bg-base) 0%, #e2e8f0 100%);
+    padding: 8rem 1.5rem 4rem;
+    text-align: center;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.help-page-header h1 {
+    font-size: 3.5rem;
+    color: var(--color-text-main);
+    margin-bottom: 1rem;
+}
+
+.help-page-header p {
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.help-breadcrumb {
+    max-width: var(--max-width);
+    margin: 0 auto 1.5rem;
+    padding: 0 1.5rem;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+.help-breadcrumb a {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+.help-breadcrumb a:hover {
+    text-decoration: underline;
 }
 
 /* Hero Section / Slider */
@@ -1468,27 +1614,67 @@ footer {
     background: #030712;
 }
 
+/* Scroll to Top Button */
+.scroll-to-top {
+    position: fixed;
+    bottom: 5rem;
+    right: 2rem;
+    width: 44px;
+    height: 44px;
+    background: var(--color-primary);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(12px);
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease, background 0.2s ease;
+    box-shadow: 0 4px 14px rgba(230, 57, 0, 0.35);
+}
+.scroll-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+.scroll-to-top:hover {
+    background: #c43100;
+}
+.scroll-to-top i {
+    font-size: 1rem;
+}
+
 /* Hide Tidio chat widget when cart is open */
 body.cart-open #tidio-chat,
 body.cart-open #tidio-chat-code,
 body.cart-open #tidio-chat-iframe,
 body.cart-open [id^="tidio"],
-body.cart-open iframe[src*="tidio"] {
+body.cart-open [id*="tidio"],
+body.cart-open [class*="tidio"],
+body.cart-open tidio-chat,
+body.cart-open iframe[src*="tidio"],
+body.cart-open iframe[src*="tidiochat"] {
     display: none !important;
     visibility: hidden !important;
     opacity: 0 !important;
     pointer-events: none !important;
 }
 
-/* Move Tidio "Chat with us" widget to the bottom-LEFT so it never overlaps the cart sidebar */
+/* Move Tidio "Chat with us" widget to the bottom-LEFT and raised so it clears the page bottom */
 #tidio-chat {
     left: 20px !important;
     right: auto !important;
+    bottom: 80px !important;
 }
 
 #tidio-chat-code {
     left: 0 !important;
     right: auto !important;
+    bottom: 80px !important;
 }
 
 /* Cart Sidebar Container */
@@ -1497,7 +1683,7 @@ body.cart-open iframe[src*="tidio"] {
     inset: 0;
     background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(2px);
-    z-index: 99999998;
+    z-index: 2147483645;
     opacity: 0;
     pointer-events: none;
     transition: opacity var(--transition-smooth);
@@ -1511,7 +1697,7 @@ body.cart-open iframe[src*="tidio"] {
     max-width: 400px;
     height: 100vh;
     background: var(--color-bg-surface);
-    z-index: 99999999;
+    z-index: 2147483647;
     display: flex;
     flex-direction: column;
     box-shadow: -5px 0 30px rgba(0, 0, 0, 0.1);
@@ -2077,6 +2263,11 @@ body.cart-open iframe[src*="tidio"] {
         /* Smaller logo for mobile */
     }
 
+    .footer-brand .logo img {
+        width: 180px !important;
+        height: auto !important;
+    }
+
     .nav-actions {
         gap: 0.8rem !important;
     }
@@ -2146,6 +2337,11 @@ body.cart-open iframe[src*="tidio"] {
     .logo img {
         height: 20px !important;
     }
+
+    .footer-brand .logo img {
+        width: 150px !important;
+        height: auto !important;
+    }
 }
 
 @media (max-width: 480px) {
@@ -2157,6 +2353,11 @@ body.cart-open iframe[src*="tidio"] {
     .chat-window {
         width: calc(100vw - 40px);
         bottom: 70px;
+    }
+
+    .scroll-to-top {
+        bottom: 6rem;
+        right: 1rem;
     }
 }
 
