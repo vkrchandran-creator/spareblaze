@@ -29,6 +29,7 @@ const DEFAULT_DATA = {
         phone: '+91 1800 123 4567',
         email: 'support@spareblaze.in',
         address: 'Bengaluru, Karnataka, India',
+        whatsapp: '+91 7259955674',
         instagram: 'javascript:void(0);',
         facebook: 'javascript:void(0);',
         twitter: 'javascript:void(0);',
@@ -141,6 +142,7 @@ function init() {
     if (!data.siteIdentity) data.siteIdentity = DEFAULT_DATA.siteIdentity;
     if (!data.navLinks) data.navLinks = DEFAULT_DATA.navLinks;
     if (!data.footer) data.footer = DEFAULT_DATA.footer;
+    if (data.footer && data.footer.whatsapp === undefined) data.footer.whatsapp = DEFAULT_DATA.footer.whatsapp;
     if (!data.carBrands) data.carBrands = DEFAULT_DATA.carBrands;
     if (!data.trustBar) data.trustBar = DEFAULT_DATA.trustBar;
     if (!data.topCategories) data.topCategories = DEFAULT_DATA.topCategories;
@@ -516,6 +518,7 @@ function renderFooter() {
     document.getElementById('f-phone').value = data.footer.phone;
     document.getElementById('f-email').value = data.footer.email;
     document.getElementById('f-address').value = data.footer.address;
+    document.getElementById('f-whatsapp').value = data.footer.whatsapp || '';
     document.getElementById('f-instagram').value = data.footer.instagram;
     document.getElementById('f-facebook').value = data.footer.facebook;
     document.getElementById('f-twitter').value = data.footer.twitter;
@@ -853,6 +856,7 @@ function collectFooter() {
     data.footer.phone = document.getElementById('f-phone').value;
     data.footer.email = document.getElementById('f-email').value;
     data.footer.address = document.getElementById('f-address').value;
+    data.footer.whatsapp = document.getElementById('f-whatsapp').value;
     data.footer.instagram = document.getElementById('f-instagram').value;
     data.footer.facebook = document.getElementById('f-facebook').value;
     data.footer.twitter = document.getElementById('f-twitter').value;

@@ -17,6 +17,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- CSS -->
     <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .catalog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--color-bg-surface);
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-border);
+            margin-bottom: 1.5rem;
+        }
+        .catalog-header select {
+            border: 1px solid var(--color-border);
+            padding: 0.3rem 0.6rem;
+            border-radius: var(--radius-sm);
+            color: var(--color-text-main);
+        }
+    </style>
 
 </head>
 
@@ -56,8 +74,7 @@
                     </ul>
                 </div>
                 <input type="text" id="search-input" placeholder="Search by part name, brand, or OEM number...">
-                <button class="search-btn" onclick="window.location.reload()"><i
-                        class="fa-solid fa-search"></i></button>
+                <button class="search-btn"><i class="fa-solid fa-search"></i></button>
             </div>
 
             <div class="nav-actions">
@@ -165,7 +182,19 @@
 
         <!-- Product Grid -->
         <main>
-            <div class="products-grid" id="featured-products">
+            <div class="catalog-header">
+                <div><strong>0</strong> products found</div>
+                <div>
+                    <label for="sort-by">Sort By: </label>
+                    <select id="sort-by">
+                        <option>Best Match</option>
+                        <option>Price: Low to High</option>
+                        <option>Price: High to Low</option>
+                        <option>Discount</option>
+                    </select>
+                </div>
+            </div>
+            <div class="products-grid prod-grid" id="featured-products">
                 <!-- Reusing JS population logic here -> It will dump all 8 products on this page too since it uses the same ID -->
             </div>
         </main>
@@ -174,10 +203,7 @@
     <footer>
         <div class="footer-container">
             <div class="footer-brand">
-                <a href="index.html" class="logo">
-                    <img src="../public/images/spareblaze-logo-footer.png" alt="SpareBlaze Logo"
-                        style="width: 250px; height: auto;">
-                </a>
+                <a href="index.html" class="logo"><img src="../public/images/spareblaze-logo-footer.png" alt="SpareBlaze Logo" style="width: 250px; height: auto;"></a>
                 <p>India's trusted e-commerce platform for genuine car and SUV spare parts. Quality assured, delivered
                     nationwide.</p>
                 <div class="social-links">
@@ -258,6 +284,16 @@
 
 
     <script src="https://code.tidio.co/sienbawteqdozz2om1mswgszpjxm6zxg.js" async></script>
+
+    <button id="scroll-to-top" class="scroll-to-top" aria-label="Scroll to top">
+        <i class="fa-solid fa-chevron-up"></i>
+    </button>
+  <!-- WhatsApp Float Button -->
+  <a id="wa-float-btn" class="wa-float-btn" href="https://wa.me/917259955674" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+    <span class="wa-tooltip">Chat with us</span>
+  </a>
+
 </body>
 
 </html>

@@ -1,157 +1,813 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Track Order - SpareBlaze | Premium Automotive Spare Parts</title>
-    <!-- Google Fonts -->
-    <link rel="icon" type="image/svg+xml"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23e63900'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial Black,Arial' font-weight='900' font-size='28' fill='white'>SB</text></svg>">
+    <title>Track Order – SpareBlaze | Real-Time Shipment Tracking</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
-        rel="stylesheet">
-    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- CSS -->
     <link rel="stylesheet" href="../css/style.css">
     <style>
+        :root {
+            --to-orange: #e63900;
+            --to-orange-light: #fff0eb;
+            --to-blue: #2563eb;
+            --to-blue-light: #dbeafe;
+            --to-green: #16a34a;
+            --to-green-light: #dcfce7;
+            --to-amber: #d97706;
+            --to-amber-light: #fef3c7;
+            --to-red: #dc2626;
+            --to-red-light: #fee2e2;
+            --to-purple: #7c3aed;
+            --to-border: #e2e8f0;
+            --to-shadow: 0 2px 16px rgba(0,0,0,0.07);
+            --to-radius: 14px;
+        }
+
+        /* PAGE HEADER */
         .page-header {
-            background: linear-gradient(135deg, var(--color-bg-base) 0%, #e2e8f0 100%);
-            padding: 8rem 1.5rem 4rem;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            padding: 64px 0 56px;
             text-align: center;
-            border-bottom: 1px solid var(--color-border);
+            position: relative;
+            overflow: hidden;
         }
-
-        .page-header h1 {
-            font-size: 3.5rem;
-            color: var(--color-text-main);
-            margin-bottom: 1rem;
+        .page-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 60% 40%, rgba(230,57,0,0.18) 0%, transparent 65%);
         }
-
-        .content-section {
-            max-width: 800px;
+        .page-header-content {
+            position: relative;
+            z-index: 1;
+            max-width: 760px;
             margin: 0 auto;
-            background: var(--color-bg-surface);
-            padding: 3rem;
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--color-border);
-            box-shadow: var(--shadow-subtle);
+            padding: 0 24px;
+        }
+        .page-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 800;
+            color: #fff;
+            margin: 0 0 16px;
+            line-height: 1.15;
+        }
+        .page-header h1 .highlight { color: var(--color-primary, #e63900); }
+        .page-header p {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.05rem;
+            color: rgba(255,255,255,0.75);
+            margin: 0;
+            line-height: 1.65;
         }
 
-        .form-group {
-            margin-bottom: 1.5rem;
+        /* BREADCRUMB */
+        .breadcrumb-bar {
+            background: var(--color-bg-surface, #fff);
+            border-bottom: 1px solid var(--color-border, #e2e8f0);
+            padding: 12px 0;
+        }
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            color: var(--color-text-muted, #64748b);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        .breadcrumb a { color: var(--color-text-muted, #64748b); text-decoration: none; transition: color 0.2s; }
+        .breadcrumb a:hover { color: var(--color-primary, #e63900); }
+        .breadcrumb .sep { color: #cbd5e1; }
+        .breadcrumb .current { color: var(--color-text-main, #1e293b); font-weight: 500; }
+
+        /* MAIN */
+        .to-main {
+            background: var(--color-bg-base, #f1f5f9);
+            padding: 56px 0 80px;
+        }
+        .to-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
         }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        .form-group input {
+        /* TRACKING FORM */
+        .tracking-form-wrap {
+            max-width: 680px;
+            margin: 0 auto;
             width: 100%;
-            padding: 0.8rem 1rem;
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-md);
-            font-family: inherit;
+        }
+        .tracking-card {
+            background: var(--color-bg-surface, #fff);
+            border-radius: var(--to-radius);
+            box-shadow: var(--to-shadow);
+            border: 1px solid var(--to-border);
+            padding: 40px;
+        }
+        .tracking-card h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--color-text-main, #1e293b);
+            margin: 0 0 6px;
+            text-align: center;
+        }
+        .tracking-card .card-sub {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--color-text-muted, #64748b);
+            text-align: center;
+            margin: 0 0 28px;
+        }
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .form-group label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.825rem;
+            font-weight: 600;
+            color: var(--color-text-main, #1e293b);
+        }
+        .form-group input, .form-group select {
+            height: 44px;
+            padding: 0 14px;
+            border: 1.5px solid var(--to-border);
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--color-text-main, #1e293b);
+            background: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--to-orange);
+            box-shadow: 0 0 0 3px rgba(230,57,0,0.12);
+        }
+        .form-note {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: var(--color-text-muted, #64748b);
+            margin: 0 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .form-note i { color: var(--to-blue); }
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: 24px 0;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: var(--color-text-muted, #64748b);
+        }
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--to-border);
+        }
+        .awb-row {
+            display: flex;
+            gap: 10px;
+        }
+        .awb-row input {
+            flex: 1;
+            height: 44px;
+            padding: 0 14px;
+            border: 1.5px solid var(--to-border);
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--color-text-main, #1e293b);
+            background: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .awb-row input:focus {
+            outline: none;
+            border-color: var(--to-orange);
+            box-shadow: 0 0 0 3px rgba(230,57,0,0.12);
+        }
+        .awb-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: var(--color-text-muted, #64748b);
+            margin: 0 0 8px;
         }
 
-        .form-group input:focus {
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px var(--color-primary-light);
+        /* RESULT CARD */
+        .result-card {
+            background: var(--color-bg-surface, #fff);
+            border-radius: var(--to-radius);
+            box-shadow: var(--to-shadow);
+            border: 1px solid var(--to-border);
+            overflow: hidden;
+            display: none;
+        }
+        .result-card.visible { display: block; }
+        .result-header {
+            background: #f8fafc;
+            padding: 20px 28px;
+            border-bottom: 1px solid var(--to-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .result-header-left h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--color-text-main, #1e293b);
+            margin: 0 0 4px;
+        }
+        .result-header-left p {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.825rem;
+            color: var(--color-text-muted, #64748b);
+            margin: 0;
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+        .status-transit { background: #dbeafe; color: #1d4ed8; }
+        .status-delivered { background: #dcfce7; color: #15803d; }
+        .status-processing { background: #fef3c7; color: #b45309; }
+        .result-body { padding: 32px 28px; }
+
+        /* PROGRESS TRACKER */
+        .progress-track {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 36px;
+        }
+        .progress-track::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--to-border);
+            z-index: 0;
+        }
+        .progress-fill {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            height: 3px;
+            background: var(--to-orange);
+            z-index: 1;
+            transition: width 0.6s ease;
+        }
+        .track-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+            min-width: 0;
+        }
+        .track-step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid var(--to-border);
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: #94a3b8;
+            transition: all 0.3s;
+        }
+        .track-step.done .track-step-icon {
+            border-color: var(--to-green);
+            background: var(--to-green);
+            color: #fff;
+        }
+        .track-step.active .track-step-icon {
+            border-color: var(--to-orange);
+            background: var(--to-orange);
+            color: #fff;
+            animation: pulse-step 1.5s infinite;
+        }
+        @keyframes pulse-step {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(230,57,0,0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(230,57,0,0); }
+        }
+        .track-step-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--color-text-muted, #64748b);
+            text-align: center;
+            line-height: 1.3;
+        }
+        .track-step.done .track-step-label,
+        .track-step.active .track-step-label {
+            color: var(--color-text-main, #1e293b);
+        }
+        .track-step-date {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.65rem;
+            color: #94a3b8;
+            text-align: center;
+        }
+
+        /* UPDATE LOG */
+        .update-log-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--color-text-main, #1e293b);
+            margin: 0 0 14px;
+        }
+        .update-log {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+        .update-entry {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--to-border);
+        }
+        .update-entry:last-child { border-bottom: none; }
+        .update-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--to-border);
+            flex-shrink: 0;
+            margin-top: 5px;
+        }
+        .update-entry.latest .update-dot { background: var(--to-orange); }
+        .update-time {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.775rem;
+            color: var(--color-text-muted, #64748b);
+            white-space: nowrap;
+            flex-shrink: 0;
+            min-width: 120px;
+        }
+        .update-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            color: var(--color-text-main, #1e293b);
+            line-height: 1.4;
+        }
+        .update-entry.latest .update-text { font-weight: 600; }
+
+        /* NOT FOUND */
+        .not-found-card {
+            background: var(--color-bg-surface, #fff);
+            border-radius: var(--to-radius);
+            box-shadow: var(--to-shadow);
+            border: 1px solid var(--to-border);
+            padding: 48px 32px;
+            text-align: center;
+            display: none;
+        }
+        .not-found-card.visible { display: block; }
+        .not-found-card i { font-size: 3rem; color: #cbd5e1; margin-bottom: 16px; display: block; }
+        .not-found-card h3 { font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--color-text-main, #1e293b); margin: 0 0 8px; }
+        .not-found-card p { font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--color-text-muted, #64748b); margin: 0 0 24px; }
+
+        /* INFO CARDS */
+        .info-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .info-card {
+            background: var(--color-bg-surface, #fff);
+            border-radius: var(--to-radius);
+            box-shadow: var(--to-shadow);
+            border: 1px solid var(--to-border);
+            padding: 28px 24px;
+            text-align: center;
+        }
+        .info-card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 1.3rem;
+        }
+        .info-card-icon.orange { background: var(--to-orange-light); color: var(--to-orange); }
+        .info-card-icon.blue   { background: var(--to-blue-light); color: var(--to-blue); }
+        .info-card-icon.green  { background: var(--to-green-light); color: var(--to-green); }
+        .info-card h3 { font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 700; color: var(--color-text-main, #1e293b); margin: 0 0 8px; }
+        .info-card p { font-family: 'Inter', sans-serif; font-size: 0.875rem; color: var(--color-text-muted, #64748b); margin: 0; line-height: 1.55; }
+
+        /* STATUS TABLE */
+        .status-section {
+            background: var(--color-bg-surface, #fff);
+            border-radius: var(--to-radius);
+            box-shadow: var(--to-shadow);
+            border: 1px solid var(--to-border);
+            overflow: hidden;
+        }
+        .status-section-header {
+            padding: 20px 28px;
+            border-bottom: 1px solid var(--to-border);
+            background: #f8fafc;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .status-section-header i { color: var(--to-orange); }
+        .status-section-header h2 { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--color-text-main, #1e293b); margin: 0; }
+        .status-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .status-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 16px 28px;
+            border-bottom: 1px solid var(--to-border);
+        }
+        .status-list li:last-child { border-bottom: none; }
+        .status-icon-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        .status-list li .s-info h4 { font-family: 'Outfit', sans-serif; font-size: 0.9rem; font-weight: 700; color: var(--color-text-main, #1e293b); margin: 0 0 3px; }
+        .status-list li .s-info p { font-family: 'Inter', sans-serif; font-size: 0.85rem; color: var(--color-text-muted, #64748b); margin: 0; line-height: 1.4; }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .info-cards-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 600px) {
+            .tracking-card { padding: 24px 16px; }
+            .form-grid-2 { grid-template-columns: 1fr; }
+            .info-cards-grid { grid-template-columns: 1fr; }
+            .progress-track { gap: 4px; }
+            .track-step-icon { width: 32px; height: 32px; font-size: 0.75rem; }
+            .progress-track::before { top: 16px; }
+            .progress-fill { top: 16px; }
+            .update-time { min-width: 90px; font-size: 0.7rem; }
+            .result-body { padding: 20px 16px; }
+            .result-header { padding: 16px 16px; }
+            .status-list li { padding: 14px 16px; }
         }
     </style>
 </head>
-
 <body>
-    <!-- Navigation -->
-    <nav class="navbar scrolled">
-        <div class="nav-container">
-            <a href="index.html" class="logo"><img src="../public/images/spareblaze-logo.png" alt="SpareBlaze Logo"
-                    style="height: 54px; width: auto; object-fit: contain;">
+
+<nav class="navbar scrolled">
+    <div class="nav-container">
+        <a href="index.html" class="logo"><img src="../public/images/spareblaze-logo.png" alt="SpareBlaze Logo" style="height:54px;width:auto;object-fit:contain;"></a>
+        <div class="search-container">
+            <div class="search-category" id="custom-dropdown">
+                <div class="dropdown-selected"><span id="dropdown-text">Select Vehicle</span><i class="fa-solid fa-chevron-down"></i></div>
+                <ul class="dropdown-options">
+                    <li data-value="">All Vehicles</li><li data-value="maruti">MARUTI</li><li data-value="hyundai">HYUNDAI</li><li data-value="mahindra">MAHINDRA</li><li data-value="tata">TATA</li><li data-value="honda">HONDA</li><li data-value="toyota">TOYOTA</li><li data-value="kia">KIA</li><li data-value="ford">FORD</li><li data-value="skoda">SKODA</li><li data-value="vw">VW</li><li data-value="renault">RENAULT</li><li data-value="nissan">NISSAN</li><li data-value="chevrolet">CHEVROLET</li><li data-value="fiat">FIAT</li><li data-value="bmw">BMW</li><li data-value="audi">AUDI</li><li data-value="volvo">VOLVO</li>
+                </ul>
+            </div>
+            <input type="text" id="search-input" placeholder="Search by part name, brand, or OEM number...">
+            <button class="search-btn" onclick="window.location.href='search.html'"><i class="fa-solid fa-search"></i></button>
+        </div>
+        <div class="nav-actions">
+            <a href="javascript:void(0);" class="nav-icon-btn"><i class="fa-regular fa-user"></i></a>
+            <button class="nav-icon-btn cart-btn" id="cart-toggle"><i class="fa-solid fa-cart-shopping"></i><span class="cart-badge" id="cart-count">0</span></button>
+            <button class="mobile-menu-btn" id="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </div>
+</nav>
+<div class="mobile-search">
+    <div class="mobile-search-row">
+        <select class="mobile-vehicle-select" id="mobile-vehicle-select">
+            <option value="">All Vehicles</option><option value="maruti">MARUTI</option><option value="hyundai">HYUNDAI</option><option value="mahindra">MAHINDRA</option><option value="tata">TATA</option><option value="honda">HONDA</option><option value="toyota">TOYOTA</option><option value="kia">KIA</option><option value="ford">FORD</option><option value="skoda">SKODA</option><option value="vw">VW</option><option value="renault">RENAULT</option><option value="nissan">NISSAN</option><option value="chevrolet">CHEVROLET</option><option value="fiat">FIAT</option><option value="bmw">BMW</option><option value="audi">AUDI</option><option value="volvo">VOLVO</option>
+        </select>
+        <div class="mobile-search-wrap">
+            <input type="text" id="mobile-search-input" placeholder="Search parts...">
+            <button class="mobile-search-btn"><i class="fa-solid fa-search"></i></button>
+        </div>
+    </div>
+    <div class="search-results" id="mobile-search-results"></div>
+</div>
+
+<div class="nav-categories">
+    <div class="nav-container">
+        <button class="all-categories-btn" onclick="window.location.href='categories.html'">
+            <i class="fa-solid fa-bars-staggered"></i> All Categories
+        </button>
+        <ul class="category-links">
+            <li><a href="after-market.html">After Market</a></li>
+            <li><a href="refurbished.html">Refurbished</a></li>
+            <li><a href="used.html">Used</a></li>
+            <li><a href="oem.html">OEM</a></li>
+            <li><a href="wholesale.html">Wholesale</a></li>
+        </ul>
+        <div class="help-nav-item">
+            <a href="javascript:void(0);" class="help-nav-link">
+                <i class="fa-solid fa-circle-question"></i> Help <i class="fa-solid fa-chevron-down help-chevron"></i>
             </a>
-
-            <div class="search-container">
-                <div class="search-category" id="custom-dropdown">
-                    <div class="dropdown-selected">
-                        <span id="dropdown-text">Select Vehicle</span>
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </div>
-                    <ul class="dropdown-options">
-                        <li data-value="">All Vehicles</li>
-                        <li data-value="maruti">MARUTI</li>
-                        <li data-value="hyundai">HYUNDAI</li>
-                        <li data-value="mahindra">MAHINDRA</li>
-                        <li data-value="tata">TATA</li>
-                        <li data-value="chevrolet">CHEVROLET</li>
-                        <li data-value="honda">HONDA</li>
-                        <li data-value="skoda">SKODA</li>
-                        <li data-value="vw">VW</li>
-                        <li data-value="toyota">TOYOTA</li>
-                        <li data-value="nissan">NISSAN</li>
-                        <li data-value="renault">RENAULT</li>
-                        <li data-value="ford">FORD</li>
-                        <li data-value="fiat">FIAT</li>
-                        <li data-value="kia">KIA</li>
-                    </ul>
-                </div>
-                <input type="text" id="search-input" placeholder="Search by part name, brand, or OEM number...">
-                <button class="search-btn" onclick="window.location.href='search.html'"><i
-                        class="fa-solid fa-search"></i></button>
-            </div>
-
-            <div class="nav-actions">
-                <a href="javascript:void(0);" class="nav-icon-btn"><i class="fa-regular fa-user"></i></a>
-                <button class="nav-icon-btn cart-btn" id="cart-toggle">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    <span class="cart-badge" id="cart-count">0</span>
-                
-                                </button>
-                <button class="mobile-menu-btn" id="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
-            </div>
+            <ul class="help-dropdown-menu">
+                <li><a href="faq.html"><i class="fa-solid fa-comments"></i> FAQ</a></li>
+                <li><a href="shipping-info.html"><i class="fa-solid fa-truck-fast"></i> Shipping Policy</a></li>
+                <li><a href="return-policy.html"><i class="fa-solid fa-rotate-left"></i> Return Policy</a></li>
+                <li><a href="size-guide.html"><i class="fa-solid fa-ruler"></i> Size Guide</a></li>
+                <li><a href="track-order.html"><i class="fa-solid fa-map-location-dot"></i> Track Order</a></li>
+                <li><a href="contact-us.html"><i class="fa-solid fa-headset"></i> Contact Us</a></li>
+            </ul>
         </div>
+    </div>
+</div>
+
+<div class="page-header">
+    <div class="page-header-content">
+        <h1>Track Your <span class="highlight">Order</span></h1>
+        <p>Enter your Order ID and email to get real-time updates on your delivery.</p>
+    </div>
+</div>
+
+<div class="breadcrumb-bar">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html"><i class="fa-solid fa-house" style="font-size:0.75rem;"></i> Home</a>
+        <span class="sep"><i class="fa-solid fa-chevron-right" style="font-size:0.65rem;"></i></span>
+        <span class="current">Track Order</span>
     </nav>
-        <!-- Mobile Search + Vehicle Select (Visible on small screens) -->
-        <div class="mobile-search">
-            <div class="mobile-search-row">
-                <select class="mobile-vehicle-select" id="mobile-vehicle-select">
-                    <option value="">All Vehicles</option>
-                    <option value="maruti">MARUTI</option>
-                    <option value="hyundai">HYUNDAI</option>
-                    <option value="mahindra">MAHINDRA</option>
-                    <option value="tata">TATA</option>
-                    <option value="chevrolet">CHEVROLET</option>
-                    <option value="honda">HONDA</option>
-                    <option value="skoda">SKODA</option>
-                    <option value="vw">VW</option>
-                    <option value="toyota">TOYOTA</option>
-                    <option value="nissan">NISSAN</option>
-                    <option value="renault">RENAULT</option>
-                    <option value="ford">FORD</option>
-                    <option value="fiat">FIAT</option>
-                    <option value="kia">KIA</option>
-                    <option value="bmw">BMW</option>
-                    <option value="audi">AUDI</option>
-                    <option value="volvo">VOLVO</option>
-                </select>
-                <div class="mobile-search-wrap">
-                    <input type="text" id="mobile-search-input" placeholder="Search parts...">
-                    <button class="mobile-search-btn"><i class="fa-solid fa-search"></i></button>
+</div>
+
+<main class="to-main section-padding">
+    <div class="to-container">
+
+        <!-- SECTION 1: TRACKING FORM -->
+        <section>
+            <div class="tracking-form-wrap">
+                <div class="tracking-card">
+                    <h2><i class="fa-solid fa-map-location-dot" style="color:#e63900;margin-right:8px;"></i>Track by Order ID</h2>
+                    <p class="card-sub">Use the details from your confirmation email</p>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label for="order-id-input">Order ID <span style="color:#e63900;">*</span></label>
+                            <input type="text" id="order-id-input" placeholder="SB-XXXXXXXXX" maxlength="15">
+                        </div>
+                        <div class="form-group">
+                            <label for="order-email-input">Email Address <span style="color:#e63900;">*</span></label>
+                            <input type="email" id="order-email-input" placeholder="you@example.com">
+                        </div>
+                    </div>
+                    <p class="form-note"><i class="fa-solid fa-circle-info"></i> Your Order ID is in your confirmation email. Format: <strong>SB</strong> followed by 9 digits (e.g. SB-123456789).</p>
+                    <button class="btn btn-primary" style="width:100%;" id="track-btn">
+                        <i class="fa-solid fa-magnifying-glass"></i>&nbsp; Track My Order
+                    </button>
+
+                    <div class="divider">— or —</div>
+
+                    <p class="awb-label"><i class="fa-solid fa-barcode" style="margin-right:6px;color:#64748b;"></i> Track via AWB number (provided in your dispatch SMS / email)</p>
+                    <div class="awb-row">
+                        <input type="text" id="awb-input" placeholder="Enter AWB / Tracking Number">
+                        <button class="btn btn-secondary" id="track-awb-btn" style="white-space:nowrap;"><i class="fa-solid fa-truck-fast"></i>&nbsp; Track</button>
+                    </div>
                 </div>
             </div>
-            <div class="search-results" id="mobile-search-results"></div>
-        </div>
+        </section>
 
-    <!-- Secondary Navigation -->
-    <div class="nav-categories">
-        <div class="nav-container">
-            <button class="all-categories-btn" onclick="window.location.href='categories.html'">
-                <i class="fa-solid fa-bars-staggered"></i> All Categories
-            </button>
-            <ul class="category-links">
+        <!-- RESULT AREA -->
+        <section>
+            <div class="tracking-form-wrap" style="max-width:100%;">
+
+                <!-- SUCCESS RESULT -->
+                <div class="result-card" id="result-card">
+                    <div class="result-header">
+                        <div class="result-header-left">
+                            <h3 id="result-order-id">Order #SB-123456789</h3>
+                            <p id="result-order-date">Ordered: 15 Mar 2026 &nbsp;|&nbsp; Maruti Swift Brake Pads (Front)</p>
+                        </div>
+                        <span class="status-badge status-transit" id="result-status-badge"><i class="fa-solid fa-circle-dot"></i> In Transit</span>
+                    </div>
+                    <div class="result-body">
+                        <!-- PROGRESS BAR -->
+                        <div class="progress-track" id="progress-track">
+                            <div class="progress-fill" id="progress-fill" style="width:60%;"></div>
+                            <div class="track-step done">
+                                <div class="track-step-icon"><i class="fa-solid fa-circle-check"></i></div>
+                                <div class="track-step-label">Order<br>Confirmed</div>
+                                <div class="track-step-date">15 Mar</div>
+                            </div>
+                            <div class="track-step done">
+                                <div class="track-step-icon"><i class="fa-solid fa-box-open"></i></div>
+                                <div class="track-step-label">Processing</div>
+                                <div class="track-step-date">16 Mar</div>
+                            </div>
+                            <div class="track-step done">
+                                <div class="track-step-icon"><i class="fa-solid fa-truck-loading"></i></div>
+                                <div class="track-step-label">Dispatched</div>
+                                <div class="track-step-date">17 Mar</div>
+                            </div>
+                            <div class="track-step active">
+                                <div class="track-step-icon"><i class="fa-solid fa-truck"></i></div>
+                                <div class="track-step-label">In Transit</div>
+                                <div class="track-step-date">18 Mar</div>
+                            </div>
+                            <div class="track-step">
+                                <div class="track-step-icon"><i class="fa-solid fa-house-chimney-user"></i></div>
+                                <div class="track-step-label">Delivered</div>
+                                <div class="track-step-date">Est. 20 Mar</div>
+                            </div>
+                        </div>
+
+                        <!-- UPDATE LOG -->
+                        <p class="update-log-title"><i class="fa-solid fa-clock-rotate-left" style="color:#e63900;margin-right:6px;"></i>Shipment Updates</p>
+                        <div class="update-log">
+                            <div class="update-entry latest">
+                                <div class="update-dot"></div>
+                                <div class="update-time">22 Mar, 09:14 AM</div>
+                                <div class="update-text">In Transit at Bengaluru Hub — Shipment processed at Bengaluru sorting facility, out for next transit leg</div>
+                            </div>
+                            <div class="update-entry">
+                                <div class="update-dot"></div>
+                                <div class="update-time">21 Mar, 11:30 PM</div>
+                                <div class="update-text">Departed Mumbai distribution facility — En route to Bengaluru hub</div>
+                            </div>
+                            <div class="update-entry">
+                                <div class="update-dot"></div>
+                                <div class="update-time">21 Mar, 02:45 PM</div>
+                                <div class="update-text">Arrived at Mumbai distribution facility — Awaiting outbound dispatch</div>
+                            </div>
+                            <div class="update-entry">
+                                <div class="update-dot"></div>
+                                <div class="update-time">20 Mar, 06:20 PM</div>
+                                <div class="update-text">Picked up by courier (Delhivery) from SpareBlaze warehouse, Pune — AWB: 1234567890123</div>
+                            </div>
+                            <div class="update-entry">
+                                <div class="update-dot"></div>
+                                <div class="update-time">19 Mar, 03:00 PM</div>
+                                <div class="update-text">Order dispatched — Packed and handed to logistics partner. Tracking activated.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NOT FOUND -->
+                <div class="not-found-card" id="not-found-card">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                    <h3>Order Not Found</h3>
+                    <p>We couldn't find an order matching the details you entered. Please check your Order ID and email address, and try again. The Order ID format is SB followed by 9 digits.</p>
+                    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                        <a href="contact-us.html" class="btn btn-primary"><i class="fa-solid fa-headset"></i>&nbsp; Contact Support</a>
+                        <button class="btn btn-secondary" onclick="resetTracker()"><i class="fa-solid fa-rotate-left"></i>&nbsp; Try Again</button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 3: HOW TRACKING WORKS -->
+        <section>
+            <div class="info-cards-grid">
+                <div class="info-card">
+                    <div class="info-card-icon orange"><i class="fa-solid fa-envelope-open-text"></i></div>
+                    <h3>Dispatch Email</h3>
+                    <p>When your order ships, we immediately send you an email containing the courier AWB number and a direct tracking link so you can follow your shipment in real time.</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-card-icon blue"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                    <h3>SMS Alerts</h3>
+                    <p>Receive automatic SMS updates at every key milestone — when your order is dispatched, arrives at a transit hub, goes out for delivery, and when it is delivered.</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-card-icon green"><i class="fa-solid fa-headset"></i></div>
+                    <h3>Need Help?</h3>
+                    <p>If your tracking isn't updating or your order seems delayed, our support team is here. Call <strong>+91 1800 123 4567</strong> or email <strong>support@spareblaze.in</strong>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: STATUS MEANINGS -->
+        <section class="status-section">
+            <div class="status-section-header">
+                <i class="fa-solid fa-circle-question"></i>
+                <h2>What Do the Statuses Mean?</h2>
+            </div>
+            <ul class="status-list">
+                <li>
+                    <div class="status-icon-circle" style="background:#fef3c7;color:#b45309;"><i class="fa-solid fa-gear"></i></div>
+                    <div class="s-info">
+                        <h4>Processing</h4>
+                        <p>Your order has been confirmed and payment verified. Our warehouse team is picking and packing your parts. This stage typically takes 1–2 business days.</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="status-icon-circle" style="background:#dbeafe;color:#1d4ed8;"><i class="fa-solid fa-truck-loading"></i></div>
+                    <div class="s-info">
+                        <h4>Dispatched</h4>
+                        <p>Your order has been packed and handed over to our courier partner. Shipment tracking is now active and you will have received an AWB number via email and SMS.</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="status-icon-circle" style="background:#ede9fe;color:#6d28d9;"><i class="fa-solid fa-truck"></i></div>
+                    <div class="s-info">
+                        <h4>In Transit</h4>
+                        <p>Your shipment is actively moving through the logistics network. You may see multiple hub scans as it moves from origin to destination city.</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="status-icon-circle" style="background:#fff0eb;color:#e63900;"><i class="fa-solid fa-motorcycle"></i></div>
+                    <div class="s-info">
+                        <h4>Out for Delivery</h4>
+                        <p>Your package is with the local delivery executive and will be delivered today. Please ensure someone is available at the delivery address to receive the parcel.</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="status-icon-circle" style="background:#dcfce7;color:#15803d;"><i class="fa-solid fa-circle-check"></i></div>
+                    <div class="s-info">
+                        <h4>Delivered</h4>
+                        <p>Your order has been successfully delivered and handed over at the delivery address. If you did not receive your package, contact us immediately.</p>
+                    </div>
+                </li>
+                <li>
+                    <div class="status-icon-circle" style="background:#fee2e2;color:#b91c1c;"><i class="fa-solid fa-rotate-left"></i></div>
+                    <div class="s-info">
+                        <h4>Return Initiated</h4>
+                        <p>A return has been approved for this order and a free pickup has been scheduled from your address. Check your email for the pickup date and time window.</p>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+    </div>
+</main>
+
+<footer>
+    <div class="footer-container">
+        <div class="footer-brand">
+            <a href="index.html" class="logo"><img src="../public/images/spareblaze-logo-footer.png" alt="SpareBlaze Logo" style="width:250px;height:auto;"></a>
+            <p>India's trusted e-commerce platform for genuine car and SUV spare parts. Quality assured, delivered nationwide.</p>
+            <div class="social-links">
+                <a href="javascript:void(0);"><i class="fa-brands fa-instagram"></i></a>
+                <a href="javascript:void(0);"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="javascript:void(0);"><i class="fa-brands fa-twitter"></i></a>
+                <a href="javascript:void(0);"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+        </div>
+        <div class="footer-links">
+            <h3>Help</h3>
+            <ul>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="shipping-info.html">Shipping Policy</a></li>
+                <li><a href="return-policy.html">Return Policy</a></li>
+                <li><a href="size-guide.html">Size Guide</a></li>
+                <li><a href="track-order.html">Track Order</a></li>
+                <li><a href="contact-us.html">Contact Us</a></li>
+            </ul>
+        </div>
+        <div class="footer-links">
+            <h3>Shop By Type</h3>
+            <ul>
                 <li><a href="after-market.html">After Market</a></li>
                 <li><a href="refurbished.html">Refurbished</a></li>
                 <li><a href="used.html">Used</a></li>
@@ -159,115 +815,111 @@
                 <li><a href="wholesale.html">Wholesale</a></li>
             </ul>
         </div>
-    </div>
-
-    <!-- Page Header -->
-    <header class="page-header">
-        <h1>Track <span class="highlight">Order</span></h1>
-        <p>Enter your tracking details below to check the status of your shipment.</p>
-    </header>
-
-    <!-- Main Content -->
-    <main class="section-padding">
-        <div class="content-section">
-            <form action="javascript:void(0)">
-                <div class="form-group">
-                    <label for="order-id">Order ID</label>
-                    <input type="text" id="order-id" placeholder="e.g. SB-123456789">
-                </div>
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" placeholder="Email used for the order">
-                </div>
-                <button type="submit" class="btn btn-primary w-100">Track Order</button>
-            </form>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-container">
-            <div class="footer-brand">
-                <a href="index.html" class="logo">
-                    <img src="../public/images/spareblaze-logo-footer.png" alt="SpareBlaze Logo"
-                        style="width: 250px; height: auto;">
-                </a>
-                <p>India's trusted e-commerce platform for genuine car and SUV spare parts. Quality assured, delivered
-                    nationwide.</p>
-                <div class="social-links">
-                    <a href="javascript:void(0);"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="javascript:void(0);"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="javascript:void(0);"><i class="fa-brands fa-twitter"></i></a>
-                    <a href="javascript:void(0);"><i class="fa-brands fa-youtube"></i></a>
-                </div>
+        <div class="footer-contact">
+            <h3>Contact</h3>
+            <p><i class="fa-solid fa-phone"></i> +91 1800 123 4567</p>
+            <p><i class="fa-solid fa-envelope"></i> support@spareblaze.in</p>
+            <p><i class="fa-solid fa-location-dot"></i> Bengaluru, Karnataka, India</p>
+            <h3 class="payment-title">Secure Payments</h3>
+            <div class="payment-icons">
+                <i class="fa-brands fa-cc-visa"></i>
+                <i class="fa-brands fa-cc-mastercard"></i>
+                <span class="upi-text">UPI</span>
+                <span class="rupay-text">RuPay</span>
             </div>
-
-            <div class="footer-links">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="index.html">About Us</a></li>
-                    <li><a href="track-order.html">Track Order</a></li>
-                    <li><a href="return-policy.html">Return Policy</a></li>
-                    <li><a href="shipping-info.html">Shipping Info</a></li>
-                    <li><a href="contact-us.html">Contact Us</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-links">
-                <h3>Shop By Type</h3>
-                <ul>
-                    <li><a href="after-market.html">After Market</a></li>
-                    <li><a href="refurbished.html">Refurbished</a></li>
-                    <li><a href="used.html">Used</a></li>
-                    <li><a href="oem.html">OEM</a></li>
-                    <li><a href="wholesale.html">Wholesale</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-contact">
-                <h3>Contact</h3>
-                <p><i class="fa-solid fa-phone"></i> +91 1800 123 4567</p>
-                <p><i class="fa-solid fa-envelope"></i> support@spareblaze.in</p>
-                <p><i class="fa-solid fa-location-dot"></i> Bengaluru, Karnataka, India</p>
-
-                <h3 class="payment-title">Secure Payments</h3>
-                <div class="payment-icons">
-                    <i class="fa-brands fa-cc-visa"></i>
-                    <i class="fa-brands fa-cc-mastercard"></i>
-                    <span class="upi-text">UPI</span>
-                    <span class="rupay-text">RuPay</span>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 SpareBlaze. All rights reserved. Designed for Indian Automotive Market.</p>
-        </div>
-    </footer>
-
-    <!-- Cart Sidebar -->
-    <div class="cart-overlay" id="cart-overlay"></div>
-    <div class="cart-sidebar" id="cart-sidebar">
-        <div class="cart-header">
-            <h3>Your Cart</h3>
-            <button class="close-btn" id="close-cart"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="cart-items" id="cart-items-container">
-            <div class="empty-cart-msg">Your cart is currently empty.</div>
-        </div>
-        <div class="cart-footer">
-            <div class="cart-total">
-                <span>Total:</span>
-                <span class="total-amount" id="cart-total-amount">₹0</span>
-            </div>
-            <button class="btn btn-primary w-100 checkout-btn" id="checkout-btn" disabled>Proceed to Secure
-                Checkout</button>
         </div>
     </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 SpareBlaze. All rights reserved. Designed for Indian Automotive Market.</p>
+    </div>
+</footer>
+<div class="cart-overlay" id="cart-overlay"></div>
+<div class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-header"><h3>Your Cart</h3><button class="close-btn" id="close-cart"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="cart-items" id="cart-items-container"><div class="empty-cart-msg">Your cart is currently empty.</div></div>
+    <div class="cart-footer">
+        <div class="cart-total"><span>Total:</span><span class="total-amount" id="cart-total-amount">&#8377;0</span></div>
+        <button class="btn btn-primary w-100 checkout-btn" id="checkout-btn" disabled>Proceed to Secure Checkout</button>
+    </div>
+</div>
+<script src="../js/script.js"></script>
+<script src="https://code.tidio.co/sienbawteqdozz2om1mswgszpjxm6zxg.js" async></script>
+<button id="scroll-to-top" class="scroll-to-top" aria-label="Scroll to top"><i class="fa-solid fa-chevron-up"></i></button>
 
-    <script src="../js/script.js"></script>
+<script>
+(function() {
+    var trackBtn = document.getElementById('track-btn');
+    var trackAwbBtn = document.getElementById('track-awb-btn');
+    var resultCard = document.getElementById('result-card');
+    var notFoundCard = document.getElementById('not-found-card');
+    var resultOrderId = document.getElementById('result-order-id');
+    var resultOrderDate = document.getElementById('result-order-date');
 
+    function showResult(orderId) {
+        resultOrderId.textContent = 'Order #' + orderId;
+        resultOrderDate.textContent = 'Ordered: 15 Mar 2026 \u00a0|\u00a0 Maruti Swift Brake Pads (Front Axle Set)';
+        resultCard.classList.add('visible');
+        notFoundCard.classList.remove('visible');
+        resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 
-    <script src="https://code.tidio.co/sienbawteqdozz2om1mswgszpjxm6zxg.js" async></script>
+    function showNotFound() {
+        resultCard.classList.remove('visible');
+        notFoundCard.classList.add('visible');
+        notFoundCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    trackBtn.addEventListener('click', function() {
+        var orderId = document.getElementById('order-id-input').value.trim();
+        var email = document.getElementById('order-email-input').value.trim();
+        if (!orderId) {
+            alert('Please enter your Order ID.');
+            return;
+        }
+        if (orderId.toUpperCase().indexOf('SB-') === 0 && orderId.length >= 5) {
+            showResult(orderId.toUpperCase());
+        } else {
+            showNotFound();
+        }
+    });
+
+    trackAwbBtn.addEventListener('click', function() {
+        var awb = document.getElementById('awb-input').value.trim();
+        if (!awb) {
+            alert('Please enter an AWB number.');
+            return;
+        }
+        if (awb.length >= 8) {
+            showResult('SB-' + awb.substring(0, 9).toUpperCase());
+        } else {
+            showNotFound();
+        }
+    });
+
+    document.getElementById('order-id-input').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') trackBtn.click();
+    });
+    document.getElementById('order-email-input').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') trackBtn.click();
+    });
+    document.getElementById('awb-input').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') trackAwbBtn.click();
+    });
+})();
+
+function resetTracker() {
+    document.getElementById('not-found-card').classList.remove('visible');
+    document.getElementById('result-card').classList.remove('visible');
+    document.getElementById('order-id-input').value = '';
+    document.getElementById('order-email-input').value = '';
+    document.getElementById('order-id-input').focus();
+}
+</script>
+  <!-- WhatsApp Float Button -->
+  <a id="wa-float-btn" class="wa-float-btn" href="https://wa.me/917259955674" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+    <span class="wa-tooltip">Chat with us</span>
+  </a>
+
 </body>
-
 </html>

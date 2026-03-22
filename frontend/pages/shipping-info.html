@@ -4,165 +4,493 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shipping Info - SpareBlaze | Premium Automotive Spare Parts</title>
-    <!-- Google Fonts -->
+    <title>Shipping Policy – SpareBlaze | Pan-India Delivery</title>
+    <meta name="description" content="SpareBlaze ships to 25,000+ PIN codes across India. Free shipping on prepaid orders above ₹1,500. Detailed delivery timelines, charges, order journey, and packaging standards.">
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23e63900'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial Black,Arial' font-weight='900' font-size='28' fill='white'>SB</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
-        rel="stylesheet">
-    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- CSS -->
     <link rel="stylesheet" href="../css/style.css">
     <style>
+        /* ── Page header ── */
         .page-header {
             background: linear-gradient(135deg, var(--color-bg-base) 0%, #e2e8f0 100%);
             padding: 8rem 1.5rem 4rem;
             text-align: center;
             border-bottom: 1px solid var(--color-border);
         }
-
         .page-header h1 {
-            font-size: 3.5rem;
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
             color: var(--color-text-main);
             margin-bottom: 1rem;
+            line-height: 1.15;
+        }
+        .page-header p {
+            color: var(--color-text-muted);
+            font-size: 1.1rem;
+            max-width: 640px;
+            margin: 0 auto;
         }
 
-        .content-section {
-            max-width: 800px;
-            margin: 0 auto;
+        /* ── Breadcrumb ── */
+        .breadcrumb {
+            max-width: 960px;
+            margin: 0 auto 1.25rem;
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+        }
+        .breadcrumb a { color: var(--color-primary); text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+
+        /* ── Content wrapper ── */
+        .content-section { max-width: 960px; margin: 0 auto; }
+
+        /* ── Hero stat cards ── */
+        .shipping-hero-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2.75rem;
+        }
+        .hero-stat-card {
             background: var(--color-bg-surface);
-            padding: 3rem;
-            border-radius: var(--radius-lg);
             border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .hero-stat-card:hover {
+            box-shadow: 0 6px 24px rgba(230, 57, 0, 0.1);
+            transform: translateY(-3px);
+        }
+        .hero-stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--color-primary);
+        }
+        .stat-icon {
+            width: 64px; height: 64px;
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto 1.1rem;
+        }
+        .hero-stat-card .stat-value {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--color-text-main);
+            margin-bottom: 0.35rem;
+            line-height: 1.2;
+        }
+        .hero-stat-card .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            line-height: 1.5;
+        }
+
+        /* ── Policy card ── */
+        .policy-card {
+            background: var(--color-bg-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
             box-shadow: var(--shadow-subtle);
         }
-
-        .info-block {
-            margin-bottom: 2rem;
-            padding-bottom: 2rem;
-            border-bottom: 1px solid var(--color-border);
-        }
-
-        .info-block:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
-        }
-
-        .info-block h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.75rem;
-            color: var(--color-text-main);
+        .policy-card-header {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--color-border);
         }
-
-        .info-block h3 i {
+        .policy-card-header .icon {
+            width: 48px; height: 48px;
+            background: var(--color-primary-light);
             color: var(--color-primary);
+            border-radius: var(--radius-sm);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
         }
-
-        .info-block p,
-        .info-block ul {
+        .policy-card-header h2 { font-size: 1.3rem; margin: 0; color: var(--color-text-main); }
+        .policy-card p, .policy-card ul {
             color: var(--color-text-muted);
+            font-size: 0.95rem;
+            line-height: 1.8;
             margin-bottom: 1rem;
         }
+        .policy-card ul { padding-left: 1.5rem; }
+        .policy-card li { margin-bottom: 0.55rem; }
+        .policy-card a { color: var(--color-primary); text-decoration: none; }
+        .policy-card a:hover { text-decoration: underline; }
+        .policy-card strong { color: var(--color-text-main); }
 
-        .info-block ul {
-            padding-left: 1.5rem;
-            list-style-type: disc;
+        /* ── Delivery table ── */
+        .delivery-table-wrap {
+            overflow-x: auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-border);
+            margin: 1.25rem 0;
+        }
+        .delivery-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            min-width: 560px;
+        }
+        .delivery-table thead tr {
+            background: var(--color-bg-base);
+        }
+        .delivery-table th {
+            padding: 0.9rem 1.25rem;
+            text-align: left;
+            font-weight: 700;
+            color: var(--color-text-main);
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid var(--color-border);
+        }
+        .delivery-table td {
+            padding: 0.9rem 1.25rem;
+            color: var(--color-text-muted);
+            border-bottom: 1px solid var(--color-border);
+            vertical-align: top;
+        }
+        .delivery-table tr:last-child td { border-bottom: none; }
+        .delivery-table tr:hover td { background: rgba(230,57,0,0.025); }
+        .zone-name {
+            font-weight: 600;
+            color: var(--color-text-main) !important;
+            white-space: nowrap;
+        }
+        .badge-free {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: #dcfce7;
+            color: #166534;
+            border-radius: 999px;
+            padding: 0.2rem 0.7rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .badge-flat {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: #fef3c7;
+            color: #92400e;
+            border-radius: 999px;
+            padding: 0.2rem 0.7rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .badge-calc {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: #f0f9ff;
+            color: #0c4a6e;
+            border-radius: 999px;
+            padding: 0.2rem 0.7rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            white-space: nowrap;
         }
 
-        .info-block li {
-            margin-bottom: 0.5rem;
+        /* ── Shipping charges list ── */
+        .charges-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        .charge-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: var(--color-bg-base);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--color-border);
+        }
+        .charge-icon {
+            width: 38px; height: 38px;
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+            border-radius: var(--radius-sm);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+        }
+        .charge-row .charge-text { flex: 1; }
+        .charge-row .charge-text strong {
+            display: block;
+            font-size: 0.92rem;
+            color: var(--color-text-main);
+            margin-bottom: 0.2rem;
+        }
+        .charge-row .charge-text span {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            line-height: 1.55;
+        }
+        .charge-amount {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        /* ── Order journey / vertical timeline ── */
+        .shipping-timeline {
+            position: relative;
+            padding-left: 3rem;
+            margin-top: 1.25rem;
+        }
+        .shipping-timeline::before {
+            content: '';
+            position: absolute;
+            left: 19px;
+            top: 28px;
+            bottom: 28px;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--color-primary) 0%, var(--color-border) 100%);
+        }
+        .timeline-step {
+            position: relative;
+            padding: 0.5rem 0 1.75rem;
+            display: flex;
+            gap: 1.25rem;
+            align-items: flex-start;
+        }
+        .timeline-step:last-child { padding-bottom: 0; }
+        .timeline-node {
+            position: absolute;
+            left: -2.35rem;
+            top: 0.4rem;
+            width: 40px; height: 40px;
+            background: var(--color-primary);
+            color: #fff;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+            border: 3px solid var(--color-bg-surface);
+            box-shadow: 0 0 0 2px var(--color-primary);
+            z-index: 1;
+        }
+        .timeline-step:last-child .timeline-node {
+            background: #16a34a;
+            box-shadow: 0 0 0 2px #16a34a;
+        }
+        .timeline-content { flex: 1; }
+        .timeline-content h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--color-text-main);
+            margin-bottom: 0.3rem;
+        }
+        .timeline-content p {
+            font-size: 0.88rem;
+            color: var(--color-text-muted);
+            line-height: 1.65;
+            margin: 0 0 0.5rem;
+        }
+        .timeline-badge {
+            display: inline-block;
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+            border-radius: 999px;
+            padding: 0.18rem 0.7rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+        .timeline-step:last-child .timeline-badge {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        /* ── Packaging grid ── */
+        .pack-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+            gap: 1.1rem;
+            margin-top: 1.25rem;
+        }
+        .pack-card {
+            background: var(--color-bg-base);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: 1.5rem 1.25rem;
+            text-align: center;
+            transition: box-shadow 0.18s, border-color 0.18s;
+        }
+        .pack-card:hover {
+            border-color: rgba(230, 57, 0, 0.3);
+            box-shadow: 0 4px 16px rgba(230, 57, 0, 0.07);
+        }
+        .pack-card .pack-icon {
+            width: 52px; height: 52px;
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.25rem;
+            margin: 0 auto 0.9rem;
+        }
+        .pack-card h4 {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--color-text-main);
+            margin-bottom: 0.4rem;
+        }
+        .pack-card p {
+            font-size: 0.82rem;
+            color: var(--color-text-muted);
+            line-height: 1.55;
+            margin: 0;
+        }
+
+        /* ── Inline FAQ (no accordion) ── */
+        .inline-faq { margin-top: 0.5rem; }
+        .inline-faq-item {
+            padding: 1.4rem 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .inline-faq-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .inline-faq-item .ifaq-q {
+            font-size: 0.97rem;
+            font-weight: 700;
+            color: var(--color-text-main);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.65rem;
+            margin-bottom: 0.65rem;
+        }
+        .inline-faq-item .ifaq-q i {
+            color: var(--color-primary);
+            font-size: 0.9rem;
+            margin-top: 0.2rem;
+            flex-shrink: 0;
+        }
+        .inline-faq-item .ifaq-a {
+            font-size: 0.93rem;
+            color: var(--color-text-muted);
+            line-height: 1.75;
+            padding-left: 1.55rem;
+        }
+        .inline-faq-item .ifaq-a a { color: var(--color-primary); text-decoration: none; }
+        .inline-faq-item .ifaq-a a:hover { text-decoration: underline; }
+
+        /* ── Note box ── */
+        .note-box {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: var(--radius-md);
+            padding: 1rem 1.25rem;
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-start;
+            margin-top: 1.25rem;
+        }
+        .note-box i { color: #d97706; font-size: 1rem; flex-shrink: 0; margin-top: 0.15rem; }
+        .note-box p { font-size: 0.87rem; color: #92400e; margin: 0; line-height: 1.6; }
+
+        /* ── Bottom CTA ── */
+        .shipping-cta {
+            background: linear-gradient(135deg, #fff4f0 0%, #ffe8e0 100%);
+            border: 1px solid #ffd0be;
+            border-radius: var(--radius-lg);
+            padding: 2.75rem 2rem;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .shipping-cta .cta-icon {
+            width: 64px; height: 64px;
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.6rem;
+            margin: 0 auto 1.25rem;
+        }
+        .shipping-cta h3 { font-size: 1.5rem; margin-bottom: 0.65rem; color: var(--color-text-main); }
+        .shipping-cta p { color: var(--color-text-muted); max-width: 520px; margin: 0 auto 1.75rem; line-height: 1.7; font-size: 0.97rem; }
+        .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .shipping-hero-stats { grid-template-columns: 1fr; }
+            .pack-grid { grid-template-columns: repeat(2, 1fr); }
+            .policy-card { padding: 1.75rem 1.25rem; }
+            .charge-row { flex-wrap: wrap; }
+        }
+        @media (max-width: 480px) {
+            .pack-grid { grid-template-columns: 1fr 1fr; }
+            .shipping-cta { padding: 2rem 1.25rem; }
+            .shipping-timeline { padding-left: 2.5rem; }
+            .timeline-node { left: -2rem; width: 34px; height: 34px; font-size: 0.82rem; }
         }
     </style>
 </head>
 
 <body>
-    <!-- Navigation -->
+
+    <!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
     <nav class="navbar scrolled">
         <div class="nav-container">
-            <a href="index.html" class="logo"><img src="../public/images/spareblaze-logo.png" alt="SpareBlaze Logo"
-                    style="height: 54px; width: auto; object-fit: contain;">
-            </a>
-
+            <a href="index.html" class="logo"><img src="../public/images/spareblaze-logo.png" alt="SpareBlaze Logo" style="height:54px;width:auto;object-fit:contain;"></a>
             <div class="search-container">
                 <div class="search-category" id="custom-dropdown">
-                    <div class="dropdown-selected">
-                        <span id="dropdown-text">Select Vehicle</span>
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </div>
+                    <div class="dropdown-selected"><span id="dropdown-text">Select Vehicle</span><i class="fa-solid fa-chevron-down"></i></div>
                     <ul class="dropdown-options">
-                        <li data-value="">All Vehicles</li>
-                        <li data-value="maruti">MARUTI</li>
-                        <li data-value="hyundai">HYUNDAI</li>
-                        <li data-value="mahindra">MAHINDRA</li>
-                        <li data-value="tata">TATA</li>
-                        <li data-value="chevrolet">CHEVROLET</li>
-                        <li data-value="honda">HONDA</li>
-                        <li data-value="skoda">SKODA</li>
-                        <li data-value="vw">VW</li>
-                        <li data-value="toyota">TOYOTA</li>
-                        <li data-value="nissan">NISSAN</li>
-                        <li data-value="renault">RENAULT</li>
-                        <li data-value="ford">FORD</li>
-                        <li data-value="fiat">FIAT</li>
-                        <li data-value="kia">KIA</li>
+                        <li data-value="">All Vehicles</li><li data-value="maruti">MARUTI</li><li data-value="hyundai">HYUNDAI</li><li data-value="mahindra">MAHINDRA</li><li data-value="tata">TATA</li><li data-value="honda">HONDA</li><li data-value="toyota">TOYOTA</li><li data-value="kia">KIA</li><li data-value="ford">FORD</li><li data-value="skoda">SKODA</li><li data-value="vw">VW</li><li data-value="renault">RENAULT</li><li data-value="nissan">NISSAN</li><li data-value="chevrolet">CHEVROLET</li><li data-value="fiat">FIAT</li><li data-value="bmw">BMW</li><li data-value="audi">AUDI</li><li data-value="volvo">VOLVO</li>
                     </ul>
                 </div>
                 <input type="text" id="search-input" placeholder="Search by part name, brand, or OEM number...">
-                <button class="search-btn" onclick="window.location.href='search.html'"><i
-                        class="fa-solid fa-search"></i></button>
+                <button class="search-btn" onclick="window.location.href='search.html'"><i class="fa-solid fa-search"></i></button>
             </div>
-
             <div class="nav-actions">
                 <a href="javascript:void(0);" class="nav-icon-btn"><i class="fa-regular fa-user"></i></a>
-                <button class="nav-icon-btn cart-btn" id="cart-toggle">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    <span class="cart-badge" id="cart-count">0</span>
-                
-                                </button>
+                <button class="nav-icon-btn cart-btn" id="cart-toggle"><i class="fa-solid fa-cart-shopping"></i><span class="cart-badge" id="cart-count">0</span></button>
                 <button class="mobile-menu-btn" id="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
             </div>
         </div>
     </nav>
-        <!-- Mobile Search + Vehicle Select (Visible on small screens) -->
-        <div class="mobile-search">
-            <div class="mobile-search-row">
-                <select class="mobile-vehicle-select" id="mobile-vehicle-select">
-                    <option value="">All Vehicles</option>
-                    <option value="maruti">MARUTI</option>
-                    <option value="hyundai">HYUNDAI</option>
-                    <option value="mahindra">MAHINDRA</option>
-                    <option value="tata">TATA</option>
-                    <option value="chevrolet">CHEVROLET</option>
-                    <option value="honda">HONDA</option>
-                    <option value="skoda">SKODA</option>
-                    <option value="vw">VW</option>
-                    <option value="toyota">TOYOTA</option>
-                    <option value="nissan">NISSAN</option>
-                    <option value="renault">RENAULT</option>
-                    <option value="ford">FORD</option>
-                    <option value="fiat">FIAT</option>
-                    <option value="kia">KIA</option>
-                    <option value="bmw">BMW</option>
-                    <option value="audi">AUDI</option>
-                    <option value="volvo">VOLVO</option>
-                </select>
-                <div class="mobile-search-wrap">
-                    <input type="text" id="mobile-search-input" placeholder="Search parts...">
-                    <button class="mobile-search-btn"><i class="fa-solid fa-search"></i></button>
-                </div>
-            </div>
-            <div class="search-results" id="mobile-search-results"></div>
-        </div>
 
-    <!-- Secondary Navigation -->
+    <!-- Mobile Search -->
+    <div class="mobile-search">
+        <div class="mobile-search-row">
+            <select class="mobile-vehicle-select" id="mobile-vehicle-select">
+                <option value="">All Vehicles</option><option value="maruti">MARUTI</option><option value="hyundai">HYUNDAI</option><option value="mahindra">MAHINDRA</option><option value="tata">TATA</option><option value="honda">HONDA</option><option value="toyota">TOYOTA</option><option value="kia">KIA</option><option value="ford">FORD</option><option value="skoda">SKODA</option><option value="vw">VW</option><option value="renault">RENAULT</option><option value="nissan">NISSAN</option><option value="chevrolet">CHEVROLET</option><option value="fiat">FIAT</option><option value="bmw">BMW</option><option value="audi">AUDI</option><option value="volvo">VOLVO</option>
+            </select>
+            <div class="mobile-search-wrap">
+                <input type="text" id="mobile-search-input" placeholder="Search parts...">
+                <button class="mobile-search-btn"><i class="fa-solid fa-search"></i></button>
+            </div>
+        </div>
+        <div class="search-results" id="mobile-search-results"></div>
+    </div>
+
+    <!-- ═══════════════════════════ SECONDARY NAV ═══════════════════════════ -->
     <div class="nav-categories">
         <div class="nav-container">
             <button class="all-categories-btn" onclick="window.location.href='categories.html'">
@@ -175,62 +503,335 @@
                 <li><a href="oem.html">OEM</a></li>
                 <li><a href="wholesale.html">Wholesale</a></li>
             </ul>
+            <div class="help-nav-item">
+                <a href="javascript:void(0);" class="help-nav-link">
+                    <i class="fa-solid fa-circle-question"></i> Help <i class="fa-solid fa-chevron-down help-chevron"></i>
+                </a>
+                <ul class="help-dropdown-menu">
+                    <li><a href="faq.html"><i class="fa-solid fa-comments"></i> FAQ</a></li>
+                    <li><a href="shipping-info.html"><i class="fa-solid fa-truck-fast"></i> Shipping Policy</a></li>
+                    <li><a href="return-policy.html"><i class="fa-solid fa-rotate-left"></i> Return Policy</a></li>
+                    <li><a href="size-guide.html"><i class="fa-solid fa-ruler"></i> Size Guide</a></li>
+                    <li><a href="track-order.html"><i class="fa-solid fa-map-location-dot"></i> Track Order</a></li>
+                    <li><a href="contact-us.html"><i class="fa-solid fa-headset"></i> Contact Us</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 
-    <!-- Page Header -->
+    <!-- ═══════════════════════════ PAGE HEADER ═════════════════════════════ -->
     <header class="page-header">
-        <h1>Shipping <span class="highlight">Information</span></h1>
-        <p>Details about delivery times, tracking, and Pan-India coverage.</p>
+        <h1>Shipping <span class="highlight">Policy</span></h1>
+        <p>Pan-India delivery to 25,000+ PIN codes across all 28 states and union territories. Fast dispatch, real-time tracking, and free shipping on prepaid orders above ₹1,500.</p>
     </header>
 
-    <!-- Main Content -->
+    <!-- ═══════════════════════════ MAIN CONTENT ════════════════════════════ -->
     <main class="section-padding">
+        <div class="breadcrumb">
+            <a href="index.html">Home</a> &rsaquo; <span>Shipping Policy</span>
+        </div>
+
         <div class="content-section">
-            <div class="info-block">
-                <h3><i class="fa-solid fa-truck-fast"></i> Pan-India Delivery</h3>
-                <p>SpareBlaze is proud to offer delivery to over 25,000 PIN codes across India. Whether you are in a
-                    major metro city or a remote town, our logistics partners ensure your spare parts reach you safely
-                    and on time.</p>
+
+            <!-- ─── HERO STAT CARDS ─── -->
+            <div class="shipping-hero-stats">
+                <div class="hero-stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-truck-fast"></i></div>
+                    <div class="stat-value">Free Shipping above ₹1,500</div>
+                    <div class="stat-label">On all prepaid orders. No hidden charges, no minimum cart restrictions on eligible PIN codes.</div>
+                </div>
+                <div class="hero-stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+                    <div class="stat-value">25,000+ PIN Codes</div>
+                    <div class="stat-label">Covering every metro, Tier-2 city, rural town, and remote region across India.</div>
+                </div>
+                <div class="hero-stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-bolt"></i></div>
+                    <div class="stat-value">Ships in 24 Hours</div>
+                    <div class="stat-label">All in-stock items are picked, quality-checked, and dispatched within 24 hours (Mon–Sat).</div>
+                </div>
             </div>
 
-            <div class="info-block">
-                <h3><i class="fa-regular fa-clock"></i> Delivery Timelines</h3>
-                <ul>
-                    <li><strong>Metro Cities (Tier 1):</strong> 2 to 4 business days.</li>
-                    <li><strong>Tier 2 & 3 Cities:</strong> 3 to 6 business days.</li>
-                    <li><strong>Remote Locations:</strong> 7 to 10 business days.</li>
-                </ul>
-                <p><em>Note: Heavy or oversized items (like engine blocks or large body panels) may take an additional
-                        2-3 days for special freight handling.</em></p>
+            <!-- ─── SECTION 1: DELIVERY TIMELINES ─── -->
+            <div class="policy-card">
+                <div class="policy-card-header">
+                    <div class="icon"><i class="fa-solid fa-clock"></i></div>
+                    <h2>Section 1 – Delivery Timelines</h2>
+                </div>
+                <p>All in-stock items are dispatched within <strong>24 hours</strong> of order confirmation, Monday through Saturday (excluding national public holidays). Delivery timelines below are counted from the dispatch date and are business-day estimates:</p>
+                <div class="delivery-table-wrap">
+                    <table class="delivery-table">
+                        <thead>
+                            <tr>
+                                <th>Zone</th>
+                                <th>Areas Covered</th>
+                                <th>Est. Delivery</th>
+                                <th>Shipping Fee</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="zone-name">Metro / Tier-1</td>
+                                <td>Mumbai, Delhi NCR, Bengaluru, Chennai, Hyderabad, Kolkata, Pune, Ahmedabad, Surat</td>
+                                <td>2–4 Business Days</td>
+                                <td><span class="badge-free"><i class="fa-solid fa-check"></i> Free above ₹1,500</span></td>
+                            </tr>
+                            <tr>
+                                <td class="zone-name">Tier-2 Cities</td>
+                                <td>Jaipur, Lucknow, Chandigarh, Bhopal, Indore, Nagpur, Coimbatore, Kochi, Vizag, Vadodara</td>
+                                <td>3–5 Business Days</td>
+                                <td><span class="badge-free"><i class="fa-solid fa-check"></i> Free above ₹1,500</span></td>
+                            </tr>
+                            <tr>
+                                <td class="zone-name">Tier-3 / Rural</td>
+                                <td>Smaller towns, semi-urban, and rural areas across all states</td>
+                                <td>5–8 Business Days</td>
+                                <td><span class="badge-free"><i class="fa-solid fa-check"></i> Free above ₹1,500</span></td>
+                            </tr>
+                            <tr>
+                                <td class="zone-name">Remote / Hilly</td>
+                                <td>J&amp;K, Himachal Pradesh, Uttarakhand hills, North-East states, Andaman &amp; Nicobar, Lakshadweep</td>
+                                <td>7–10 Business Days</td>
+                                <td><span class="badge-flat">₹99 flat</span></td>
+                            </tr>
+                            <tr>
+                                <td class="zone-name">Heavy / Freight</td>
+                                <td>Engine blocks, large body panels, axle assemblies (&gt;20 kg) — nationwide</td>
+                                <td>+2–3 Days additional</td>
+                                <td><span class="badge-calc"><i class="fa-solid fa-calculator"></i> Calculated at checkout</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="note-box">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <p>Timelines are estimates and may extend during peak seasons (festive sales, Diwali, year-end), national strikes, or severe weather. You will receive proactive SMS/email alerts if your delivery is expected to be delayed beyond the stated window.</p>
+                </div>
             </div>
 
-            <div class="info-block">
-                <h3><i class="fa-solid fa-box-open"></i> Shipping Charges</h3>
-                <p>We offer <strong>Free Shipping</strong> on all prepaid orders above ₹1,500. For orders below this
-                    amount, a standard shipping fee of ₹99 applies.</p>
-                <p>Cash on Delivery (COD) is available in select locations for an additional handling charge of ₹49.</p>
+            <!-- ─── SECTION 2: SHIPPING CHARGES ─── -->
+            <div class="policy-card">
+                <div class="policy-card-header">
+                    <div class="icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+                    <h2>Section 2 – Shipping Charges</h2>
+                </div>
+                <p>We keep our pricing transparent — the exact shipping fee is shown clearly at checkout before you confirm payment. Here is a complete breakdown:</p>
+                <div class="charges-list">
+                    <div class="charge-row">
+                        <div class="charge-icon"><i class="fa-solid fa-gift"></i></div>
+                        <div class="charge-text">
+                            <strong>Free Shipping (Prepaid &gt; ₹1,500)</strong>
+                            <span>All prepaid orders (UPI, card, net banking) above ₹1,500 qualify for free standard shipping to all eligible PIN codes. No coupon required.</span>
+                        </div>
+                        <div class="charge-amount">₹0</div>
+                    </div>
+                    <div class="charge-row">
+                        <div class="charge-icon"><i class="fa-solid fa-box"></i></div>
+                        <div class="charge-text">
+                            <strong>Standard Shipping (Prepaid &lt; ₹1,500)</strong>
+                            <span>Prepaid orders below the ₹1,500 threshold attract a flat standard shipping fee. Applicable to Metro, Tier-2, and Tier-3 zones.</span>
+                        </div>
+                        <div class="charge-amount">₹99</div>
+                    </div>
+                    <div class="charge-row">
+                        <div class="charge-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                        <div class="charge-text">
+                            <strong>Cash on Delivery (COD) Surcharge</strong>
+                            <span>COD orders carry an additional handling fee over and above any applicable standard shipping charge. COD is limited to orders under ₹10,000 and select PIN codes.</span>
+                        </div>
+                        <div class="charge-amount">+₹49</div>
+                    </div>
+                    <div class="charge-row">
+                        <div class="charge-icon"><i class="fa-solid fa-gauge-high"></i></div>
+                        <div class="charge-text">
+                            <strong>Express Delivery (Select Metros)</strong>
+                            <span>1–2 business day delivery available in Mumbai, Delhi NCR, Bengaluru, Chennai, Hyderabad, and Pune. Shown at checkout if available for your PIN code.</span>
+                        </div>
+                        <div class="charge-amount">₹149</div>
+                    </div>
+                    <div class="charge-row">
+                        <div class="charge-icon"><i class="fa-solid fa-truck-moving"></i></div>
+                        <div class="charge-text">
+                            <strong>Heavy / Freight Shipping</strong>
+                            <span>For parts over 20 kg or oversized dimensions (e.g., engine assemblies, radiators, full door panels). Freight is calculated based on actual/volumetric weight and delivery zone at checkout.</span>
+                        </div>
+                        <div class="charge-amount">At checkout</div>
+                    </div>
+                </div>
+                <div class="note-box">
+                    <i class="fa-solid fa-lightbulb"></i>
+                    <p>Tip: Switching from COD to a prepaid method (UPI/card) on an order above ₹1,500 saves you both the ₹99 shipping fee and the ₹49 COD surcharge — a saving of ₹148 on a single order.</p>
+                </div>
             </div>
 
-            <div class="info-block">
-                <h3><i class="fa-solid fa-map-location-dot"></i> Order Tracking</h3>
-                <p>As soon as your order is dispatched from our warehouse, you will receive an email and SMS with your
-                    tracking link and AWB number. You can also visit our <a href="track-order.html"
-                        class="highlight">Track Order</a> page to check real-time updates.</p>
+            <!-- ─── SECTION 3: ORDER JOURNEY ─── -->
+            <div class="policy-card">
+                <div class="policy-card-header">
+                    <div class="icon"><i class="fa-solid fa-route"></i></div>
+                    <h2>Section 3 – Your Order's Journey</h2>
+                </div>
+                <p>From the moment you confirm your order to the part arriving at your doorstep, here is exactly what happens at every stage:</p>
+                <div class="shipping-timeline">
+
+                    <div class="timeline-step">
+                        <div class="timeline-node"><i class="fa-solid fa-circle-check"></i></div>
+                        <div class="timeline-content">
+                            <h4>Order Confirmed</h4>
+                            <p>Your order is recorded in our system the instant payment is verified. You receive an order confirmation email and SMS with your unique Order ID, itemised summary, and estimated delivery date.</p>
+                            <span class="timeline-badge">Instant</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline-step">
+                        <div class="timeline-node"><i class="fa-solid fa-magnifying-glass"></i></div>
+                        <div class="timeline-content">
+                            <h4>Quality Check &amp; Packing</h4>
+                            <p>Our warehouse team picks your part, performs a three-point quality inspection (visual, dimensional, and OEM cross-reference), then packs it using our multi-layer protection standards. OEM parts are sealed with holographic authenticity labels.</p>
+                            <span class="timeline-badge">Within 12 hours</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline-step">
+                        <div class="timeline-node"><i class="fa-solid fa-truck-loading"></i></div>
+                        <div class="timeline-content">
+                            <h4>Dispatched</h4>
+                            <p>Your packed order is handed over to our logistics partner (Delhivery, BlueDart, or DTDC depending on your location). You receive a dispatch notification email containing your AWB number and a live tracking link.</p>
+                            <span class="timeline-badge">Within 24 hours</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline-step">
+                        <div class="timeline-node"><i class="fa-solid fa-location-dot"></i></div>
+                        <div class="timeline-content">
+                            <h4>In Transit</h4>
+                            <p>Your shipment is on its way. Track real-time movement via the link in your dispatch email or through our <a href="track-order.html">Track Order</a> page using your Order ID and registered email. Tracking updates every 4–8 hours.</p>
+                            <span class="timeline-badge">As per delivery zone</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline-step">
+                        <div class="timeline-node"><i class="fa-solid fa-person-biking"></i></div>
+                        <div class="timeline-content">
+                            <h4>Out for Delivery</h4>
+                            <p>The delivery agent calls you before arriving. Ensure someone is available at the delivery address with a valid ID for high-value orders. If unavailable, the agent will attempt redelivery on the next business day (up to 3 total attempts).</p>
+                            <span class="timeline-badge">Day of delivery</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline-step">
+                        <div class="timeline-node"><i class="fa-solid fa-box-open"></i></div>
+                        <div class="timeline-content">
+                            <h4>Delivered &amp; Signed</h4>
+                            <p>Inspect the outer packaging before signing — if it shows visible damage, tamper, or wetness, photograph it clearly and note the damage on the delivery receipt before accepting. Contact us within 48 hours if the part inside is damaged. Your SparkPoints are credited within 48 hours of delivery confirmation.</p>
+                            <span class="timeline-badge">On delivery</span>
+                        </div>
+                    </div>
+
+                </div>
             </div>
+
+            <!-- ─── SECTION 4: PACKAGING STANDARDS ─── -->
+            <div class="policy-card">
+                <div class="policy-card-header">
+                    <div class="icon"><i class="fa-solid fa-box-open"></i></div>
+                    <h2>Section 4 – Packaging Standards</h2>
+                </div>
+                <p>Automotive parts are precision components — a dented brake caliper or a cracked sensor housing renders the part useless. We engineer our packaging to withstand the real-world conditions of India's logistics network, including rough handling, long-haul freight, and monsoon weather:</p>
+                <div class="pack-grid">
+                    <div class="pack-card">
+                        <div class="pack-icon"><i class="fa-solid fa-layer-group"></i></div>
+                        <h4>Multi-Layer Protection</h4>
+                        <p>Bubble wrap inner lining, high-density foam inserts, and double-wall corrugated cartons for all delicate or metal components.</p>
+                    </div>
+                    <div class="pack-card">
+                        <div class="pack-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                        <h4>Tamper-Evident Seal</h4>
+                        <p>Every package is sealed with a SpareBlaze branded tamper-evident security tape that shows visible damage if the carton is opened in transit.</p>
+                    </div>
+                    <div class="pack-card">
+                        <div class="pack-icon"><i class="fa-solid fa-tag"></i></div>
+                        <h4>Authenticity Labels</h4>
+                        <p>OEM and certified after-market parts carry holographic authenticity stickers that can be verified against our central registry.</p>
+                    </div>
+                    <div class="pack-card">
+                        <div class="pack-icon"><i class="fa-solid fa-file-invoice"></i></div>
+                        <h4>Invoice Enclosed</h4>
+                        <p>Every shipment includes a printed GST-compliant tax invoice — essential for warranty claims, returns, and input tax credit purposes.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ─── SECTION 5: INLINE SHIPPING FAQs ─── -->
+            <div class="policy-card">
+                <div class="policy-card-header">
+                    <div class="icon"><i class="fa-solid fa-circle-question"></i></div>
+                    <h2>Section 5 – Frequently Asked Shipping Questions</h2>
+                </div>
+                <div class="inline-faq">
+
+                    <div class="inline-faq-item">
+                        <div class="ifaq-q">
+                            <i class="fa-solid fa-map-pin"></i>
+                            Can I change the delivery address after placing my order?
+                        </div>
+                        <div class="ifaq-a">
+                            Address changes are possible only <strong>before the order is dispatched</strong>. Contact us immediately via email or phone with your Order ID and the corrected address. Once the AWB is generated and the order is handed over to our courier partner, address changes are not possible in transit. For future orders, save multiple delivery addresses under My Account to streamline the process.
+                        </div>
+                    </div>
+
+                    <div class="inline-faq-item">
+                        <div class="ifaq-q">
+                            <i class="fa-solid fa-door-open"></i>
+                            What if I am not home when the delivery agent arrives?
+                        </div>
+                        <div class="ifaq-a">
+                            The delivery agent will make <strong>up to 3 attempts</strong> on consecutive business days, calling you before each attempt. If all three attempts fail, the package is returned to our warehouse (marked RTO — Return to Origin). A refund for the item value (minus the COD handling fee for COD orders) is processed within 7–10 business days of the package reaching us. To reschedule a delivery attempt, contact the courier directly using the tracking number from your dispatch email.
+                        </div>
+                    </div>
+
+                    <div class="inline-faq-item">
+                        <div class="ifaq-q">
+                            <i class="fa-solid fa-flag"></i>
+                            Do you ship to APO/FPO military addresses or outside India?
+                        </div>
+                        <div class="ifaq-a">
+                            SpareBlaze currently ships <strong>exclusively within India</strong> and does not support APO, FPO, or international shipping addresses. We cover all 28 states, 8 union territories, and over 25,000 PIN codes domestically. International shipping is on our development roadmap — register your interest by contacting us at <a href="mailto:support@spareblaze.in">support@spareblaze.in</a> and we will notify you when it becomes available.
+                        </div>
+                    </div>
+
+                    <div class="inline-faq-item">
+                        <div class="ifaq-q">
+                            <i class="fa-solid fa-weight-hanging"></i>
+                            How are heavy or oversized parts like engine assemblies shipped?
+                        </div>
+                        <div class="ifaq-a">
+                            Heavy parts (over 20 kg) and oversized components such as engine assemblies, gearboxes, full door panels, and large body panels are shipped via <strong>surface freight</strong> using specialised automotive logistics partners. These shipments are palletised or crated depending on the item's fragility. Freight charges are calculated at checkout based on the actual or volumetric weight (whichever is higher) and your delivery zone. Delivery for freight shipments takes an additional 2–3 business days beyond the standard timeline for your zone. Our team will call you to coordinate a convenient delivery window for large freight items.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ─── BOTTOM CTA ─── -->
+            <div class="shipping-cta">
+                <div class="cta-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+                <h3>Already ordered?</h3>
+                <p>Enter your Order ID and registered email on our tracking page to get real-time shipment updates — including your package's current location and expected delivery date.</p>
+                <div class="cta-buttons">
+                    <a href="track-order.html" class="btn btn-primary"><i class="fa-solid fa-map-location-dot"></i>&nbsp; Track My Order</a>
+                    <a href="contact-us.html" class="btn btn-secondary"><i class="fa-solid fa-headset"></i>&nbsp; Contact Support</a>
+                </div>
+            </div>
+
         </div>
     </main>
 
-    <!-- Footer -->
+    <!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
     <footer>
         <div class="footer-container">
             <div class="footer-brand">
-                <a href="index.html" class="logo">
-                    <img src="../public/images/spareblaze-logo-footer.png" alt="SpareBlaze Logo"
-                        style="width: 250px; height: auto;">
-                </a>
-                <p>India's trusted e-commerce platform for genuine car and SUV spare parts. Quality assured, delivered
-                    nationwide.</p>
+                <a href="index.html" class="logo"><img src="../public/images/spareblaze-logo-footer.png" alt="SpareBlaze Logo" style="width:250px;height:auto;"></a>
+                <p>India's trusted e-commerce platform for genuine car and SUV spare parts. Quality assured, delivered nationwide.</p>
                 <div class="social-links">
                     <a href="javascript:void(0);"><i class="fa-brands fa-instagram"></i></a>
                     <a href="javascript:void(0);"><i class="fa-brands fa-facebook-f"></i></a>
@@ -238,18 +839,17 @@
                     <a href="javascript:void(0);"><i class="fa-brands fa-youtube"></i></a>
                 </div>
             </div>
-
             <div class="footer-links">
-                <h3>Quick Links</h3>
+                <h3>Help</h3>
                 <ul>
-                    <li><a href="index.html">About Us</a></li>
-                    <li><a href="track-order.html">Track Order</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="shipping-info.html">Shipping Policy</a></li>
                     <li><a href="return-policy.html">Return Policy</a></li>
-                    <li><a href="shipping-info.html">Shipping Info</a></li>
+                    <li><a href="size-guide.html">Size Guide</a></li>
+                    <li><a href="track-order.html">Track Order</a></li>
                     <li><a href="contact-us.html">Contact Us</a></li>
                 </ul>
             </div>
-
             <div class="footer-links">
                 <h3>Shop By Type</h3>
                 <ul>
@@ -260,13 +860,11 @@
                     <li><a href="wholesale.html">Wholesale</a></li>
                 </ul>
             </div>
-
             <div class="footer-contact">
                 <h3>Contact</h3>
                 <p><i class="fa-solid fa-phone"></i> +91 1800 123 4567</p>
                 <p><i class="fa-solid fa-envelope"></i> support@spareblaze.in</p>
                 <p><i class="fa-solid fa-location-dot"></i> Bengaluru, Karnataka, India</p>
-
                 <h3 class="payment-title">Secure Payments</h3>
                 <div class="payment-icons">
                     <i class="fa-brands fa-cc-visa"></i>
@@ -284,27 +882,23 @@
     <!-- Cart Sidebar -->
     <div class="cart-overlay" id="cart-overlay"></div>
     <div class="cart-sidebar" id="cart-sidebar">
-        <div class="cart-header">
-            <h3>Your Cart</h3>
-            <button class="close-btn" id="close-cart"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="cart-items" id="cart-items-container">
-            <div class="empty-cart-msg">Your cart is currently empty.</div>
-        </div>
+        <div class="cart-header"><h3>Your Cart</h3><button class="close-btn" id="close-cart"><i class="fa-solid fa-xmark"></i></button></div>
+        <div class="cart-items" id="cart-items-container"><div class="empty-cart-msg">Your cart is currently empty.</div></div>
         <div class="cart-footer">
-            <div class="cart-total">
-                <span>Total:</span>
-                <span class="total-amount" id="cart-total-amount">₹0</span>
-            </div>
-            <button class="btn btn-primary w-100 checkout-btn" id="checkout-btn" disabled>Proceed to Secure
-                Checkout</button>
+            <div class="cart-total"><span>Total:</span><span class="total-amount" id="cart-total-amount">₹0</span></div>
+            <button class="btn btn-primary w-100 checkout-btn" id="checkout-btn" disabled>Proceed to Secure Checkout</button>
         </div>
     </div>
 
     <script src="../js/script.js"></script>
-
-
     <script src="https://code.tidio.co/sienbawteqdozz2om1mswgszpjxm6zxg.js" async></script>
+    <button id="scroll-to-top" class="scroll-to-top" aria-label="Scroll to top"><i class="fa-solid fa-chevron-up"></i></button>
+  <!-- WhatsApp Float Button -->
+  <a id="wa-float-btn" class="wa-float-btn" href="https://wa.me/917259955674" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+    <span class="wa-tooltip">Chat with us</span>
+  </a>
+
 </body>
 
 </html>

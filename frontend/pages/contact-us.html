@@ -1,214 +1,710 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us - SpareBlaze | Premium Automotive Spare Parts</title>
-    <!-- Google Fonts -->
-    <link rel="icon" type="image/svg+xml"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23e63900'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial Black,Arial' font-weight='900' font-size='28' fill='white'>SB</text></svg>">
+    <title>Contact Us – SpareBlaze | Automotive Support</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
-        rel="stylesheet">
-    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- CSS -->
     <link rel="stylesheet" href="../css/style.css">
     <style>
+        :root {
+            --cu-orange: #e63900;
+            --cu-orange-light: #fff0eb;
+            --cu-green: #16a34a;
+            --cu-green-light: #dcfce7;
+            --cu-blue: #2563eb;
+            --cu-blue-light: #dbeafe;
+            --cu-purple: #7c3aed;
+            --cu-purple-light: #ede9fe;
+            --cu-amber: #d97706;
+            --cu-amber-light: #fef3c7;
+            --cu-border: #e2e8f0;
+            --cu-shadow: 0 2px 16px rgba(0,0,0,0.07);
+            --cu-radius: 14px;
+        }
+
+        /* PAGE HEADER */
         .page-header {
-            background: linear-gradient(135deg, var(--color-bg-base) 0%, #e2e8f0 100%);
-            padding: 8rem 1.5rem 4rem;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            padding: 64px 0 56px;
             text-align: center;
-            border-bottom: 1px solid var(--color-border);
+            position: relative;
+            overflow: hidden;
         }
-
-        .page-header h1 {
-            font-size: 3.5rem;
-            color: var(--color-text-main);
-            margin-bottom: 1rem;
+        .page-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 60% 40%, rgba(230,57,0,0.18) 0%, transparent 65%);
         }
-
-        .contact-container {
-            max-width: var(--max-width);
+        .page-header-content {
+            position: relative;
+            z-index: 1;
+            max-width: 760px;
             margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
+            padding: 0 24px;
+        }
+        .page-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 800;
+            color: #fff;
+            margin: 0 0 16px;
+            line-height: 1.15;
+        }
+        .page-header h1 .highlight { color: var(--color-primary, #e63900); }
+        .page-header p {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.05rem;
+            color: rgba(255,255,255,0.75);
+            margin: 0;
+            line-height: 1.65;
         }
 
-        @media (max-width: 768px) {
-            .contact-container {
-                grid-template-columns: 1fr;
-            }
+        /* BREADCRUMB */
+        .breadcrumb-bar {
+            background: var(--color-bg-surface, #fff);
+            border-bottom: 1px solid var(--color-border, #e2e8f0);
+            padding: 12px 0;
         }
-
-        .contact-info {
-            background: var(--color-bg-surface);
-            padding: 3rem;
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--color-border);
-            box-shadow: var(--shadow-subtle);
-        }
-
-        .contact-form {
-            background: var(--color-bg-surface);
-            padding: 3rem;
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--color-border);
-            box-shadow: var(--shadow-subtle);
-        }
-
-        .info-item {
+        .breadcrumb {
             display: flex;
-            align-items: flex-start;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            color: var(--color-text-muted, #64748b);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        .breadcrumb a { color: var(--color-text-muted, #64748b); text-decoration: none; transition: color 0.2s; }
+        .breadcrumb a:hover { color: var(--color-primary, #e63900); }
+        .breadcrumb .sep { color: #cbd5e1; }
+        .breadcrumb .current { color: var(--color-text-main, #1e293b); font-weight: 500; }
+
+        /* MAIN */
+        .cu-main {
+            background: var(--color-bg-base, #f1f5f9);
+            padding: 56px 0 80px;
+        }
+        .cu-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 52px;
         }
 
-        .info-item:last-child {
-            margin-bottom: 0;
+        /* SECTION TITLE */
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-text-main, #1e293b);
+            margin: 0 0 24px;
         }
 
-        .info-icon {
-            width: 50px;
-            height: 50px;
-            background: var(--color-primary-light);
-            color: var(--color-primary);
+        /* CHANNEL CARDS */
+        .channels-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .channel-card {
+            background: var(--color-bg-surface, #fff);
+            border-radius: var(--cu-radius);
+            box-shadow: var(--cu-shadow);
+            border: 1px solid var(--cu-border);
+            padding: 28px 22px;
+            text-align: center;
+            transition: transform 0.25s, box-shadow 0.25s;
+        }
+        .channel-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 28px rgba(0,0,0,0.11);
+        }
+        .channel-icon {
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.25rem;
+            font-size: 1.5rem;
+            margin: 0 auto 16px;
+        }
+        .channel-icon.green  { background: var(--cu-green-light); color: var(--cu-green); }
+        .channel-icon.orange { background: var(--cu-orange-light); color: var(--cu-orange); }
+        .channel-icon.blue   { background: var(--cu-blue-light); color: var(--cu-blue); }
+        .channel-icon.purple { background: var(--cu-purple-light); color: var(--cu-purple); }
+        .channel-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--color-text-main, #1e293b);
+            margin: 0 0 4px;
+        }
+        .channel-card .channel-value {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text-main, #1e293b);
+            margin: 0 0 6px;
+        }
+        .channel-card .channel-hours {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: var(--color-text-muted, #64748b);
+            margin: 0 0 18px;
+            line-height: 1.45;
+        }
+
+        /* 2-COL LAYOUT */
+        .contact-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.45fr;
+            gap: 28px;
+            align-items: start;
+        }
+
+        /* INFO PANEL */
+        .info-panel {
+            background: linear-gradient(155deg, #1a1a2e 0%, #0f3460 100%);
+            border-radius: var(--cu-radius);
+            padding: 36px 30px;
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+        }
+        .info-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 80% 20%, rgba(230,57,0,0.22) 0%, transparent 60%);
+        }
+        .info-panel-content { position: relative; z-index: 1; }
+        .info-panel h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 0 0 28px;
+        }
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .info-item:last-child { margin-bottom: 0; }
+        .info-icon-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: #fff;
             flex-shrink: 0;
         }
-
-        .info-text h3 {
-            font-size: 1.1rem;
-            margin-bottom: 0.25rem;
+        .info-item-body h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: rgba(255,255,255,0.9);
+            margin: 0 0 5px;
         }
-
-        .info-text p {
-            color: var(--color-text-muted);
+        .info-item-body p, .info-item-body a {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.65);
+            margin: 0;
+            line-height: 1.5;
+            text-decoration: none;
         }
-
-        .form-group {
-            margin-bottom: 1.5rem;
+        .info-item-body a:hover { color: var(--cu-orange); }
+        .hours-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Inter', sans-serif;
         }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
+        .hours-table td {
+            padding: 3px 0;
+            font-size: 0.82rem;
+            color: rgba(255,255,255,0.65);
+        }
+        .hours-table td:last-child {
+            text-align: right;
+            color: rgba(255,255,255,0.85);
             font-weight: 500;
         }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-md);
-            font-family: inherit;
-            resize: vertical;
+        .info-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+            margin: 20px 0;
         }
 
-        .form-group input:focus,
-        .form-group textarea:focus {
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px var(--color-primary-light);
+        /* CONTACT FORM */
+        .contact-form-card {
+            background: var(--color-bg-surface, #fff);
+            border-radius: var(--cu-radius);
+            box-shadow: var(--cu-shadow);
+            border: 1px solid var(--cu-border);
+            padding: 36px 32px;
+        }
+        .contact-form-card h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--color-text-main, #1e293b);
+            margin: 0 0 24px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .cf-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+        .cf-group:last-of-type { margin-bottom: 0; }
+        .cf-group label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.825rem;
+            font-weight: 600;
+            color: var(--color-text-main, #1e293b);
+        }
+        .cf-group label .req { color: var(--cu-orange); }
+        .cf-group input, .cf-group select, .cf-group textarea {
+            padding: 10px 14px;
+            border: 1.5px solid var(--cu-border);
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--color-text-main, #1e293b);
+            background: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .cf-group input:focus, .cf-group select:focus, .cf-group textarea:focus {
             outline: none;
+            border-color: var(--cu-orange);
+            box-shadow: 0 0 0 3px rgba(230,57,0,0.12);
+        }
+        .cf-group textarea { resize: vertical; min-height: 100px; }
+        .form-success {
+            display: none;
+            background: var(--cu-green-light);
+            border: 1px solid #86efac;
+            border-radius: 10px;
+            padding: 18px 20px;
+            margin-top: 16px;
+        }
+        .form-success.visible { display: flex; align-items: center; gap: 12px; }
+        .form-success i { color: var(--cu-green); font-size: 1.2rem; flex-shrink: 0; }
+        .form-success p {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: #14532d;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* QUICK HELP LINKS */
+        .quick-help-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        .quick-link-card {
+            background: var(--color-bg-surface, #fff);
+            border-radius: 12px;
+            border: 1px solid var(--cu-border);
+            box-shadow: var(--cu-shadow);
+            padding: 22px 20px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s;
+        }
+        .quick-link-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 22px rgba(0,0,0,0.11);
+            border-color: var(--cu-orange);
+        }
+        .ql-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: var(--cu-orange-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: var(--cu-orange);
+            flex-shrink: 0;
+        }
+        .ql-text h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--color-text-main, #1e293b);
+            margin: 0 0 3px;
+        }
+        .ql-text p {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.78rem;
+            color: var(--color-text-muted, #64748b);
+            margin: 0;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1020px) {
+            .channels-grid { grid-template-columns: repeat(2, 1fr); }
+            .contact-layout { grid-template-columns: 1fr; }
+            .quick-help-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 600px) {
+            .channels-grid { grid-template-columns: repeat(2, 1fr); }
+            .quick-help-grid { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            .contact-form-card { padding: 24px 16px; }
+            .info-panel { padding: 28px 20px; }
+        }
+        @media (max-width: 420px) {
+            .channels-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
-
 <body>
-    <!-- Navigation -->
-    <nav class="navbar scrolled">
-        <div class="nav-container">
-            <a href="index.html" class="logo"><img src="../public/images/spareblaze-logo.png" alt="SpareBlaze Logo"
-                    style="height: 54px; width: auto; object-fit: contain;">
+
+<nav class="navbar scrolled">
+    <div class="nav-container">
+        <a href="index.html" class="logo"><img src="../public/images/spareblaze-logo.png" alt="SpareBlaze Logo" style="height:54px;width:auto;object-fit:contain;"></a>
+        <div class="search-container">
+            <div class="search-category" id="custom-dropdown">
+                <div class="dropdown-selected"><span id="dropdown-text">Select Vehicle</span><i class="fa-solid fa-chevron-down"></i></div>
+                <ul class="dropdown-options">
+                    <li data-value="">All Vehicles</li><li data-value="maruti">MARUTI</li><li data-value="hyundai">HYUNDAI</li><li data-value="mahindra">MAHINDRA</li><li data-value="tata">TATA</li><li data-value="honda">HONDA</li><li data-value="toyota">TOYOTA</li><li data-value="kia">KIA</li><li data-value="ford">FORD</li><li data-value="skoda">SKODA</li><li data-value="vw">VW</li><li data-value="renault">RENAULT</li><li data-value="nissan">NISSAN</li><li data-value="chevrolet">CHEVROLET</li><li data-value="fiat">FIAT</li><li data-value="bmw">BMW</li><li data-value="audi">AUDI</li><li data-value="volvo">VOLVO</li>
+                </ul>
+            </div>
+            <input type="text" id="search-input" placeholder="Search by part name, brand, or OEM number...">
+            <button class="search-btn" onclick="window.location.href='search.html'"><i class="fa-solid fa-search"></i></button>
+        </div>
+        <div class="nav-actions">
+            <a href="javascript:void(0);" class="nav-icon-btn"><i class="fa-regular fa-user"></i></a>
+            <button class="nav-icon-btn cart-btn" id="cart-toggle"><i class="fa-solid fa-cart-shopping"></i><span class="cart-badge" id="cart-count">0</span></button>
+            <button class="mobile-menu-btn" id="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </div>
+</nav>
+<div class="mobile-search">
+    <div class="mobile-search-row">
+        <select class="mobile-vehicle-select" id="mobile-vehicle-select">
+            <option value="">All Vehicles</option><option value="maruti">MARUTI</option><option value="hyundai">HYUNDAI</option><option value="mahindra">MAHINDRA</option><option value="tata">TATA</option><option value="honda">HONDA</option><option value="toyota">TOYOTA</option><option value="kia">KIA</option><option value="ford">FORD</option><option value="skoda">SKODA</option><option value="vw">VW</option><option value="renault">RENAULT</option><option value="nissan">NISSAN</option><option value="chevrolet">CHEVROLET</option><option value="fiat">FIAT</option><option value="bmw">BMW</option><option value="audi">AUDI</option><option value="volvo">VOLVO</option>
+        </select>
+        <div class="mobile-search-wrap">
+            <input type="text" id="mobile-search-input" placeholder="Search parts...">
+            <button class="mobile-search-btn"><i class="fa-solid fa-search"></i></button>
+        </div>
+    </div>
+    <div class="search-results" id="mobile-search-results"></div>
+</div>
+
+<div class="nav-categories">
+    <div class="nav-container">
+        <button class="all-categories-btn" onclick="window.location.href='categories.html'">
+            <i class="fa-solid fa-bars-staggered"></i> All Categories
+        </button>
+        <ul class="category-links">
+            <li><a href="after-market.html">After Market</a></li>
+            <li><a href="refurbished.html">Refurbished</a></li>
+            <li><a href="used.html">Used</a></li>
+            <li><a href="oem.html">OEM</a></li>
+            <li><a href="wholesale.html">Wholesale</a></li>
+        </ul>
+        <div class="help-nav-item">
+            <a href="javascript:void(0);" class="help-nav-link">
+                <i class="fa-solid fa-circle-question"></i> Help <i class="fa-solid fa-chevron-down help-chevron"></i>
             </a>
-
-            <div class="search-container">
-                <div class="search-category" id="custom-dropdown">
-                    <div class="dropdown-selected">
-                        <span id="dropdown-text">Select Vehicle</span>
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </div>
-                    <ul class="dropdown-options">
-                        <li data-value="">All Vehicles</li>
-                        <li data-value="maruti">MARUTI</li>
-                        <li data-value="hyundai">HYUNDAI</li>
-                        <li data-value="mahindra">MAHINDRA</li>
-                        <li data-value="tata">TATA</li>
-                        <li data-value="chevrolet">CHEVROLET</li>
-                        <li data-value="honda">HONDA</li>
-                        <li data-value="skoda">SKODA</li>
-                        <li data-value="vw">VW</li>
-                        <li data-value="toyota">TOYOTA</li>
-                        <li data-value="nissan">NISSAN</li>
-                        <li data-value="renault">RENAULT</li>
-                        <li data-value="ford">FORD</li>
-                        <li data-value="fiat">FIAT</li>
-                        <li data-value="kia">KIA</li>
-                    </ul>
-                </div>
-                <input type="text" id="search-input" placeholder="Search by part name, brand, or OEM number...">
-                <button class="search-btn" onclick="window.location.href='search.html'"><i
-                        class="fa-solid fa-search"></i></button>
-            </div>
-
-            <div class="nav-actions">
-                <a href="javascript:void(0);" class="nav-icon-btn"><i class="fa-regular fa-user"></i></a>
-                <button class="nav-icon-btn cart-btn" id="cart-toggle">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    <span class="cart-badge" id="cart-count">0</span>
-                
-                                </button>
-                <button class="mobile-menu-btn" id="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
-            </div>
+            <ul class="help-dropdown-menu">
+                <li><a href="faq.html"><i class="fa-solid fa-comments"></i> FAQ</a></li>
+                <li><a href="shipping-info.html"><i class="fa-solid fa-truck-fast"></i> Shipping Policy</a></li>
+                <li><a href="return-policy.html"><i class="fa-solid fa-rotate-left"></i> Return Policy</a></li>
+                <li><a href="size-guide.html"><i class="fa-solid fa-ruler"></i> Size Guide</a></li>
+                <li><a href="track-order.html"><i class="fa-solid fa-map-location-dot"></i> Track Order</a></li>
+                <li><a href="contact-us.html"><i class="fa-solid fa-headset"></i> Contact Us</a></li>
+            </ul>
         </div>
+    </div>
+</div>
+
+<div class="page-header">
+    <div class="page-header-content">
+        <h1>Contact <span class="highlight">Us</span></h1>
+        <p>Our automotive experts are available 6 days a week to help with compatibility, orders, and returns.</p>
+    </div>
+</div>
+
+<div class="breadcrumb-bar">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html"><i class="fa-solid fa-house" style="font-size:0.75rem;"></i> Home</a>
+        <span class="sep"><i class="fa-solid fa-chevron-right" style="font-size:0.65rem;"></i></span>
+        <span class="current">Contact Us</span>
     </nav>
-        <!-- Mobile Search + Vehicle Select (Visible on small screens) -->
-        <div class="mobile-search">
-            <div class="mobile-search-row">
-                <select class="mobile-vehicle-select" id="mobile-vehicle-select">
-                    <option value="">All Vehicles</option>
-                    <option value="maruti">MARUTI</option>
-                    <option value="hyundai">HYUNDAI</option>
-                    <option value="mahindra">MAHINDRA</option>
-                    <option value="tata">TATA</option>
-                    <option value="chevrolet">CHEVROLET</option>
-                    <option value="honda">HONDA</option>
-                    <option value="skoda">SKODA</option>
-                    <option value="vw">VW</option>
-                    <option value="toyota">TOYOTA</option>
-                    <option value="nissan">NISSAN</option>
-                    <option value="renault">RENAULT</option>
-                    <option value="ford">FORD</option>
-                    <option value="fiat">FIAT</option>
-                    <option value="kia">KIA</option>
-                    <option value="bmw">BMW</option>
-                    <option value="audi">AUDI</option>
-                    <option value="volvo">VOLVO</option>
-                </select>
-                <div class="mobile-search-wrap">
-                    <input type="text" id="mobile-search-input" placeholder="Search parts...">
-                    <button class="mobile-search-btn"><i class="fa-solid fa-search"></i></button>
+</div>
+
+<main class="cu-main section-padding">
+    <div class="cu-container">
+
+        <!-- SECTION 1: CONTACT CHANNELS -->
+        <section>
+            <h2 class="section-title">Get in Touch</h2>
+            <div class="channels-grid">
+                <!-- WhatsApp -->
+                <div class="channel-card">
+                    <div class="channel-icon green"><i class="fa-brands fa-whatsapp"></i></div>
+                    <h3>WhatsApp</h3>
+                    <p class="channel-value">+91 72599 55674</p>
+                    <p class="channel-hours">Fastest response<br>Mon–Sat &nbsp;9AM–9PM IST</p>
+                    <a href="https://wa.me/917259955674" target="_blank" class="btn btn-primary" style="width:100%;">
+                        <i class="fa-brands fa-whatsapp"></i>&nbsp; Chat Now
+                    </a>
+                </div>
+                <!-- Phone -->
+                <div class="channel-card">
+                    <div class="channel-icon orange"><i class="fa-solid fa-phone"></i></div>
+                    <h3>Phone</h3>
+                    <p class="channel-value">1800 123 4567 (Toll-free)</p>
+                    <p class="channel-hours">Mon–Sat &nbsp;9AM–7PM IST<br>&nbsp;</p>
+                    <a href="tel:18001234567" class="btn btn-primary" style="width:100%;">
+                        <i class="fa-solid fa-phone"></i>&nbsp; Call Now
+                    </a>
+                </div>
+                <!-- Email -->
+                <div class="channel-card">
+                    <div class="channel-icon blue"><i class="fa-solid fa-envelope"></i></div>
+                    <h3>Email</h3>
+                    <p class="channel-value">support@spareblaze.in</p>
+                    <p class="channel-hours">Response within<br>24 business hours</p>
+                    <a href="mailto:support@spareblaze.in" class="btn btn-primary" style="width:100%;">
+                        <i class="fa-solid fa-envelope"></i>&nbsp; Send Email
+                    </a>
+                </div>
+                <!-- Live Chat -->
+                <div class="channel-card">
+                    <div class="channel-icon purple"><i class="fa-solid fa-comments"></i></div>
+                    <h3>Live Chat</h3>
+                    <p class="channel-value">Chat on this page</p>
+                    <p class="channel-hours">Mon–Sat &nbsp;10AM–6PM IST<br>&nbsp;</p>
+                    <button class="btn btn-primary" style="width:100%;" onclick="if(window.tidioChatApi){window.tidioChatApi.open();}else{alert('Live chat is loading. Please try again in a moment.');}">
+                        <i class="fa-solid fa-comments"></i>&nbsp; Start Chat
+                    </button>
                 </div>
             </div>
-            <div class="search-results" id="mobile-search-results"></div>
-        </div>
+        </section>
 
-    <!-- Secondary Navigation -->
-    <div class="nav-categories">
-        <div class="nav-container">
-            <button class="all-categories-btn" onclick="window.location.href='categories.html'">
-                <i class="fa-solid fa-bars-staggered"></i> All Categories
-            </button>
-            <ul class="category-links">
+        <!-- SECTION 2: INFO + FORM -->
+        <section>
+            <div class="contact-layout">
+
+                <!-- LEFT: INFO PANEL -->
+                <div class="info-panel">
+                    <div class="info-panel-content">
+                        <h2>We're here for you</h2>
+
+                        <div class="info-item">
+                            <div class="info-icon-circle"><i class="fa-solid fa-phone"></i></div>
+                            <div class="info-item-body">
+                                <h4>Phone &amp; WhatsApp</h4>
+                                <p>Toll-free: 1800 123 4567</p>
+                                <p>WhatsApp: +91 72599 55674</p>
+                            </div>
+                        </div>
+
+                        <div class="info-divider"></div>
+
+                        <div class="info-item">
+                            <div class="info-icon-circle"><i class="fa-solid fa-envelope"></i></div>
+                            <div class="info-item-body">
+                                <h4>Email Addresses</h4>
+                                <a href="mailto:support@spareblaze.in">support@spareblaze.in</a>
+                                <a href="mailto:sales@spareblaze.in" style="display:block;margin-top:3px;">sales@spareblaze.in</a>
+                                <a href="mailto:technical@spareblaze.in" style="display:block;margin-top:3px;">technical@spareblaze.in</a>
+                            </div>
+                        </div>
+
+                        <div class="info-divider"></div>
+
+                        <div class="info-item">
+                            <div class="info-icon-circle"><i class="fa-solid fa-clock"></i></div>
+                            <div class="info-item-body">
+                                <h4>Support Hours</h4>
+                                <table class="hours-table">
+                                    <tr><td>Monday – Friday</td><td>9:00 AM – 7:00 PM</td></tr>
+                                    <tr><td>Saturday</td><td>9:00 AM – 5:00 PM</td></tr>
+                                    <tr><td>Sunday</td><td>Closed</td></tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="info-divider"></div>
+
+                        <div class="info-item">
+                            <div class="info-icon-circle"><i class="fa-solid fa-location-dot"></i></div>
+                            <div class="info-item-body">
+                                <h4>Office Address</h4>
+                                <p>SpareBlaze India Pvt. Ltd.<br>Whitefield Industrial Zone<br>Bengaluru – 560066<br>Karnataka, India</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: CONTACT FORM -->
+                <div class="contact-form-card">
+                    <h2><i class="fa-solid fa-paper-plane" style="color:#e63900;margin-right:8px;"></i>Send a Message</h2>
+                    <form id="contact-form" novalidate>
+                        <div class="form-row">
+                            <div class="cf-group" style="margin-bottom:0;">
+                                <label for="cf-name">Full Name <span class="req">*</span></label>
+                                <input type="text" id="cf-name" placeholder="Rajesh Kumar" required>
+                            </div>
+                            <div class="cf-group" style="margin-bottom:0;">
+                                <label for="cf-mobile">Mobile Number</label>
+                                <input type="tel" id="cf-mobile" placeholder="+91 98765 43210">
+                            </div>
+                        </div>
+                        <div class="form-row" style="margin-bottom:0;">
+                            <div class="cf-group" style="margin-bottom:0;">
+                                <label for="cf-email">Email Address <span class="req">*</span></label>
+                                <input type="email" id="cf-email" placeholder="you@example.com" required>
+                            </div>
+                            <div class="cf-group" style="margin-bottom:0;">
+                                <label for="cf-topic">Topic</label>
+                                <select id="cf-topic">
+                                    <option value="">Select a topic...</option>
+                                    <option value="order-tracking">Order Status / Tracking</option>
+                                    <option value="return-refund">Return / Refund</option>
+                                    <option value="compatibility">Part Compatibility</option>
+                                    <option value="payment">Payment Issue</option>
+                                    <option value="wholesale">Wholesale Enquiry</option>
+                                    <option value="warranty">Warranty</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="cf-group" style="margin-top:16px;">
+                            <label for="cf-orderid">Order ID <span style="font-weight:400;color:#94a3b8;">(optional)</span></label>
+                            <input type="text" id="cf-orderid" placeholder="SB-XXXXXXXXX">
+                        </div>
+                        <div class="cf-group">
+                            <label for="cf-message">Message <span class="req">*</span></label>
+                            <textarea id="cf-message" rows="5" placeholder="Please describe your query in detail. Include your vehicle make, model, and year if asking about part compatibility (e.g. 2022 Hyundai Creta 1.5 Petrol)." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width:100%;margin-top:8px;">
+                            <i class="fa-solid fa-paper-plane"></i>&nbsp; Send Message
+                        </button>
+                        <div class="form-success" id="form-success">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <p id="form-success-msg">Message sent! We'll respond to your email within 1 business day.</p>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 3: QUICK HELP LINKS -->
+        <section>
+            <h2 class="section-title">Quick Help</h2>
+            <div class="quick-help-grid">
+                <a href="faq.html" class="quick-link-card">
+                    <div class="ql-icon"><i class="fa-solid fa-comments"></i></div>
+                    <div class="ql-text">
+                        <h4>FAQ</h4>
+                        <p>Answers to the most common questions</p>
+                    </div>
+                </a>
+                <a href="track-order.html" class="quick-link-card">
+                    <div class="ql-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+                    <div class="ql-text">
+                        <h4>Track Order</h4>
+                        <p>Real-time shipment tracking by Order ID</p>
+                    </div>
+                </a>
+                <a href="return-policy.html" class="quick-link-card">
+                    <div class="ql-icon"><i class="fa-solid fa-rotate-left"></i></div>
+                    <div class="ql-text">
+                        <h4>Return Policy</h4>
+                        <p>30-day hassle-free returns explained</p>
+                    </div>
+                </a>
+                <a href="shipping-info.html" class="quick-link-card">
+                    <div class="ql-icon"><i class="fa-solid fa-truck-fast"></i></div>
+                    <div class="ql-text">
+                        <h4>Shipping Policy</h4>
+                        <p>Delivery timelines, charges &amp; areas</p>
+                    </div>
+                </a>
+                <a href="size-guide.html" class="quick-link-card">
+                    <div class="ql-icon"><i class="fa-solid fa-ruler-combined"></i></div>
+                    <div class="ql-text">
+                        <h4>Size &amp; Fitment Guide</h4>
+                        <p>Tyre, brake pad &amp; filter size charts</p>
+                    </div>
+                </a>
+                <a href="https://wa.me/917259955674" target="_blank" class="quick-link-card">
+                    <div class="ql-icon" style="background:#dcfce7;color:#16a34a;"><i class="fa-brands fa-whatsapp"></i></div>
+                    <div class="ql-text">
+                        <h4>WhatsApp Chat</h4>
+                        <p>Fastest support — Mon–Sat 9AM–9PM</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<footer>
+    <div class="footer-container">
+        <div class="footer-brand">
+            <a href="index.html" class="logo"><img src="../public/images/spareblaze-logo-footer.png" alt="SpareBlaze Logo" style="width:250px;height:auto;"></a>
+            <p>India's trusted e-commerce platform for genuine car and SUV spare parts. Quality assured, delivered nationwide.</p>
+            <div class="social-links">
+                <a href="javascript:void(0);"><i class="fa-brands fa-instagram"></i></a>
+                <a href="javascript:void(0);"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="javascript:void(0);"><i class="fa-brands fa-twitter"></i></a>
+                <a href="javascript:void(0);"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+        </div>
+        <div class="footer-links">
+            <h3>Help</h3>
+            <ul>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="shipping-info.html">Shipping Policy</a></li>
+                <li><a href="return-policy.html">Return Policy</a></li>
+                <li><a href="size-guide.html">Size Guide</a></li>
+                <li><a href="track-order.html">Track Order</a></li>
+                <li><a href="contact-us.html">Contact Us</a></li>
+            </ul>
+        </div>
+        <div class="footer-links">
+            <h3>Shop By Type</h3>
+            <ul>
                 <li><a href="after-market.html">After Market</a></li>
                 <li><a href="refurbished.html">Refurbished</a></li>
                 <li><a href="used.html">Used</a></li>
@@ -216,158 +712,83 @@
                 <li><a href="wholesale.html">Wholesale</a></li>
             </ul>
         </div>
-    </div>
-
-    <!-- Page Header -->
-    <header class="page-header">
-        <h1>Contact <span class="highlight">Us</span></h1>
-        <p>Get in touch with our automotive experts for support or inquiries.</p>
-    </header>
-
-    <!-- Main Content -->
-    <main class="section-padding">
-        <div class="contact-container">
-            <!-- Contact Information -->
-            <div class="contact-info">
-                <h2>We're Here to Help</h2>
-                <p style="color: var(--color-text-muted); margin-bottom: 2rem;">Have a question about a part fitment or
-                    need help with a return? Reach out to us via any of the methods below.</p>
-
-                <div class="info-item">
-                    <div class="info-icon"><i class="fa-solid fa-phone"></i></div>
-                    <div class="info-text">
-                        <h3>Phone Support</h3>
-                        <p>+91 1800 123 4567<br>(Mon-Sat: 9 AM to 7 PM)</p>
-                    </div>
-                </div>
-
-                <div class="info-item">
-                    <div class="info-icon"><i class="fa-solid fa-envelope"></i></div>
-                    <div class="info-text">
-                        <h3>Email Us</h3>
-                        <p>support@spareblaze.in<br>sales@spareblaze.in</p>
-                    </div>
-                </div>
-
-                <div class="info-item">
-                    <div class="info-icon"><i class="fa-solid fa-location-dot"></i></div>
-                    <div class="info-text">
-                        <h3>Our Headquarters</h3>
-                        <p>123 Automotive Park, Andheri East<br>Mumbai, Maharashtra 400069<br>India</p>
-                    </div>
-                </div>
+        <div class="footer-contact">
+            <h3>Contact</h3>
+            <p><i class="fa-solid fa-phone"></i> +91 1800 123 4567</p>
+            <p><i class="fa-solid fa-envelope"></i> support@spareblaze.in</p>
+            <p><i class="fa-solid fa-location-dot"></i> Bengaluru, Karnataka, India</p>
+            <h3 class="payment-title">Secure Payments</h3>
+            <div class="payment-icons">
+                <i class="fa-brands fa-cc-visa"></i>
+                <i class="fa-brands fa-cc-mastercard"></i>
+                <span class="upi-text">UPI</span>
+                <span class="rupay-text">RuPay</span>
             </div>
-
-            <!-- Contact Form -->
-            <div class="contact-form">
-                <h2>Send a Message</h2>
-                <form action="javascript:void(0)" style="margin-top: 1.5rem;">
-                    <div class="form-group">
-                        <label for="name">Full Name</label>
-                        <input type="text" id="name" placeholder="John Doe" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" placeholder="john@example.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="subject">Subject</label>
-                        <input type="text" id="subject" placeholder="E.g., Compatibility Check for Nexon" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Your Message</label>
-                        <textarea id="message" rows="5" placeholder="How can we help you?" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">Send Message</button>
-                </form>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-container">
-            <div class="footer-brand">
-                <a href="index.html" class="logo">
-                    <img src="../public/images/spareblaze-logo-footer.png" alt="SpareBlaze Logo"
-                        style="width: 250px; height: auto;">
-                </a>
-                <p>India's trusted e-commerce platform for genuine car and SUV spare parts. Quality assured, delivered
-                    nationwide.</p>
-                <div class="social-links">
-                    <a href="javascript:void(0);"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="javascript:void(0);"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="javascript:void(0);"><i class="fa-brands fa-twitter"></i></a>
-                    <a href="javascript:void(0);"><i class="fa-brands fa-youtube"></i></a>
-                </div>
-            </div>
-
-            <div class="footer-links">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="index.html">About Us</a></li>
-                    <li><a href="track-order.html">Track Order</a></li>
-                    <li><a href="return-policy.html">Return Policy</a></li>
-                    <li><a href="shipping-info.html">Shipping Info</a></li>
-                    <li><a href="contact-us.html">Contact Us</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-links">
-                <h3>Shop By Type</h3>
-                <ul>
-                    <li><a href="after-market.html">After Market</a></li>
-                    <li><a href="refurbished.html">Refurbished</a></li>
-                    <li><a href="used.html">Used</a></li>
-                    <li><a href="oem.html">OEM</a></li>
-                    <li><a href="wholesale.html">Wholesale</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-contact">
-                <h3>Contact</h3>
-                <p><i class="fa-solid fa-phone"></i> +91 1800 123 4567</p>
-                <p><i class="fa-solid fa-envelope"></i> support@spareblaze.in</p>
-                <p><i class="fa-solid fa-location-dot"></i> Bengaluru, Karnataka, India</p>
-
-                <h3 class="payment-title">Secure Payments</h3>
-                <div class="payment-icons">
-                    <i class="fa-brands fa-cc-visa"></i>
-                    <i class="fa-brands fa-cc-mastercard"></i>
-                    <span class="upi-text">UPI</span>
-                    <span class="rupay-text">RuPay</span>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 SpareBlaze. All rights reserved. Designed for Indian Automotive Market.</p>
-        </div>
-    </footer>
-
-    <!-- Cart Sidebar -->
-    <div class="cart-overlay" id="cart-overlay"></div>
-    <div class="cart-sidebar" id="cart-sidebar">
-        <div class="cart-header">
-            <h3>Your Cart</h3>
-            <button class="close-btn" id="close-cart"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="cart-items" id="cart-items-container">
-            <div class="empty-cart-msg">Your cart is currently empty.</div>
-        </div>
-        <div class="cart-footer">
-            <div class="cart-total">
-                <span>Total:</span>
-                <span class="total-amount" id="cart-total-amount">₹0</span>
-            </div>
-            <button class="btn btn-primary w-100 checkout-btn" id="checkout-btn" disabled>Proceed to Secure
-                Checkout</button>
         </div>
     </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 SpareBlaze. All rights reserved. Designed for Indian Automotive Market.</p>
+    </div>
+</footer>
+<div class="cart-overlay" id="cart-overlay"></div>
+<div class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-header"><h3>Your Cart</h3><button class="close-btn" id="close-cart"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="cart-items" id="cart-items-container"><div class="empty-cart-msg">Your cart is currently empty.</div></div>
+    <div class="cart-footer">
+        <div class="cart-total"><span>Total:</span><span class="total-amount" id="cart-total-amount">&#8377;0</span></div>
+        <button class="btn btn-primary w-100 checkout-btn" id="checkout-btn" disabled>Proceed to Secure Checkout</button>
+    </div>
+</div>
+<script src="../js/script.js"></script>
+<script src="https://code.tidio.co/sienbawteqdozz2om1mswgszpjxm6zxg.js" async></script>
+<button id="scroll-to-top" class="scroll-to-top" aria-label="Scroll to top"><i class="fa-solid fa-chevron-up"></i></button>
 
-    <script src="../js/script.js"></script>
+<script>
+(function() {
+    var form = document.getElementById('contact-form');
+    var successBox = document.getElementById('form-success');
+    var successMsg = document.getElementById('form-success-msg');
 
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var name = document.getElementById('cf-name').value.trim();
+        var email = document.getElementById('cf-email').value.trim();
+        var message = document.getElementById('cf-message').value.trim();
 
-    <script src="https://code.tidio.co/sienbawteqdozz2om1mswgszpjxm6zxg.js" async></script>
+        if (!name) {
+            alert('Please enter your full name.');
+            document.getElementById('cf-name').focus();
+            return;
+        }
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            alert('Please enter a valid email address.');
+            document.getElementById('cf-email').focus();
+            return;
+        }
+        if (!message) {
+            alert('Please enter your message.');
+            document.getElementById('cf-message').focus();
+            return;
+        }
+
+        successMsg.textContent = 'Message sent! We\u2019ll respond to ' + email + ' within 1 business day.';
+        successBox.classList.add('visible');
+
+        var submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-circle-check"></i>&nbsp; Message Sent';
+        submitBtn.style.background = '#16a34a';
+        submitBtn.style.borderColor = '#16a34a';
+
+        successBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+})();
+</script>
+  <!-- WhatsApp Float Button -->
+  <a id="wa-float-btn" class="wa-float-btn" href="https://wa.me/917259955674" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+    <span class="wa-tooltip">Chat with us</span>
+  </a>
+
 </body>
-
 </html>

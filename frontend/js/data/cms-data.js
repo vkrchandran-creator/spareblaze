@@ -22,6 +22,7 @@
             phone: '+91 1800 123 4567',
             email: 'support@spareblaze.in',
             address: 'Bengaluru, Karnataka, India',
+            whatsapp: '+91 7259955674',
             instagram: 'javascript:void(0);',
             facebook: 'javascript:void(0);',
             twitter: 'javascript:void(0);',
@@ -87,6 +88,7 @@
         if (!d.topCategories || !d.topCategories.length) d.topCategories = DEFAULT_DATA.topCategories;
         if (!d.siteIdentity) d.siteIdentity = DEFAULT_DATA.siteIdentity;
         if (!d.footer) d.footer = DEFAULT_DATA.footer;
+        if (d.footer && d.footer.whatsapp === undefined) d.footer.whatsapp = DEFAULT_DATA.footer.whatsapp;
         if (!d.ctaBanner) d.ctaBanner = DEFAULT_DATA.ctaBanner;
         if (!d.theme) d.theme = DEFAULT_DATA.theme;
         if (!d.slides || !d.slides.length) d.slides = DEFAULT_DATA.slides;
@@ -316,7 +318,18 @@
         });
     }
 
-    // ── 9. Featured Products ──
+    // ── 9. WhatsApp Float Button ──
+    function applyWhatsApp() {
+        const num = (d.footer && d.footer.whatsapp) || '';
+        if (!num) return;
+        // Strip everything except digits (wa.me requires digits only)
+        const digits = num.replace(/\D/g, '');
+        if (!digits) return;
+        const btn = document.getElementById('wa-float-btn');
+        if (btn) btn.href = 'https://wa.me/' + digits;
+    }
+
+    // ── 10. Featured Products ──
     function applyFeaturedProducts() {
         if (d.featuredProducts) window.__sbCmsFeatured = d.featuredProducts;
     }
@@ -413,6 +426,7 @@
         applyCtaBanner();
         applyFooter();
         applyCarousel();
+        applyWhatsApp();
         applyFeaturedProducts();
         applyCategoryPage();
     }

@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ – SpareBlaze | Frequently Asked Questions</title>
+    <meta name="description" content="Find answers to common questions about ordering, shipping, returns, payments, part compatibility, and your SpareBlaze account. We've got you covered.">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23e63900'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial Black,Arial' font-weight='900' font-size='28' fill='white'>SB</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* ── Page header ── */
+        .page-header {
+            background: linear-gradient(135deg, var(--color-bg-base) 0%, #e2e8f0 100%);
+            padding: 8rem 1.5rem 4rem;
+            text-align: center;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .page-header h1 {
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            color: var(--color-text-main);
+            margin-bottom: 1rem;
+            line-height: 1.15;
+        }
+        .page-header p {
+            color: var(--color-text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ── Breadcrumb ── */
+        .breadcrumb {
+            max-width: 920px;
+            margin: 0 auto 1.25rem;
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+        }
+        .breadcrumb a { color: var(--color-primary); text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+
+        /* ── Quick-links pill bar ── */
+        .faq-quicklinks {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-bottom: 2.75rem;
+        }
+        .faq-quicklinks a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.45rem 1.1rem;
+            border-radius: 999px;
+            border: 1.5px solid var(--color-border);
+            background: var(--color-bg-surface);
+            color: var(--color-text-muted);
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: background 0.18s, border-color 0.18s, color 0.18s;
+            white-space: nowrap;
+        }
+        .faq-quicklinks a i { font-size: 0.78rem; color: var(--color-primary); }
+        .faq-quicklinks a:hover {
+            background: var(--color-primary-light);
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        /* ── FAQ wrapper ── */
+        .faq-wrapper { max-width: 920px; margin: 0 auto; }
+
+        /* ── Category block ── */
+        .faq-category { margin-bottom: 3.25rem; scroll-margin-top: 110px; }
+
+        .faq-category-header {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            margin-bottom: 1.4rem;
+            padding-bottom: 0.85rem;
+            border-bottom: 2px solid var(--color-primary);
+        }
+        .faq-cat-icon {
+            width: 44px; height: 44px;
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+            border-radius: var(--radius-sm);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .faq-category-header h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--color-text-main);
+            margin: 0;
+        }
+
+        /* ── Accordion items ── */
+        .faq-item {
+            background: var(--color-bg-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            margin-bottom: 0.65rem;
+            overflow: hidden;
+            transition: box-shadow 0.2s, border-color 0.2s;
+        }
+        .faq-item:hover { box-shadow: 0 4px 18px rgba(0,0,0,0.07); }
+        .faq-item.open {
+            border-color: rgba(230, 57, 0, 0.3);
+            box-shadow: 0 4px 18px rgba(230, 57, 0, 0.07);
+        }
+
+        .faq-question {
+            width: 100%;
+            background: none;
+            border: none;
+            text-align: left;
+            padding: 1.2rem 1.5rem;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text-main);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            transition: color 0.18s;
+        }
+        .faq-question:hover { color: var(--color-primary); }
+        .faq-item.open .faq-question { color: var(--color-primary); }
+
+        .faq-icon {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            border: 1.5px solid var(--color-border);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--color-primary);
+            font-size: 0.78rem;
+            flex-shrink: 0;
+            transition: background 0.2s, transform 0.3s, border-color 0.2s;
+        }
+        .faq-item.open .faq-icon {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+            color: #fff;
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.38s ease, padding 0.25s ease;
+            padding: 0 1.5rem;
+        }
+        .faq-item.open .faq-answer {
+            max-height: 1000px;
+            padding: 0 1.5rem 1.4rem;
+        }
+        .faq-answer-inner {
+            border-top: 1px solid var(--color-border);
+            padding-top: 1rem;
+            color: var(--color-text-muted);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+        .faq-answer-inner p { margin-bottom: 0.75rem; }
+        .faq-answer-inner p:last-child { margin-bottom: 0; }
+        .faq-answer-inner ul, .faq-answer-inner ol {
+            padding-left: 1.4rem;
+            margin-bottom: 0.75rem;
+        }
+        .faq-answer-inner li { margin-bottom: 0.4rem; }
+        .faq-answer-inner a { color: var(--color-primary); text-decoration: none; }
+        .faq-answer-inner a:hover { text-decoration: underline; }
+        .faq-answer-inner strong { color: var(--color-text-main); }
+
+        /* Inline tip box inside answer */
+        .faq-tip {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: var(--radius-sm);
+            padding: 0.75rem 1rem;
+            display: flex;
+            gap: 0.65rem;
+            align-items: flex-start;
+            margin-top: 0.75rem;
+            font-size: 0.88rem;
+            color: #92400e;
+        }
+        .faq-tip i { color: #d97706; flex-shrink: 0; margin-top: 0.1rem; }
+
+        /* ── Bottom CTA ── */
+        .faq-cta {
+            background: linear-gradient(135deg, #fff4f0 0%, #ffe8e0 100%);
+            border: 1px solid #ffd0be;
+            border-radius: var(--radius-lg);
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .faq-cta .cta-icon {
+            width: 64px; height: 64px;
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.6rem;
+            margin: 0 auto 1.25rem;
+        }
+        .faq-cta h3 { font-size: 1.6rem; margin-bottom: 0.65rem; }
+        .faq-cta p { color: var(--color-text-muted); max-width: 520px; margin: 0 auto 1.75rem; line-height: 1.7; }
+        .faq-cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 600px) {
+            .faq-quicklinks a { font-size: 0.82rem; padding: 0.4rem 0.9rem; }
+            .faq-question { font-size: 0.93rem; padding: 1rem 1.1rem; }
+            .faq-answer { padding: 0 1.1rem; }
+            .faq-item.open .faq-answer { padding: 0 1.1rem 1.1rem; }
+            .faq-cta { padding: 2rem 1.25rem; }
+            .faq-cta h3 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ═══════════════════════════════ NAVBAR ═══════════════════════════════ -->
+    <nav class="navbar scrolled">
+        <div class="nav-container">
+            <a href="index.html" class="logo"><img src="../public/images/spareblaze-logo.png" alt="SpareBlaze Logo" style="height:54px;width:auto;object-fit:contain;"></a>
+            <div class="search-container">
+                <div class="search-category" id="custom-dropdown">
+                    <div class="dropdown-selected"><span id="dropdown-text">Select Vehicle</span><i class="fa-solid fa-chevron-down"></i></div>
+                    <ul class="dropdown-options">
+                        <li data-value="">All Vehicles</li><li data-value="maruti">MARUTI</li><li data-value="hyundai">HYUNDAI</li><li data-value="mahindra">MAHINDRA</li><li data-value="tata">TATA</li><li data-value="honda">HONDA</li><li data-value="toyota">TOYOTA</li><li data-value="kia">KIA</li><li data-value="ford">FORD</li><li data-value="skoda">SKODA</li><li data-value="vw">VW</li><li data-value="renault">RENAULT</li><li data-value="nissan">NISSAN</li><li data-value="chevrolet">CHEVROLET</li><li data-value="fiat">FIAT</li><li data-value="bmw">BMW</li><li data-value="audi">AUDI</li><li data-value="volvo">VOLVO</li>
+                    </ul>
+                </div>
+                <input type="text" id="search-input" placeholder="Search by part name, brand, or OEM number...">
+                <button class="search-btn" onclick="window.location.href='search.html'"><i class="fa-solid fa-search"></i></button>
+            </div>
+            <div class="nav-actions">
+                <a href="javascript:void(0);" class="nav-icon-btn"><i class="fa-regular fa-user"></i></a>
+                <button class="nav-icon-btn cart-btn" id="cart-toggle"><i class="fa-solid fa-cart-shopping"></i><span class="cart-badge" id="cart-count">0</span></button>
+                <button class="mobile-menu-btn" id="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Search -->
+    <div class="mobile-search">
+        <div class="mobile-search-row">
+            <select class="mobile-vehicle-select" id="mobile-vehicle-select">
+                <option value="">All Vehicles</option><option value="maruti">MARUTI</option><option value="hyundai">HYUNDAI</option><option value="mahindra">MAHINDRA</option><option value="tata">TATA</option><option value="honda">HONDA</option><option value="toyota">TOYOTA</option><option value="kia">KIA</option><option value="ford">FORD</option><option value="skoda">SKODA</option><option value="vw">VW</option><option value="renault">RENAULT</option><option value="nissan">NISSAN</option><option value="chevrolet">CHEVROLET</option><option value="fiat">FIAT</option><option value="bmw">BMW</option><option value="audi">AUDI</option><option value="volvo">VOLVO</option>
+            </select>
+            <div class="mobile-search-wrap">
+                <input type="text" id="mobile-search-input" placeholder="Search parts...">
+                <button class="mobile-search-btn"><i class="fa-solid fa-search"></i></button>
+            </div>
+        </div>
+        <div class="search-results" id="mobile-search-results"></div>
+    </div>
+
+    <!-- ═══════════════════════════ SECONDARY NAV ═══════════════════════════ -->
+    <div class="nav-categories">
+        <div class="nav-container">
+            <button class="all-categories-btn" onclick="window.location.href='categories.html'">
+                <i class="fa-solid fa-bars-staggered"></i> All Categories
+            </button>
+            <ul class="category-links">
+                <li><a href="after-market.html">After Market</a></li>
+                <li><a href="refurbished.html">Refurbished</a></li>
+                <li><a href="used.html">Used</a></li>
+                <li><a href="oem.html">OEM</a></li>
+                <li><a href="wholesale.html">Wholesale</a></li>
+            </ul>
+            <div class="help-nav-item">
+                <a href="javascript:void(0);" class="help-nav-link">
+                    <i class="fa-solid fa-circle-question"></i> Help <i class="fa-solid fa-chevron-down help-chevron"></i>
+                </a>
+                <ul class="help-dropdown-menu">
+                    <li><a href="faq.html"><i class="fa-solid fa-comments"></i> FAQ</a></li>
+                    <li><a href="shipping-info.html"><i class="fa-solid fa-truck-fast"></i> Shipping Policy</a></li>
+                    <li><a href="return-policy.html"><i class="fa-solid fa-rotate-left"></i> Return Policy</a></li>
+                    <li><a href="size-guide.html"><i class="fa-solid fa-ruler"></i> Size Guide</a></li>
+                    <li><a href="track-order.html"><i class="fa-solid fa-map-location-dot"></i> Track Order</a></li>
+                    <li><a href="contact-us.html"><i class="fa-solid fa-headset"></i> Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════ PAGE HEADER ═════════════════════════════ -->
+    <header class="page-header">
+        <h1>Frequently Asked <span class="highlight">Questions</span></h1>
+        <p>Everything you need to know about ordering, compatibility, shipping, payments, and returns at SpareBlaze — answered clearly.</p>
+    </header>
+
+    <!-- ═══════════════════════════ MAIN CONTENT ════════════════════════════ -->
+    <main class="section-padding">
+        <div class="breadcrumb">
+            <a href="index.html">Home</a> &rsaquo; <span>FAQ</span>
+        </div>
+
+        <div class="faq-wrapper">
+
+            <!-- Quick Links pill bar -->
+            <nav class="faq-quicklinks" aria-label="Jump to FAQ category">
+                <a href="#cat-orders"><i class="fa-solid fa-cart-shopping"></i> Orders &amp; Payments</a>
+                <a href="#cat-shipping"><i class="fa-solid fa-truck-fast"></i> Shipping &amp; Delivery</a>
+                <a href="#cat-returns"><i class="fa-solid fa-rotate-left"></i> Returns &amp; Refunds</a>
+                <a href="#cat-payments"><i class="fa-solid fa-indian-rupee-sign"></i> Payments &amp; Pricing</a>
+                <a href="#cat-parts"><i class="fa-solid fa-gears"></i> Parts &amp; Compatibility</a>
+                <a href="#cat-account"><i class="fa-solid fa-user-gear"></i> Account &amp; Orders</a>
+                <a href="#cat-warranty"><i class="fa-solid fa-shield-halved"></i> Warranty</a>
+            </nav>
+
+            <!-- ─────────────── 1. ORDERS & PAYMENTS ─────────────── -->
+            <section class="faq-category" id="cat-orders">
+                <div class="faq-category-header">
+                    <div class="faq-cat-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+                    <h2>Orders &amp; Payments</h2>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        How do I place an order on SpareBlaze?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>Placing an order is straightforward. Use the search bar or browse by category to find the part you need. Select your vehicle make, model, and year to verify compatibility, then click <strong>Add to Cart</strong>. Once you've finished shopping, go to your cart, click <strong>Proceed to Checkout</strong>, enter your delivery address, choose a payment method, and confirm your order.</p>
+                            <p>You will receive an order confirmation email and SMS with your unique Order ID within a few minutes of successful payment. Keep this ID handy for tracking and support queries.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        What payment methods does SpareBlaze accept?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>We support a comprehensive range of payment options to suit every customer:</p>
+                            <ul>
+                                <li><strong>UPI</strong> – Google Pay, PhonePe, Paytm, BHIM UPI, and all UPI-enabled apps</li>
+                                <li><strong>Credit &amp; Debit Cards</strong> – Visa, Mastercard, RuPay (all major Indian banks)</li>
+                                <li><strong>Net Banking</strong> – Supported for all major Indian banks including SBI, HDFC, ICICI, Axis</li>
+                                <li><strong>Cash on Delivery (COD)</strong> – Available in select PIN codes for orders under ₹10,000, with an additional ₹49 handling fee</li>
+                                <li><strong>EMI</strong> – No-cost and low-cost EMI options available on select credit cards (3, 6, 9, and 12-month tenures)</li>
+                            </ul>
+                            <p>All transactions are secured by 256-bit SSL encryption and processed through Razorpay, a PCI-DSS Level 1 compliant payment gateway.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        Can I cancel or modify my order after placing it?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>Orders can be cancelled or modified within <strong>2 hours</strong> of placement, provided the item has not yet been dispatched from our warehouse. To request a change, contact our support team immediately with your Order ID via:</p>
+                            <ul>
+                                <li>Email: <a href="mailto:support@spareblaze.in">support@spareblaze.in</a></li>
+                                <li>Phone: <a href="tel:+911800123456">+91 1800 123 4567</a> (Mon–Sat, 9 AM – 7 PM IST)</li>
+                                <li>WhatsApp: <a href="https://wa.me/917259955674" target="_blank" rel="noopener">Chat with us</a></li>
+                            </ul>
+                            <p>Once an order has been dispatched, it cannot be cancelled. You may initiate a return upon delivery if you no longer need the item.</p>
+                            <div class="faq-tip">
+                                <i class="fa-solid fa-circle-info"></i>
+                                <span>Act fast — our warehouse processes orders quickly and the 2-hour window closes once packing begins, even if it is within the 2-hour period.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        How do I modify the delivery address on my order?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>Address changes are possible only <strong>before the order is dispatched</strong>. Contact support immediately with your Order ID and the corrected delivery address. Once a shipment is in transit, address changes are not possible — you would need to wait for delivery and then return/reorder if required.</p>
+                            <p>For future orders, you can save multiple delivery addresses under <strong>My Account &rarr; Saved Addresses</strong> to avoid this issue.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        How do I download my invoice for GST input credit?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>A tax invoice is automatically emailed to your registered address immediately after your order is confirmed. You can also download it any time from <strong>My Account &rarr; Order History &rarr; [Select Order] &rarr; Download Invoice</strong>. All invoices include the GSTIN of SpareBlaze, making them fully valid for GST input tax credit claims for your business.</p>
+                            <p>If you need to add or update your GSTIN on an invoice, contact support within 48 hours of order placement.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ─────────────── 2. SHIPPING & DELIVERY ─────────────── -->
+            <section class="faq-category" id="cat-shipping">
+                <div class="faq-category-header">
+                    <div class="faq-cat-icon"><i class="fa-solid fa-truck-fast"></i></div>
+                    <h2>Shipping &amp; Delivery</h2>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        How long will my order take to arrive?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>Delivery timelines depend on your location, counted from the dispatch date:</p>
+                            <ul>
+                                <li><strong>Metro / Tier-1 Cities</strong> (Mumbai, Delhi, Bengaluru, Chennai, etc.) – 2–4 business days</li>
+                                <li><strong>Tier-2 Cities</strong> (Jaipur, Lucknow, Coimbatore, Kochi, etc.) – 3–5 business days</li>
+                                <li><strong>Tier-3 &amp; Rural Areas</strong> – 5–8 business days</li>
+                                <li><strong>Remote / Hilly Regions</strong> (J&amp;K, North-East, Andaman &amp; Nicobar) – 7–10 business days</li>
+                                <li><strong>Heavy / Freight Shipments</strong> – Add 2–3 extra days to the above estimates</li>
+                            </ul>
+                            <p>All in-stock items are dispatched within <strong>24 hours</strong> of order confirmation (Monday–Saturday). See our full <a href="shipping-info.html">Shipping Policy</a> for details.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        Do you offer free shipping? What is the threshold?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p><strong>Free shipping</strong> is available on all prepaid orders above <strong>₹1,500</strong>. Orders below this amount attract a flat shipping fee of ₹99. COD orders always carry an additional ₹49 handling charge regardless of order value. Express delivery in select metros costs an extra ₹149.</p>
+                            <div class="faq-tip">
+                                <i class="fa-solid fa-lightbulb"></i>
+                                <span>Paying via UPI, card, or net banking qualifies your order as prepaid and makes it eligible for free shipping above ₹1,500.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        Is Cash on Delivery (COD) available everywhere?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>COD is available in most serviceable PIN codes across India but is subject to our logistics partners' coverage. It is limited to orders under <strong>₹10,000</strong>. To check COD availability for your PIN code, simply enter your address at checkout — the COD option will appear if it is available for your location.</p>
+                            <p>COD orders carry an additional <strong>₹49 handling fee</strong> and cannot be availed on orders already processed with prepaid payment methods.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        What happens if I am not home at the time of delivery?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>If you are unavailable, the delivery agent will attempt redelivery on the next business day. Typically, <strong>up to 3 delivery attempts</strong> are made before the package is returned to our warehouse. You will receive an SMS/call before each attempt.</p>
+                            <p>If all attempts fail, the order is marked as RTO (Return to Origin) and a refund (minus any applicable COD fee) is processed within 7–10 business days of the package returning to us. To reschedule delivery, contact the courier directly using the tracking number in your dispatch email.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        Do you offer express or same-day delivery?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p><strong>Express delivery</strong> (1–2 business days) is available for select metro cities — Mumbai, Delhi NCR, Bengaluru, Chennai, Hyderabad, and Pune. The express option will appear at checkout if it is available for your PIN code, with an additional charge of <strong>₹149</strong>. Same-day delivery is not currently available. We are actively expanding express coverage.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ─────────────── 3. RETURNS & REFUNDS ─────────────── -->
+            <section class="faq-category" id="cat-returns">
+                <div class="faq-category-header">
+                    <div class="faq-cat-icon"><i class="fa-solid fa-rotate-left"></i></div>
+                    <h2>Returns &amp; Refunds</h2>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        What is SpareBlaze's return window?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>SpareBlaze offers a generous <strong>30-day return window</strong> from the date of delivery for eligible items. The item must be unused, in its original packaging with all accessories and documentation intact, and accompanied by the original invoice. For defective or damaged items, clear photographic or video evidence must be submitted at the time of raising the return request.</p>
+                            <p>Read the complete conditions and exclusions in our <a href="return-policy.html">Return Policy</a>.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        How do I initiate a return?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <ol>
+                                <li><strong>Contact us</strong> within 30 days via email at <a href="mailto:support@spareblaze.in">support@spareblaze.in</a> or call +91 1800 123 4567.</li>
+                                <li><strong>Provide your Order ID</strong> and photos/video clearly showing the defect or issue.</li>
+                                <li><strong>Receive approval</strong> — our team reviews the request within 24–48 business hours and issues a Return Authorisation (RA) number.</li>
+                                <li><strong>Doorstep pickup</strong> is scheduled at no cost to you. Ensure the item is packed securely in original packaging.</li>
+                                <li><strong>Inspection</strong> at our warehouse takes 3–5 business days after receipt.</li>
+                                <li><strong>Refund is processed</strong> within 5–7 business days of approval.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        How long does a refund take? Which methods are fastest?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>After the returned item passes inspection, refund timelines are as follows:</p>
+                            <ul>
+                                <li><strong>UPI / Net Banking:</strong> 5–7 business days (fastest)</li>
+                                <li><strong>Credit / Debit Card:</strong> 7–10 business days (subject to your bank's processing time)</li>
+                                <li><strong>SpareBlaze Wallet Credit:</strong> 3–5 business days</li>
+                                <li><strong>COD orders:</strong> 7–14 business days via bank transfer to your provided account</li>
+                            </ul>
+                            <p>You will receive an email confirmation as soon as the refund is initiated from our end.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        What should I do if I receive a defective or wrong part?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>If your part arrives defective, damaged in transit, or is substantially different from the item you ordered:</p>
+                            <ol>
+                                <li>Do <strong>not</strong> install the part.</li>
+                                <li>Photograph/video the part alongside the packaging and the shipping label clearly showing the damage or mismatch.</li>
+                                <li>Contact us within <strong>48 hours of delivery</strong> for damaged items (DOA claims). For wrong-part claims you have the full 30-day window.</li>
+                            </ol>
+                            <p>We will arrange express replacement dispatch or a full refund — your choice. Defective and wrong-part cases receive priority handling and we cover all return shipping costs.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        Can I return part of a multi-item order?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>Yes. Partial returns are supported. You can initiate a return for one or more individual items within a multi-item order without affecting the rest. The refund will be calculated for the returned items only, and the original shipping fee (if any) is non-refundable unless <em>all</em> items in the order are returned due to a fault on our side.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ─────────────── 4. PAYMENTS & PRICING ─────────────── -->
+            <section class="faq-category" id="cat-payments">
+                <div class="faq-category-header">
+                    <div class="faq-cat-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+                    <h2>Payments &amp; Pricing</h2>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        Are EMI options available? Which cards are supported?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>Yes. No-cost and low-cost EMI is available on select purchases through major credit cards. Supported tenures are 3, 6, 9, and 12 months. Banks currently offering no-cost EMI include HDFC, ICICI, Axis, Kotak, SBI, HSBC, and Standard Chartered. The EMI option will appear at checkout if your card is eligible and the order total meets the minimum threshold (typically ₹3,000).</p>
+                            <p>Processing fees (if any) are displayed transparently at checkout before you confirm.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        Does SpareBlaze offer price matching?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>We strive to offer the most competitive prices in the Indian automotive parts market. While we do not have a formal price-match guarantee, our team regularly benchmarks prices against authorised competitors. If you find an identical part (same brand, part number, and condition) listed significantly lower on a verified competitor's website, <a href="contact-us.html">contact our support team</a> with a link to the listing and we will do our best to match it.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        Why do prices sometimes change between my visits?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>Automotive part prices can fluctuate due to changes in supplier pricing, foreign exchange rates (for imported parts), inventory levels, and promotional campaigns. The price displayed at the time you <strong>confirm your order</strong> is the price you pay — it is locked in at checkout and will not change even if the listing price subsequently drops or increases. We recommend adding items you intend to buy to your cart soon.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        Are GST and taxes included in the displayed price?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>Yes. All prices displayed on SpareBlaze are <strong>inclusive of applicable GST</strong>. You will not encounter any hidden taxes at checkout. A detailed GST-compliant tax invoice is provided with every order, showing the base price, GST rate, and total amount paid — fully valid for input tax credit (ITC) claims.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        My payment failed but the amount was deducted from my account. What should I do?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>This can happen when a payment is deducted at your bank's end but the confirmation does not reach our server. In most cases, the amount is <strong>automatically reversed</strong> to your account within 5–7 business days by your bank or payment gateway.</p>
+                            <p>If the reversal does not appear after 7 business days, contact us at <a href="mailto:support@spareblaze.in">support@spareblaze.in</a> with your transaction reference number and bank statement screenshot. We will coordinate with Razorpay to expedite the refund.</p>
+                            <div class="faq-tip">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <span>Please do not attempt the payment again immediately — check your order history first. If an order was created (even with a pending payment status), avoid duplicate payments.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ─────────────── 5. PARTS & COMPATIBILITY ─────────────── -->
+            <section class="faq-category" id="cat-parts">
+                <div class="faq-category-header">
+                    <div class="faq-cat-icon"><i class="fa-solid fa-gears"></i></div>
+                    <h2>Parts &amp; Compatibility</h2>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        How do I check if a part is compatible with my vehicle?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>Every product page lists the compatible vehicle makes, models, engine variants, and year ranges under the <strong>Fitment Details</strong> section. To filter results specifically for your car, use the <strong>Vehicle Selector</strong> in the search bar. For additional verification, our <a href="size-guide.html">Size &amp; Fitment Guide</a> provides further guidance.</p>
+                            <p>If you are still unsure, contact our technical support team with your vehicle's OEM part number (found in your owner's manual or on the existing part) or your Vehicle Identification Number (VIN/Chassis Number) — we will confirm compatibility before you order.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        What is the difference between OEM, After-Market, and Refurbished parts?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <ul>
+                                <li><strong>OEM (Original Equipment Manufacturer):</strong> Parts made by or under licence from the original vehicle manufacturer, to factory-exact specifications. Guaranteed fitment, highest quality, typically premium-priced.</li>
+                                <li><strong>After-Market:</strong> Parts produced by independent manufacturers that meet or exceed OEM specifications. Offer excellent value and are widely used in service workshops across India.</li>
+                                <li><strong>Refurbished:</strong> Genuine used parts that have been professionally disassembled, cleaned, repaired to OEM specifications, and re-tested. Best for older vehicles where new OEM parts may be discontinued.</li>
+                                <li><strong>Used:</strong> Salvaged parts in working condition with minimal refurbishment. The most affordable option, suited for temporary or low-mileage vehicles.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        Can I search by OEM part number?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>Yes. Our search engine supports OEM part number lookups. Type the alphanumeric OEM code (for example, <em>1K0698151G</em> or <em>MHC-4500</em>) directly into the search bar. If we carry the exact part or a cross-referenced compatible alternative, it will appear in the results along with compatibility information.</p>
+                            <p>OEM numbers are typically found printed on the old part itself, in your vehicle's service manual, or via your car dealership.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        What if the wrong part is delivered?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>If you receive a part that is different from what you ordered, please <strong>do not install it</strong>. Contact us immediately with your Order ID and clear photos of the part received alongside the part number on its packaging. We will raise a priority wrong-item case and dispatch the correct part as soon as we receive the incorrect one back from you. We cover all shipping costs for wrong-item errors.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        Can I return a part that I have already installed or tried to fit?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p><strong>Installed parts are not eligible for return</strong> under our standard return policy. Once a part shows any signs of fitment — tool marks, scratches from installation, or any evidence of having been mounted — it cannot be returned unless it was defective in a way that was only discoverable during installation (e.g., a threading defect). In such cases, photographic evidence of the defect is required and the case is reviewed individually.</p>
+                            <p>Always verify fitment visually against the old part before installation. If in doubt, consult our support team first.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ─────────────── 6. ACCOUNT & ORDERS ─────────────── -->
+            <section class="faq-category" id="cat-account">
+                <div class="faq-category-header">
+                    <div class="faq-cat-icon"><i class="fa-solid fa-user-gear"></i></div>
+                    <h2>Account &amp; Orders</h2>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        Do I need an account to order from SpareBlaze?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>You can browse products and add items to your cart without an account. However, creating a free SpareBlaze account unlocks several benefits:</p>
+                            <ul>
+                                <li>Track all your orders from a single dashboard</li>
+                                <li>Save and manage multiple delivery addresses</li>
+                                <li>View complete order history and download invoices</li>
+                                <li>Earn and redeem SpareBlaze loyalty points (SparkPoints)</li>
+                                <li>Receive personalised part recommendations based on your saved vehicles</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        Can I track my order without logging in?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>Yes. Visit our <a href="track-order.html">Track Order</a> page and enter your <strong>Order ID</strong> (from your confirmation email) along with your <strong>registered email address</strong>. You do not need to be logged in to track your shipment. You will see the full shipment journey including the current location and expected delivery date.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        How do I earn and use SparkPoints (loyalty points)?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>SparkPoints are SpareBlaze's loyalty reward currency. You earn <strong>1 SparkPoint for every ₹50 spent</strong> on eligible orders. Points are credited to your account within 48 hours of order delivery confirmation. You can redeem accumulated points for discounts on future orders at checkout (minimum 100 points required per redemption).</p>
+                            <p>SparkPoints expire if your account is inactive for 12 consecutive months. Points are not awarded on COD orders or cancelled/returned orders.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        I forgot my password. How do I reset it?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>Click the user icon in the top-right navigation bar and select <strong>"Forgot Password"</strong>. Enter your registered email address and we will send you a secure password reset link valid for <strong>30 minutes</strong>. If the email does not arrive within a few minutes, check your spam/junk folder or contact <a href="contact-us.html">support</a> to verify the email address associated with your account.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        How do I add my GSTIN to a placed order for business invoicing?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>To add your GSTIN, contact our support team within <strong>48 hours of order placement</strong> with your Order ID and GST registration number. We will update the invoice and resend a revised copy to your registered email. Going forward, you can save your GSTIN under <strong>My Account &rarr; Business Details</strong> so it is automatically applied to all future orders.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ─────────────── 7. WARRANTY ─────────────── -->
+            <section class="faq-category" id="cat-warranty">
+                <div class="faq-category-header">
+                    <div class="faq-cat-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <h2>Warranty &amp; Quality</h2>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        Do SpareBlaze parts come with a warranty?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>Yes. All parts sold on SpareBlaze carry a warranty against manufacturing defects:</p>
+                            <ul>
+                                <li><strong>OEM Parts:</strong> Carry the original manufacturer's warranty (typically 1–2 years or as specified by the brand)</li>
+                                <li><strong>After-Market Parts:</strong> Minimum <strong>6-month warranty</strong> from SpareBlaze's verified suppliers</li>
+                                <li><strong>Refurbished Parts:</strong> <strong>3-month warranty</strong> from date of delivery</li>
+                                <li><strong>Used Parts:</strong> 30-day fitment guarantee (no manufacturing defect coverage)</li>
+                            </ul>
+                            <p>Warranty claims must be supported by the original SpareBlaze invoice and raised within the warranty period. Warranty is void if the part shows signs of improper installation, accidental damage, or modification.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        How does SpareBlaze ensure parts are genuine?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>Counterfeit automotive parts are a serious problem in India. SpareBlaze operates a <strong>zero-tolerance policy on fake parts</strong>. Our assurance measures include:</p>
+                            <ul>
+                                <li>OEM inventory sourced exclusively from authorised distributors and brand-certified warehouses</li>
+                                <li>Three-step quality verification: supplier audit, physical inspection, and OEM cross-reference validation</li>
+                                <li>Holographic authenticity labels on all OEM products</li>
+                                <li>Tamper-evident security tape on all outgoing packages</li>
+                                <li>Documentation of authenticity (batch certificates, distributor invoices) maintained for every SKU</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        How do I raise a warranty claim?
+                        <span class="faq-icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                    <div class="faq-answer" role="region">
+                        <div class="faq-answer-inner">
+                            <p>To raise a warranty claim, contact us at <a href="mailto:support@spareblaze.in">support@spareblaze.in</a> with the following:</p>
+                            <ul>
+                                <li>Your Order ID and original invoice</li>
+                                <li>Clear photos or video demonstrating the defect</li>
+                                <li>Description of the failure (when it occurred, symptoms, etc.)</li>
+                                <li>Name and address of the workshop where the part was fitted (if applicable)</li>
+                            </ul>
+                            <p>Our technical team reviews warranty claims within 3 business days. Approved claims result in a free replacement dispatch or full refund, at our discretion and subject to stock availability.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ─────────────── BOTTOM CTA ─────────────── -->
+            <div class="faq-cta">
+                <div class="cta-icon"><i class="fa-solid fa-headset"></i></div>
+                <h3>Didn't find your answer?</h3>
+                <p>Our automotive experts are available Monday to Saturday, 9 AM – 7 PM IST. Whether it's a compatibility check, order issue, or technical question — we're here to help.</p>
+                <div class="faq-cta-buttons">
+                    <a href="contact-us.html" class="btn btn-primary"><i class="fa-solid fa-headset"></i>&nbsp; Contact Support</a>
+                    <a href="https://wa.me/917259955674" target="_blank" rel="noopener" class="btn btn-secondary"><i class="fa-brands fa-whatsapp"></i>&nbsp; Chat on WhatsApp</a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <a href="index.html" class="logo"><img src="../public/images/spareblaze-logo-footer.png" alt="SpareBlaze Logo" style="width:250px;height:auto;"></a>
+                <p>India's trusted e-commerce platform for genuine car and SUV spare parts. Quality assured, delivered nationwide.</p>
+                <div class="social-links">
+                    <a href="javascript:void(0);"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="javascript:void(0);"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="javascript:void(0);"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="javascript:void(0);"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h3>Help</h3>
+                <ul>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="shipping-info.html">Shipping Policy</a></li>
+                    <li><a href="return-policy.html">Return Policy</a></li>
+                    <li><a href="size-guide.html">Size Guide</a></li>
+                    <li><a href="track-order.html">Track Order</a></li>
+                    <li><a href="contact-us.html">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h3>Shop By Type</h3>
+                <ul>
+                    <li><a href="after-market.html">After Market</a></li>
+                    <li><a href="refurbished.html">Refurbished</a></li>
+                    <li><a href="used.html">Used</a></li>
+                    <li><a href="oem.html">OEM</a></li>
+                    <li><a href="wholesale.html">Wholesale</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h3>Contact</h3>
+                <p><i class="fa-solid fa-phone"></i> +91 1800 123 4567</p>
+                <p><i class="fa-solid fa-envelope"></i> support@spareblaze.in</p>
+                <p><i class="fa-solid fa-location-dot"></i> Bengaluru, Karnataka, India</p>
+                <h3 class="payment-title">Secure Payments</h3>
+                <div class="payment-icons">
+                    <i class="fa-brands fa-cc-visa"></i>
+                    <i class="fa-brands fa-cc-mastercard"></i>
+                    <span class="upi-text">UPI</span>
+                    <span class="rupay-text">RuPay</span>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 SpareBlaze. All rights reserved. Designed for Indian Automotive Market.</p>
+        </div>
+    </footer>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay" id="cart-overlay"></div>
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header"><h3>Your Cart</h3><button class="close-btn" id="close-cart"><i class="fa-solid fa-xmark"></i></button></div>
+        <div class="cart-items" id="cart-items-container"><div class="empty-cart-msg">Your cart is currently empty.</div></div>
+        <div class="cart-footer">
+            <div class="cart-total"><span>Total:</span><span class="total-amount" id="cart-total-amount">₹0</span></div>
+            <button class="btn btn-primary w-100 checkout-btn" id="checkout-btn" disabled>Proceed to Secure Checkout</button>
+        </div>
+    </div>
+
+    <script src="../js/script.js"></script>
+    <script src="https://code.tidio.co/sienbawteqdozz2om1mswgszpjxm6zxg.js" async></script>
+
+    <!-- FAQ accordion — smooth max-height animation, only one open at a time -->
+    <script>
+        (function () {
+            const items = document.querySelectorAll('.faq-item');
+
+            items.forEach(function (item) {
+                const btn = item.querySelector('.faq-question');
+                btn.addEventListener('click', function () {
+                    const isOpen = item.classList.contains('open');
+
+                    // Close all
+                    items.forEach(function (el) {
+                        el.classList.remove('open');
+                        el.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+                    });
+
+                    // Toggle clicked
+                    if (!isOpen) {
+                        item.classList.add('open');
+                        btn.setAttribute('aria-expanded', 'true');
+                    }
+                });
+            });
+
+            // Quick-links smooth scroll
+            document.querySelectorAll('.faq-quicklinks a').forEach(function (link) {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        })();
+    </script>
+
+    <button id="scroll-to-top" class="scroll-to-top" aria-label="Scroll to top"><i class="fa-solid fa-chevron-up"></i></button>
+  <!-- WhatsApp Float Button -->
+  <a id="wa-float-btn" class="wa-float-btn" href="https://wa.me/917259955674" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+    <span class="wa-tooltip">Chat with us</span>
+  </a>
+
+</body>
+
+</html>

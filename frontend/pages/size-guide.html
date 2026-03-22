@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Size Guide – SpareBlaze | Part Dimensions &amp; Fitment Reference</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        :root {
+            --sg-orange: #e63900;
+            --sg-orange-light: #fff0eb;
+            --sg-blue: #2563eb;
+            --sg-blue-light: #dbeafe;
+            --sg-green: #16a34a;
+            --sg-green-light: #dcfce7;
+            --sg-red: #dc2626;
+            --sg-red-light: #fee2e2;
+            --sg-amber: #d97706;
+            --sg-amber-light: #fef3c7;
+            --sg-purple: #7c3aed;
+            --sg-purple-light: #ede9fe;
+            --sg-border: #e2e8f0;
+            --sg-shadow: 0 2px 16px rgba(0,0,0,0.07);
+            --sg-radius: 14px;
+        }
+
+        /* PAGE HEADER */
+        .page-header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            padding: 64px 0 56px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 60% 40%, rgba(230,57,0,0.18) 0%, transparent 65%);
+        }
+        .page-header-content {
+            position: relative;
+            z-index: 1;
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        .page-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 800;
+            color: #fff;
+            margin: 0 0 16px;
+            line-height: 1.15;
+        }
+        .page-header h1 .highlight { color: var(--color-primary, #e63900); }
+        .page-header p {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.05rem;
+            color: rgba(255,255,255,0.75);
+            margin: 0;
+            line-height: 1.65;
+        }
+
+        /* BREADCRUMB */
+        .breadcrumb-bar {
+            background: var(--color-bg-surface, #fff);
+            border-bottom: 1px solid var(--color-border, #e2e8f0);
+            padding: 12px 0;
+        }
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            color: var(--color-text-muted, #64748b);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        .breadcrumb a { color: var(--color-text-muted, #64748b); text-decoration: none; transition: color 0.2s; }
+        .breadcrumb a:hover { color: var(--color-primary, #e63900); }
+        .breadcrumb .sep { color: #cbd5e1; }
+        .breadcrumb .current { color: var(--color-text-main, #1e293b); font-weight: 500; }
+
+        /* MAIN */
+        .sg-main {
+            background: var(--color-bg-base, #f1f5f9);
+            padding: 56px 0 80px;
+        }
+        .sg-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* TABS */
+        .tabs-wrapper {
+            background: var(--color-bg-surface, #fff);
+            border-radius: var(--sg-radius);
+            box-shadow: var(--sg-shadow);
+            border: 1px solid var(--sg-border);
+            overflow: hidden;
+        }
+        .tab-nav {
+            display: flex;
+            border-bottom: 2px solid var(--sg-border);
+            overflow-x: auto;
+            scrollbar-width: none;
+            background: #f8fafc;
+        }
+        .tab-nav::-webkit-scrollbar { display: none; }
+        .tab-btn {
+            flex-shrink: 0;
+            padding: 16px 22px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-text-muted, #64748b);
+            background: none;
+            border: none;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: color 0.2s, border-color 0.2s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tab-btn:hover { color: var(--sg-orange); }
+        .tab-btn.active {
+            color: var(--sg-orange);
+            border-bottom-color: var(--sg-orange);
+            background: #fff;
+        }
+        .tab-content { display: none; padding: 36px 32px; }
+        .tab-content.active { display: block; }
+
+        /* INFO BANNER */
+        .info-banner {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            background: var(--sg-blue-light);
+            border: 1px solid #bfdbfe;
+            border-left: 4px solid var(--sg-blue);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 28px;
+        }
+        .info-banner i { color: var(--sg-blue); font-size: 1.1rem; margin-top: 2px; flex-shrink: 0; }
+        .info-banner p { font-family: 'Inter', sans-serif; font-size: 0.9rem; color: #1e3a5f; margin: 0; line-height: 1.6; }
+
+        .warning-banner {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            background: var(--sg-red-light);
+            border: 1px solid #fca5a5;
+            border-left: 4px solid var(--sg-red);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-top: 20px;
+        }
+        .warning-banner i { color: var(--sg-red); font-size: 1.1rem; margin-top: 2px; flex-shrink: 0; }
+        .warning-banner p { font-family: 'Inter', sans-serif; font-size: 0.9rem; color: #7f1d1d; margin: 0; line-height: 1.6; }
+
+        .tip-banner {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            background: var(--sg-amber-light);
+            border: 1px solid #fde68a;
+            border-left: 4px solid var(--sg-amber);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-top: 20px;
+        }
+        .tip-banner i { color: var(--sg-amber); font-size: 1.1rem; margin-top: 2px; flex-shrink: 0; }
+        .tip-banner p { font-family: 'Inter', sans-serif; font-size: 0.9rem; color: #78350f; margin: 0; line-height: 1.6; }
+
+        /* DATA TABLES */
+        .sg-table-wrap { overflow-x: auto; margin: 20px 0 0; }
+        .sg-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+        }
+        .sg-table thead th {
+            background: #f1f5f9;
+            padding: 11px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--color-text-muted, #64748b);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid var(--sg-border);
+            white-space: nowrap;
+        }
+        .sg-table tbody td {
+            padding: 12px 16px;
+            color: var(--color-text-main, #1e293b);
+            border-bottom: 1px solid var(--sg-border);
+            vertical-align: middle;
+        }
+        .sg-table tbody tr:last-child td { border-bottom: none; }
+        .sg-table tbody tr:hover td { background: #f8fafc; }
+        .sg-table td .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-blue { background: var(--sg-blue-light); color: var(--sg-blue); }
+        .badge-green { background: var(--sg-green-light); color: var(--sg-green); }
+        .badge-orange { background: var(--sg-orange-light); color: var(--sg-orange); }
+
+        /* TYRE DECODER */
+        .tyre-decoder {
+            background: linear-gradient(135deg, #1a1a2e, #0f3460);
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .tyre-code {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: 0.04em;
+            margin-bottom: 24px;
+        }
+        .tyre-code .tc-w { color: #60a5fa; }
+        .tyre-code .tc-sep { color: rgba(255,255,255,0.4); margin: 0 4px; }
+        .tyre-code .tc-a { color: #34d399; }
+        .tyre-code .tc-r { color: rgba(255,255,255,0.5); font-size: 0.6em; vertical-align: super; }
+        .tyre-code .tc-d { color: #f87171; }
+        .tyre-legend {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .tyre-legend-item {
+            border-radius: 10px;
+            padding: 14px 20px;
+            min-width: 150px;
+            text-align: center;
+        }
+        .tyre-legend-item.w { background: rgba(96,165,250,0.15); border: 1px solid rgba(96,165,250,0.3); }
+        .tyre-legend-item.a { background: rgba(52,211,153,0.15); border: 1px solid rgba(52,211,153,0.3); }
+        .tyre-legend-item.d { background: rgba(248,113,113,0.15); border: 1px solid rgba(248,113,113,0.3); }
+        .tyre-legend-item .tl-val {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .tyre-legend-item.w .tl-val { color: #60a5fa; }
+        .tyre-legend-item.a .tl-val { color: #34d399; }
+        .tyre-legend-item.d .tl-val { color: #f87171; }
+        .tyre-legend-item .tl-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.78rem;
+            color: rgba(255,255,255,0.65);
+            font-weight: 500;
+        }
+        .tyre-legend-item .tl-desc {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.45);
+            margin-top: 3px;
+        }
+
+        /* BRAKE PAD PROCESS */
+        .bp-process {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .bp-step {
+            background: #f8fafc;
+            border: 1px solid var(--sg-border);
+            border-radius: 10px;
+            padding: 20px 16px;
+            text-align: center;
+        }
+        .bp-step-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--sg-orange);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+        }
+        .bp-step h5 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--color-text-main, #1e293b);
+            margin: 0 0 6px;
+        }
+        .bp-step p {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.78rem;
+            color: var(--color-text-muted, #64748b);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* SUBTABLE HEADING */
+        .sub-heading {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--color-text-main, #1e293b);
+            margin: 28px 0 8px;
+            padding-left: 4px;
+            border-left: 3px solid var(--sg-orange);
+            padding-left: 12px;
+        }
+
+        /* HOW TO MEASURE */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        .tool-card {
+            background: #f8fafc;
+            border: 1px solid var(--sg-border);
+            border-radius: 12px;
+            padding: 24px 20px;
+            text-align: center;
+        }
+        .tool-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            background: var(--sg-orange-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+            font-size: 1.3rem;
+            color: var(--sg-orange);
+        }
+        .tool-card h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--color-text-main, #1e293b);
+            margin: 0 0 6px;
+        }
+        .tool-card p {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.825rem;
+            color: var(--color-text-muted, #64748b);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .measure-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+        .measure-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            background: #f8fafc;
+            border: 1px solid var(--sg-border);
+            border-radius: 10px;
+            padding: 16px 18px;
+        }
+        .ms-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--sg-orange);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .measure-step h5 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--color-text-main, #1e293b);
+            margin: 0 0 4px;
+        }
+        .measure-step p {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--color-text-muted, #64748b);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .expert-cta {
+            background: linear-gradient(135deg, #1a1a2e, #0f3460);
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .expert-cta::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 70% 30%, rgba(230,57,0,0.2) 0%, transparent 60%);
+        }
+        .expert-cta-content { position: relative; z-index: 1; }
+        .expert-cta h3 { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 700; color: #fff; margin: 0 0 8px; }
+        .expert-cta p { font-family: 'Inter', sans-serif; font-size: 0.95rem; color: rgba(255,255,255,0.72); margin: 0 0 20px; }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .bp-process { grid-template-columns: repeat(2, 1fr); }
+            .tools-grid { grid-template-columns: repeat(2, 1fr); }
+            .tyre-legend { gap: 10px; }
+        }
+        @media (max-width: 600px) {
+            .tab-content { padding: 24px 16px; }
+            .bp-process { grid-template-columns: 1fr; }
+            .tools-grid { grid-template-columns: 1fr; }
+            .tyre-legend-item { min-width: 100px; padding: 10px 14px; }
+            .sg-table thead { display: none; }
+            .sg-table tbody td { display: block; padding: 5px 14px; }
+            .sg-table tbody td::before { content: attr(data-label); font-weight: 600; color: #64748b; font-size: 0.75rem; display: block; margin-bottom: 2px; }
+            .sg-table tbody tr { display: block; border-bottom: 1px solid var(--sg-border); padding: 10px 0; }
+            .sg-table tbody tr:last-child { border-bottom: none; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar scrolled">
+    <div class="nav-container">
+        <a href="index.html" class="logo"><img src="../public/images/spareblaze-logo.png" alt="SpareBlaze Logo" style="height:54px;width:auto;object-fit:contain;"></a>
+        <div class="search-container">
+            <div class="search-category" id="custom-dropdown">
+                <div class="dropdown-selected"><span id="dropdown-text">Select Vehicle</span><i class="fa-solid fa-chevron-down"></i></div>
+                <ul class="dropdown-options">
+                    <li data-value="">All Vehicles</li><li data-value="maruti">MARUTI</li><li data-value="hyundai">HYUNDAI</li><li data-value="mahindra">MAHINDRA</li><li data-value="tata">TATA</li><li data-value="honda">HONDA</li><li data-value="toyota">TOYOTA</li><li data-value="kia">KIA</li><li data-value="ford">FORD</li><li data-value="skoda">SKODA</li><li data-value="vw">VW</li><li data-value="renault">RENAULT</li><li data-value="nissan">NISSAN</li><li data-value="chevrolet">CHEVROLET</li><li data-value="fiat">FIAT</li><li data-value="bmw">BMW</li><li data-value="audi">AUDI</li><li data-value="volvo">VOLVO</li>
+                </ul>
+            </div>
+            <input type="text" id="search-input" placeholder="Search by part name, brand, or OEM number...">
+            <button class="search-btn" onclick="window.location.href='search.html'"><i class="fa-solid fa-search"></i></button>
+        </div>
+        <div class="nav-actions">
+            <a href="javascript:void(0);" class="nav-icon-btn"><i class="fa-regular fa-user"></i></a>
+            <button class="nav-icon-btn cart-btn" id="cart-toggle"><i class="fa-solid fa-cart-shopping"></i><span class="cart-badge" id="cart-count">0</span></button>
+            <button class="mobile-menu-btn" id="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </div>
+</nav>
+<div class="mobile-search">
+    <div class="mobile-search-row">
+        <select class="mobile-vehicle-select" id="mobile-vehicle-select">
+            <option value="">All Vehicles</option><option value="maruti">MARUTI</option><option value="hyundai">HYUNDAI</option><option value="mahindra">MAHINDRA</option><option value="tata">TATA</option><option value="honda">HONDA</option><option value="toyota">TOYOTA</option><option value="kia">KIA</option><option value="ford">FORD</option><option value="skoda">SKODA</option><option value="vw">VW</option><option value="renault">RENAULT</option><option value="nissan">NISSAN</option><option value="chevrolet">CHEVROLET</option><option value="fiat">FIAT</option><option value="bmw">BMW</option><option value="audi">AUDI</option><option value="volvo">VOLVO</option>
+        </select>
+        <div class="mobile-search-wrap">
+            <input type="text" id="mobile-search-input" placeholder="Search parts...">
+            <button class="mobile-search-btn"><i class="fa-solid fa-search"></i></button>
+        </div>
+    </div>
+    <div class="search-results" id="mobile-search-results"></div>
+</div>
+
+<div class="nav-categories">
+    <div class="nav-container">
+        <button class="all-categories-btn" onclick="window.location.href='categories.html'">
+            <i class="fa-solid fa-bars-staggered"></i> All Categories
+        </button>
+        <ul class="category-links">
+            <li><a href="after-market.html">After Market</a></li>
+            <li><a href="refurbished.html">Refurbished</a></li>
+            <li><a href="used.html">Used</a></li>
+            <li><a href="oem.html">OEM</a></li>
+            <li><a href="wholesale.html">Wholesale</a></li>
+        </ul>
+        <div class="help-nav-item">
+            <a href="javascript:void(0);" class="help-nav-link">
+                <i class="fa-solid fa-circle-question"></i> Help <i class="fa-solid fa-chevron-down help-chevron"></i>
+            </a>
+            <ul class="help-dropdown-menu">
+                <li><a href="faq.html"><i class="fa-solid fa-comments"></i> FAQ</a></li>
+                <li><a href="shipping-info.html"><i class="fa-solid fa-truck-fast"></i> Shipping Policy</a></li>
+                <li><a href="return-policy.html"><i class="fa-solid fa-rotate-left"></i> Return Policy</a></li>
+                <li><a href="size-guide.html"><i class="fa-solid fa-ruler"></i> Size Guide</a></li>
+                <li><a href="track-order.html"><i class="fa-solid fa-map-location-dot"></i> Track Order</a></li>
+                <li><a href="contact-us.html"><i class="fa-solid fa-headset"></i> Contact Us</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="page-header">
+    <div class="page-header-content">
+        <h1>Size &amp; Fitment <span class="highlight">Guide</span></h1>
+        <p>Reference charts and decoding guides to order the exact right part — first time, every time.</p>
+    </div>
+</div>
+
+<div class="breadcrumb-bar">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html"><i class="fa-solid fa-house" style="font-size:0.75rem;"></i> Home</a>
+        <span class="sep"><i class="fa-solid fa-chevron-right" style="font-size:0.65rem;"></i></span>
+        <span class="current">Size Guide</span>
+    </nav>
+</div>
+
+<main class="sg-main section-padding">
+    <div class="sg-container">
+        <div class="tabs-wrapper">
+            <div class="tab-nav" role="tablist">
+                <button class="tab-btn active" data-tab="tyres" role="tab"><i class="fa-solid fa-circle-dot"></i> Tyres</button>
+                <button class="tab-btn" data-tab="brakes" role="tab"><i class="fa-solid fa-circle-stop"></i> Brake Pads</button>
+                <button class="tab-btn" data-tab="oilfilters" role="tab"><i class="fa-solid fa-filter"></i> Oil Filters</button>
+                <button class="tab-btn" data-tab="wipers" role="tab"><i class="fa-solid fa-wind"></i> Wiper Blades</button>
+                <button class="tab-btn" data-tab="belts" role="tab"><i class="fa-solid fa-rotate"></i> Drive Belts</button>
+                <button class="tab-btn" data-tab="measure" role="tab"><i class="fa-solid fa-ruler-combined"></i> How to Measure</button>
+            </div>
+
+            <!-- TAB 1: TYRES -->
+            <div class="tab-content active" id="tab-tyres">
+                <div class="info-banner">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <p><strong>How to read your tyre size:</strong> The tyre size is stamped directly on the sidewall (e.g. <strong>205/55R16</strong>). You must match all three numbers — width, aspect ratio, and rim diameter — to ensure a safe and legal fitment.</p>
+                </div>
+                <div class="tyre-decoder">
+                    <div class="tyre-code">
+                        <span class="tc-w">205</span><span class="tc-sep">/</span><span class="tc-a">55</span><span class="tc-r">R</span><span class="tc-d">16</span>
+                    </div>
+                    <div class="tyre-legend">
+                        <div class="tyre-legend-item w">
+                            <div class="tl-val">205</div>
+                            <div class="tl-label">Width (mm)</div>
+                            <div class="tl-desc">Section width in millimetres</div>
+                        </div>
+                        <div class="tyre-legend-item a">
+                            <div class="tl-val">55</div>
+                            <div class="tl-label">Aspect Ratio (%)</div>
+                            <div class="tl-desc">Sidewall height as % of width</div>
+                        </div>
+                        <div class="tyre-legend-item d">
+                            <div class="tl-val">16</div>
+                            <div class="tl-label">Rim Diameter (in)</div>
+                            <div class="tl-desc">Wheel diameter in inches</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sg-table-wrap">
+                    <table class="sg-table">
+                        <thead>
+                            <tr>
+                                <th>Vehicle</th>
+                                <th>Standard Tyre</th>
+                                <th>Optional Upgrade</th>
+                                <th>Rim Size</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Maruti Swift</strong></td>
+                                <td data-label="Standard">175/65R14</td>
+                                <td data-label="Upgrade"><span class="badge badge-green">185/65R15</span></td>
+                                <td data-label="Rim">14–15 inch</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Maruti Baleno</strong></td>
+                                <td data-label="Standard">185/65R15</td>
+                                <td data-label="Upgrade"><span class="badge badge-green">195/55R16</span></td>
+                                <td data-label="Rim">15–16 inch</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Hyundai Creta</strong></td>
+                                <td data-label="Standard">215/60R16</td>
+                                <td data-label="Upgrade"><span class="badge badge-green">215/55R17</span></td>
+                                <td data-label="Rim">16–17 inch</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Hyundai i20</strong></td>
+                                <td data-label="Standard">195/55R16</td>
+                                <td data-label="Upgrade"><span class="badge badge-green">205/45R17</span></td>
+                                <td data-label="Rim">16–17 inch</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Tata Nexon</strong></td>
+                                <td data-label="Standard">205/65R16</td>
+                                <td data-label="Upgrade"><span class="badge badge-green">215/60R16</span></td>
+                                <td data-label="Rim">16 inch</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Tata Harrier</strong></td>
+                                <td data-label="Standard">235/65R17</td>
+                                <td data-label="Upgrade"><span class="badge badge-green">235/60R18</span></td>
+                                <td data-label="Rim">17–18 inch</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Mahindra XUV700</strong></td>
+                                <td data-label="Standard">235/60R18</td>
+                                <td data-label="Upgrade"><span class="badge badge-orange">Stock recommended</span></td>
+                                <td data-label="Rim">18 inch</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Kia Seltos</strong></td>
+                                <td data-label="Standard">215/55R17</td>
+                                <td data-label="Upgrade"><span class="badge badge-green">225/50R17</span></td>
+                                <td data-label="Rim">17 inch</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Toyota Innova</strong></td>
+                                <td data-label="Standard">205/65R15</td>
+                                <td data-label="Upgrade"><span class="badge badge-green">215/60R16</span></td>
+                                <td data-label="Rim">15–16 inch</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Honda City</strong></td>
+                                <td data-label="Standard">195/60R15</td>
+                                <td data-label="Upgrade"><span class="badge badge-green">205/55R16</span></td>
+                                <td data-label="Rim">15–16 inch</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tip-banner">
+                    <i class="fa-solid fa-lightbulb"></i>
+                    <p><strong>Pro Tip:</strong> Always match all three numbers when replacing tyres. Consult a certified fitment centre before upgrading size significantly, as it can affect speedometer accuracy, ABS calibration, and ground clearance.</p>
+                </div>
+            </div>
+
+            <!-- TAB 2: BRAKE PADS -->
+            <div class="tab-content" id="tab-brakes">
+                <div class="info-banner">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <p><strong>Measuring brake pads:</strong> Brake pads are specified as <strong>Height × Width × Total Thickness</strong> (all in mm). Always replace brake pads in axle pairs (both front-left and front-right, or both rear-left and rear-right) for balanced braking.</p>
+                </div>
+                <div class="bp-process">
+                    <div class="bp-step">
+                        <div class="bp-step-num">1</div>
+                        <h5>Check OEM Number</h5>
+                        <p>Look for the OEM part number stamped on the backing plate of the old pad.</p>
+                    </div>
+                    <div class="bp-step">
+                        <div class="bp-step-num">2</div>
+                        <h5>Measure with Calliper</h5>
+                        <p>Use a vernier calliper to measure Height, Width, and total Thickness in mm.</p>
+                    </div>
+                    <div class="bp-step">
+                        <div class="bp-step-num">3</div>
+                        <h5>Match Vehicle</h5>
+                        <p>Cross-reference against your vehicle make, model, year, and variant to confirm fitment.</p>
+                    </div>
+                    <div class="bp-step">
+                        <div class="bp-step-num">4</div>
+                        <h5>Note Friction Grade</h5>
+                        <p>EE/FF = standard; GG/HH = high-performance. Match grade to your driving style.</p>
+                    </div>
+                </div>
+                <p class="sub-heading">Front Brake Pad Dimensions (Common Indian Cars)</p>
+                <div class="sg-table-wrap">
+                    <table class="sg-table">
+                        <thead>
+                            <tr>
+                                <th>Vehicle</th>
+                                <th>Height (mm)</th>
+                                <th>Width (mm)</th>
+                                <th>Total Thickness (mm)</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Maruti Swift / Dzire</strong></td>
+                                <td data-label="Height">58</td>
+                                <td data-label="Width">114</td>
+                                <td data-label="Thickness">17.5</td>
+                                <td data-label="Type"><span class="badge badge-blue">Semi-metallic</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Hyundai i20 / Verna</strong></td>
+                                <td data-label="Height">60</td>
+                                <td data-label="Width">116</td>
+                                <td data-label="Thickness">18</td>
+                                <td data-label="Type"><span class="badge badge-blue">Semi-metallic</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Tata Nexon</strong></td>
+                                <td data-label="Height">62</td>
+                                <td data-label="Width">120</td>
+                                <td data-label="Thickness">19</td>
+                                <td data-label="Type"><span class="badge badge-green">Ceramic</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Mahindra Scorpio N</strong></td>
+                                <td data-label="Height">68</td>
+                                <td data-label="Width">130</td>
+                                <td data-label="Thickness">20</td>
+                                <td data-label="Type"><span class="badge badge-orange">High-performance</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Honda City (5th Gen)</strong></td>
+                                <td data-label="Height">59</td>
+                                <td data-label="Width">118</td>
+                                <td data-label="Thickness">17.5</td>
+                                <td data-label="Type"><span class="badge badge-blue">Semi-metallic</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Toyota Innova Crysta</strong></td>
+                                <td data-label="Height">65</td>
+                                <td data-label="Width">126</td>
+                                <td data-label="Thickness">19.5</td>
+                                <td data-label="Type"><span class="badge badge-blue">Semi-metallic</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Kia Seltos (Turbo)</strong></td>
+                                <td data-label="Height">63</td>
+                                <td data-label="Width">122</td>
+                                <td data-label="Thickness">18.5</td>
+                                <td data-label="Type"><span class="badge badge-green">Ceramic</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="warning-banner">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <p><strong>Minimum Safe Thickness:</strong> Replace brake pads immediately when the friction material thickness measures less than <strong>3mm</strong>. Driving below this threshold significantly reduces stopping power and may damage the brake disc.</p>
+                </div>
+            </div>
+
+            <!-- TAB 3: OIL FILTERS -->
+            <div class="tab-content" id="tab-oilfilters">
+                <div class="info-banner">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <p><strong>Identifying oil filters:</strong> Oil filters are identified by their thread pitch/size and OEM part code. Always replace the oil filter at every oil change (every 5,000 km for mineral oil, every 7,500–10,000 km for synthetic oil).</p>
+                </div>
+                <div class="sg-table-wrap">
+                    <table class="sg-table">
+                        <thead>
+                            <tr>
+                                <th>Vehicle / Engine</th>
+                                <th>OEM Filter Code</th>
+                                <th>Thread Size</th>
+                                <th>Outer Diameter</th>
+                                <th>Height</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Maruti Swift 1.2 K12</strong></td>
+                                <td data-label="OEM">16510-61A31</td>
+                                <td data-label="Thread">3/4-16 UNF</td>
+                                <td data-label="OD">65 mm</td>
+                                <td data-label="H">65 mm</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Hyundai Creta 1.5 Petrol</strong></td>
+                                <td data-label="OEM">26300-35505</td>
+                                <td data-label="Thread">3/4-16 UNF</td>
+                                <td data-label="OD">68 mm</td>
+                                <td data-label="H">72 mm</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Tata Nexon 1.2T Revotron</strong></td>
+                                <td data-label="OEM">263A00002F</td>
+                                <td data-label="Thread">M20×1.5</td>
+                                <td data-label="OD">65 mm</td>
+                                <td data-label="H">60 mm</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Mahindra XUV700 2.0T</strong></td>
+                                <td data-label="OEM">0736BF00015</td>
+                                <td data-label="Thread">M20×1.5</td>
+                                <td data-label="OD">70 mm</td>
+                                <td data-label="H">80 mm</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Honda City 1.5 i-VTEC</strong></td>
+                                <td data-label="OEM">15400-RTA-003</td>
+                                <td data-label="Thread">3/4-16 UNF</td>
+                                <td data-label="OD">65 mm</td>
+                                <td data-label="H">64 mm</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Toyota Innova 2.4 Diesel</strong></td>
+                                <td data-label="OEM">90915-YZZD2</td>
+                                <td data-label="Thread">M20×1.5</td>
+                                <td data-label="OD">72 mm</td>
+                                <td data-label="H">75 mm</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Kia Seltos 1.4T GDi</strong></td>
+                                <td data-label="OEM">26300-2A000</td>
+                                <td data-label="Thread">3/4-16 UNF</td>
+                                <td data-label="OD">66 mm</td>
+                                <td data-label="H">70 mm</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tip-banner">
+                    <i class="fa-solid fa-lightbulb"></i>
+                    <p><strong>Installation Tip:</strong> Before fitting the new filter, apply a thin film of clean engine oil to the rubber gasket. Hand-tighten the filter until the gasket makes contact, then turn an additional ¾ turn — do not overtighten with tools as this can damage the sealing surface.</p>
+                </div>
+            </div>
+
+            <!-- TAB 4: WIPER BLADES -->
+            <div class="tab-content" id="tab-wipers">
+                <div class="info-banner">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <p><strong>Wiper blade sizes:</strong> Blade lengths are specified in millimetres. The driver's side is almost always longer than the passenger side. Most modern Indian cars use the <strong>J-hook</strong> (also called Type-J or 9×3mm hook) connector. Replace wiper blades every <strong>12 months</strong> or when they streak or chatter.</p>
+                </div>
+                <div class="sg-table-wrap">
+                    <table class="sg-table">
+                        <thead>
+                            <tr>
+                                <th>Vehicle</th>
+                                <th>Driver Side</th>
+                                <th>Passenger Side</th>
+                                <th>Rear Wiper</th>
+                                <th>Connector Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Maruti Swift (2018+)</strong></td>
+                                <td data-label="Driver">550 mm (22")</td>
+                                <td data-label="Passenger">350 mm (14")</td>
+                                <td data-label="Rear">300 mm (12")</td>
+                                <td data-label="Connector"><span class="badge badge-blue">J-Hook</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Hyundai Creta (2020+)</strong></td>
+                                <td data-label="Driver">600 mm (24")</td>
+                                <td data-label="Passenger">400 mm (16")</td>
+                                <td data-label="Rear">350 mm (14")</td>
+                                <td data-label="Connector"><span class="badge badge-blue">J-Hook</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Tata Nexon (2017+)</strong></td>
+                                <td data-label="Driver">550 mm (22")</td>
+                                <td data-label="Passenger">380 mm (15")</td>
+                                <td data-label="Rear">300 mm (12")</td>
+                                <td data-label="Connector"><span class="badge badge-blue">J-Hook</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Mahindra XUV700</strong></td>
+                                <td data-label="Driver">650 mm (26")</td>
+                                <td data-label="Passenger">430 mm (17")</td>
+                                <td data-label="Rear">400 mm (16")</td>
+                                <td data-label="Connector"><span class="badge badge-blue">J-Hook</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Honda City (2020+)</strong></td>
+                                <td data-label="Driver">600 mm (24")</td>
+                                <td data-label="Passenger">400 mm (16")</td>
+                                <td data-label="Rear">—</td>
+                                <td data-label="Connector"><span class="badge badge-blue">J-Hook</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Toyota Innova Crysta</strong></td>
+                                <td data-label="Driver">650 mm (26")</td>
+                                <td data-label="Passenger">450 mm (18")</td>
+                                <td data-label="Rear">—</td>
+                                <td data-label="Connector"><span class="badge badge-blue">J-Hook</span></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Kia Seltos (2019+)</strong></td>
+                                <td data-label="Driver">600 mm (24")</td>
+                                <td data-label="Passenger">400 mm (16")</td>
+                                <td data-label="Rear">350 mm (14")</td>
+                                <td data-label="Connector"><span class="badge badge-blue">J-Hook</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tip-banner">
+                    <i class="fa-solid fa-cloud-rain"></i>
+                    <p><strong>Monsoon Tip:</strong> Switch to flat/frameless (beam-type) wiper blades before the rainy season. They maintain uniform pressure across the entire blade length for superior wipe quality and do not clog with dirt and moisture like traditional framed wipers.</p>
+                </div>
+            </div>
+
+            <!-- TAB 5: DRIVE BELTS -->
+            <div class="tab-content" id="tab-belts">
+                <div class="info-banner">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <p><strong>Belt identification:</strong> Serpentine (Poly-V) belts are identified by a rib code — e.g. <strong>6PK1750</strong> means 6 ribs, 1750mm effective length. Timing belts are identified by tooth count and pitch. Always check your owner's manual for the correct replacement interval.</p>
+                </div>
+                <p class="sub-heading">Serpentine / Poly-V Belts</p>
+                <div class="sg-table-wrap">
+                    <table class="sg-table">
+                        <thead>
+                            <tr>
+                                <th>Vehicle / Engine</th>
+                                <th>Belt Code</th>
+                                <th>Ribs</th>
+                                <th>Length (mm)</th>
+                                <th>Replacement Interval</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Maruti Baleno 1.2</strong></td>
+                                <td data-label="Code">4PK925</td>
+                                <td data-label="Ribs">4</td>
+                                <td data-label="Length">925</td>
+                                <td data-label="Interval">60,000 km</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Hyundai Creta 1.5</strong></td>
+                                <td data-label="Code">6PK1750</td>
+                                <td data-label="Ribs">6</td>
+                                <td data-label="Length">1750</td>
+                                <td data-label="Interval">80,000 km</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Tata Harrier 2.0D</strong></td>
+                                <td data-label="Code">6PK1948</td>
+                                <td data-label="Ribs">6</td>
+                                <td data-label="Length">1948</td>
+                                <td data-label="Interval">80,000 km</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Honda City 1.5</strong></td>
+                                <td data-label="Code">5PK1200</td>
+                                <td data-label="Ribs">5</td>
+                                <td data-label="Length">1200</td>
+                                <td data-label="Interval">60,000 km</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Toyota Innova 2.4D</strong></td>
+                                <td data-label="Code">6PK2405</td>
+                                <td data-label="Ribs">6</td>
+                                <td data-label="Length">2405</td>
+                                <td data-label="Interval">100,000 km</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="sub-heading">Timing Belts</p>
+                <div class="sg-table-wrap">
+                    <table class="sg-table">
+                        <thead>
+                            <tr>
+                                <th>Vehicle / Engine</th>
+                                <th>Tooth Count</th>
+                                <th>Width (mm)</th>
+                                <th>Replacement Interval</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Maruti WagonR 1.0 K10</strong></td>
+                                <td data-label="Teeth">111T</td>
+                                <td data-label="Width">25</td>
+                                <td data-label="Interval">60,000 km or 5 years</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Hyundai Grand i10 1.2</strong></td>
+                                <td data-label="Teeth">119T</td>
+                                <td data-label="Width">25</td>
+                                <td data-label="Interval">60,000 km or 5 years</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Renault Kwid 0.8</strong></td>
+                                <td data-label="Teeth">122T</td>
+                                <td data-label="Width">20</td>
+                                <td data-label="Interval">60,000 km or 4 years</td>
+                            </tr>
+                            <tr>
+                                <td data-label="Vehicle"><strong>Ford Aspire 1.5D</strong></td>
+                                <td data-label="Teeth">138T</td>
+                                <td data-label="Width">27</td>
+                                <td data-label="Interval">80,000 km or 5 years</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="warning-banner">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <p><strong>Critical Warning:</strong> Never exceed the manufacturer's timing belt replacement interval. A snapped timing belt causes catastrophic engine damage (bent valves, damaged pistons) that often renders the engine beyond economical repair. When in doubt, replace early.</p>
+                </div>
+            </div>
+
+            <!-- TAB 6: HOW TO MEASURE -->
+            <div class="tab-content" id="tab-measure">
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <div class="tool-icon"><i class="fa-solid fa-ruler"></i></div>
+                        <h4>Vernier Calliper</h4>
+                        <p>The most accurate tool for measuring brake pad thickness, filter dimensions, and small components. Digital versions are easier to read. Accurate to 0.02mm.</p>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-icon"><i class="fa-solid fa-tape"></i></div>
+                        <h4>Tape Measure</h4>
+                        <p>Suitable for measuring wiper blade length, belt perimeter, and larger part dimensions. Use a flexible metal tape for curved surfaces.</p>
+                    </div>
+                    <div class="tool-card">
+                        <div class="tool-icon"><i class="fa-solid fa-barcode"></i></div>
+                        <h4>Part Number Lookup</h4>
+                        <p>The fastest method — locate the OEM part number stamped on the existing component and search it directly in our catalogue for an exact match.</p>
+                    </div>
+                </div>
+
+                <p class="sub-heading">How to Measure a Brake Pad — Step by Step</p>
+                <div class="measure-steps">
+                    <div class="measure-step">
+                        <div class="ms-num">1</div>
+                        <div>
+                            <h5>Remove the wheel and locate the brake calliper</h5>
+                            <p>Safely jack the vehicle, remove the wheel, and locate the brake calliper assembly. The brake pad is visible through the calliper window. Do not compress the brake pedal while the wheel is off.</p>
+                        </div>
+                    </div>
+                    <div class="measure-step">
+                        <div class="ms-num">2</div>
+                        <div>
+                            <h5>Measure total thickness (including backing plate)</h5>
+                            <p>Using a vernier calliper, measure the full thickness of the pad — that is, the total dimension from the outer face of the friction material to the back of the metal backing plate. Note this value in mm.</p>
+                        </div>
+                    </div>
+                    <div class="measure-step">
+                        <div class="ms-num">3</div>
+                        <div>
+                            <h5>Measure height and width of the backing plate</h5>
+                            <p>Measure the height (top to bottom) and the width (side to side) of the metal backing plate only — not the friction material. These dimensions are used for fitment matching.</p>
+                        </div>
+                    </div>
+                    <div class="measure-step">
+                        <div class="ms-num">4</div>
+                        <div>
+                            <h5>Record OEM number and check remaining friction material</h5>
+                            <p>Look for the OEM part number stamped or moulded on the backing plate. Also estimate the remaining friction material thickness — if less than 3mm, the pad must be replaced immediately.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expert-cta">
+                    <div class="expert-cta-content">
+                        <h3>Not Sure of Your Part Size?</h3>
+                        <p>Send us a clear photo of the part or its OEM number — our team will identify the exact replacement for you.</p>
+                        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                            <a href="https://wa.me/917259955674" class="btn btn-primary" target="_blank"><i class="fa-brands fa-whatsapp"></i>&nbsp; WhatsApp a Photo</a>
+                            <a href="contact-us.html" class="btn btn-secondary"><i class="fa-solid fa-headset"></i>&nbsp; Contact Support</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-container">
+        <div class="footer-brand">
+            <a href="index.html" class="logo"><img src="../public/images/spareblaze-logo-footer.png" alt="SpareBlaze Logo" style="width:250px;height:auto;"></a>
+            <p>India's trusted e-commerce platform for genuine car and SUV spare parts. Quality assured, delivered nationwide.</p>
+            <div class="social-links">
+                <a href="javascript:void(0);"><i class="fa-brands fa-instagram"></i></a>
+                <a href="javascript:void(0);"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="javascript:void(0);"><i class="fa-brands fa-twitter"></i></a>
+                <a href="javascript:void(0);"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+        </div>
+        <div class="footer-links">
+            <h3>Help</h3>
+            <ul>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="shipping-info.html">Shipping Policy</a></li>
+                <li><a href="return-policy.html">Return Policy</a></li>
+                <li><a href="size-guide.html">Size Guide</a></li>
+                <li><a href="track-order.html">Track Order</a></li>
+                <li><a href="contact-us.html">Contact Us</a></li>
+            </ul>
+        </div>
+        <div class="footer-links">
+            <h3>Shop By Type</h3>
+            <ul>
+                <li><a href="after-market.html">After Market</a></li>
+                <li><a href="refurbished.html">Refurbished</a></li>
+                <li><a href="used.html">Used</a></li>
+                <li><a href="oem.html">OEM</a></li>
+                <li><a href="wholesale.html">Wholesale</a></li>
+            </ul>
+        </div>
+        <div class="footer-contact">
+            <h3>Contact</h3>
+            <p><i class="fa-solid fa-phone"></i> +91 1800 123 4567</p>
+            <p><i class="fa-solid fa-envelope"></i> support@spareblaze.in</p>
+            <p><i class="fa-solid fa-location-dot"></i> Bengaluru, Karnataka, India</p>
+            <h3 class="payment-title">Secure Payments</h3>
+            <div class="payment-icons">
+                <i class="fa-brands fa-cc-visa"></i>
+                <i class="fa-brands fa-cc-mastercard"></i>
+                <span class="upi-text">UPI</span>
+                <span class="rupay-text">RuPay</span>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 SpareBlaze. All rights reserved. Designed for Indian Automotive Market.</p>
+    </div>
+</footer>
+<div class="cart-overlay" id="cart-overlay"></div>
+<div class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-header"><h3>Your Cart</h3><button class="close-btn" id="close-cart"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="cart-items" id="cart-items-container"><div class="empty-cart-msg">Your cart is currently empty.</div></div>
+    <div class="cart-footer">
+        <div class="cart-total"><span>Total:</span><span class="total-amount" id="cart-total-amount">&#8377;0</span></div>
+        <button class="btn btn-primary w-100 checkout-btn" id="checkout-btn" disabled>Proceed to Secure Checkout</button>
+    </div>
+</div>
+<script src="../js/script.js"></script>
+<script src="https://code.tidio.co/sienbawteqdozz2om1mswgszpjxm6zxg.js" async></script>
+<button id="scroll-to-top" class="scroll-to-top" aria-label="Scroll to top"><i class="fa-solid fa-chevron-up"></i></button>
+
+<script>
+    (function() {
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        tabBtns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const target = btn.getAttribute('data-tab');
+                tabBtns.forEach(function(b) { b.classList.remove('active'); });
+                tabContents.forEach(function(c) { c.classList.remove('active'); });
+                btn.classList.add('active');
+                const targetEl = document.getElementById('tab-' + target);
+                if (targetEl) targetEl.classList.add('active');
+            });
+        });
+    })();
+</script>
+  <!-- WhatsApp Float Button -->
+  <a id="wa-float-btn" class="wa-float-btn" href="https://wa.me/917259955674" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+    <span class="wa-tooltip">Chat with us</span>
+  </a>
+
+</body>
+</html>

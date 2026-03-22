@@ -1,163 +1,802 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Return Policy - SpareBlaze | Premium Automotive Spare Parts</title>
-    <!-- Google Fonts -->
-    <link rel="icon" type="image/svg+xml"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23e63900'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial Black,Arial' font-weight='900' font-size='28' fill='white'>SB</text></svg>">
+    <title>Return Policy – SpareBlaze | 30-Day Easy Returns</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
-        rel="stylesheet">
-    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- CSS -->
     <link rel="stylesheet" href="../css/style.css">
     <style>
+        :root {
+            --rp-green: #16a34a;
+            --rp-green-light: #dcfce7;
+            --rp-red: #dc2626;
+            --rp-red-light: #fee2e2;
+            --rp-orange: #e63900;
+            --rp-orange-light: #fff0eb;
+            --rp-blue: #2563eb;
+            --rp-blue-light: #dbeafe;
+            --rp-gray: #f8fafc;
+            --rp-border: #e2e8f0;
+            --rp-shadow: 0 2px 16px rgba(0,0,0,0.07);
+            --rp-radius: 14px;
+        }
+
+        /* PAGE HEADER */
         .page-header {
-            background: linear-gradient(135deg, var(--color-bg-base) 0%, #e2e8f0 100%);
-            padding: 8rem 1.5rem 4rem;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            padding: 64px 0 56px;
             text-align: center;
-            border-bottom: 1px solid var(--color-border);
+            position: relative;
+            overflow: hidden;
         }
-
-        .page-header h1 {
-            font-size: 3.5rem;
-            color: var(--color-text-main);
-            margin-bottom: 1rem;
+        .page-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 60% 40%, rgba(230,57,0,0.18) 0%, transparent 65%);
         }
-
-        .content-section {
-            max-width: 800px;
+        .page-header-content {
+            position: relative;
+            z-index: 1;
+            max-width: 760px;
             margin: 0 auto;
-            background: var(--color-bg-surface);
-            padding: 3rem;
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--color-border);
-            box-shadow: var(--shadow-subtle);
+            padding: 0 24px;
+        }
+        .page-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 800;
+            color: #fff;
+            margin: 0 0 16px;
+            line-height: 1.15;
+        }
+        .page-header h1 .highlight { color: var(--color-primary, #e63900); }
+        .page-header p {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.05rem;
+            color: rgba(255,255,255,0.75);
+            margin: 0;
+            line-height: 1.65;
         }
 
-        .policy-block {
-            margin-bottom: 2rem;
+        /* BREADCRUMB */
+        .breadcrumb-bar {
+            background: var(--color-bg-surface, #fff);
+            border-bottom: 1px solid var(--color-border, #e2e8f0);
+            padding: 12px 0;
+        }
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            color: var(--color-text-muted, #64748b);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        .breadcrumb a {
+            color: var(--color-text-muted, #64748b);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .breadcrumb a:hover { color: var(--color-primary, #e63900); }
+        .breadcrumb .sep { color: #cbd5e1; }
+        .breadcrumb .current { color: var(--color-text-main, #1e293b); font-weight: 500; }
+
+        /* MAIN LAYOUT */
+        .rp-main {
+            background: var(--color-bg-base, #f1f5f9);
+            padding: 56px 0 80px;
+        }
+        .rp-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
         }
 
-        .policy-block:last-child {
-            margin-bottom: 0;
+        /* PROMISE STRIP */
+        .promise-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .promise-card {
+            background: var(--color-bg-surface, #fff);
+            border-radius: var(--rp-radius);
+            padding: 32px 28px;
+            text-align: center;
+            box-shadow: var(--rp-shadow);
+            border: 1px solid var(--rp-border);
+            transition: transform 0.25s, box-shadow 0.25s;
+        }
+        .promise-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 28px rgba(0,0,0,0.11);
+        }
+        .promise-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--rp-orange-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 1.6rem;
+            color: var(--rp-orange);
+        }
+        .promise-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--color-text-main, #1e293b);
+            margin: 0 0 10px;
+        }
+        .promise-card p {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--color-text-muted, #64748b);
+            line-height: 1.6;
+            margin: 0;
         }
 
-        .policy-block h3 {
+        /* SECTION CARDS */
+        .policy-card {
+            background: var(--color-bg-surface, #fff);
+            border-radius: var(--rp-radius);
+            box-shadow: var(--rp-shadow);
+            border: 1px solid var(--rp-border);
+            overflow: hidden;
+        }
+        .card-header {
+            padding: 24px 32px 20px;
+            border-bottom: 1px solid var(--rp-border);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .card-header.green { border-left: 5px solid var(--rp-green); }
+        .card-header.red   { border-left: 5px solid var(--rp-red); }
+        .card-header.blue  { border-left: 5px solid var(--rp-blue); }
+        .card-header.orange { border-left: 5px solid var(--rp-orange); }
+        .card-header-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .card-header-icon.green  { background: var(--rp-green-light); color: var(--rp-green); }
+        .card-header-icon.red    { background: var(--rp-red-light); color: var(--rp-red); }
+        .card-header-icon.blue   { background: var(--rp-blue-light); color: var(--rp-blue); }
+        .card-header-icon.orange { background: var(--rp-orange-light); color: var(--rp-orange); }
+        .card-header h2 {
+            font-family: 'Outfit', sans-serif;
             font-size: 1.25rem;
-            margin-bottom: 0.75rem;
-            color: var(--color-text-main);
+            font-weight: 700;
+            color: var(--color-text-main, #1e293b);
+            margin: 0;
+        }
+        .card-body { padding: 28px 32px; }
+
+        /* ELIGIBILITY CHECKLIST */
+        .criteria-intro {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            color: var(--color-text-muted, #64748b);
+            margin: 0 0 20px;
+        }
+        .check-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .check-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            color: var(--color-text-main, #1e293b);
+            line-height: 1.55;
+        }
+        .ci {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--rp-green-light);
+            color: var(--rp-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            flex-shrink: 0;
+            margin-top: 2px;
         }
 
-        .policy-block p,
-        .policy-block ul {
-            color: var(--color-text-muted);
-            margin-bottom: 1rem;
+        /* NON-RETURNABLE */
+        .doa-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            color: #c2410c;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .no-return-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .no-return-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            color: var(--color-text-main, #1e293b);
+            line-height: 1.55;
+        }
+        .xi {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--rp-red-light);
+            color: var(--rp-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            flex-shrink: 0;
+            margin-top: 2px;
         }
 
-        .policy-block ul {
-            padding-left: 1.5rem;
-            list-style-type: disc;
+        /* HOW TO RETURN STEPS */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .step-card {
+            background: var(--rp-gray);
+            border-radius: 12px;
+            padding: 28px 20px 22px;
+            position: relative;
+            border: 1px solid var(--rp-border);
+        }
+        .step-number {
+            position: absolute;
+            top: -14px;
+            left: 20px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--rp-orange);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .step-card h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--color-text-main, #1e293b);
+            margin: 10px 0 8px;
+        }
+        .step-card p {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            color: var(--color-text-muted, #64748b);
+            margin: 0;
+            line-height: 1.55;
+        }
+        .step-icon {
+            font-size: 1.4rem;
+            color: var(--rp-orange);
+            margin-bottom: 4px;
         }
 
-        .policy-block li {
-            margin-bottom: 0.5rem;
+        /* REFUND TIMELINE TABLE */
+        .timeline-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Inter', sans-serif;
+        }
+        .timeline-table thead th {
+            background: #f8fafc;
+            padding: 12px 18px;
+            text-align: left;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--color-text-muted, #64748b);
+            border-bottom: 2px solid var(--rp-border);
+        }
+        .timeline-table tbody td {
+            padding: 14px 18px;
+            font-size: 0.93rem;
+            color: var(--color-text-main, #1e293b);
+            border-bottom: 1px solid var(--rp-border);
+            vertical-align: middle;
+        }
+        .timeline-table tbody tr:last-child td { border-bottom: none; }
+        .timeline-table tbody tr:hover td { background: #f8fafc; }
+        .method-icon {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+        .method-icon i { color: var(--rp-orange); }
+        .days-badge {
+            display: inline-block;
+            background: var(--rp-blue-light);
+            color: var(--rp-blue);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+
+        /* EXCHANGE */
+        .exchange-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            align-items: start;
+        }
+        .exchange-info p {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            color: var(--color-text-main, #1e293b);
+            line-height: 1.7;
+            margin: 0 0 14px;
+        }
+        .exchange-info p:last-child { margin: 0; }
+        .priority-box {
+            background: linear-gradient(135deg, #fff7ed, #fff0eb);
+            border: 1px solid #fed7aa;
+            border-radius: 12px;
+            padding: 22px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+        .priority-box > i {
+            font-size: 1.5rem;
+            color: var(--rp-orange);
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+        .priority-box h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--color-text-main, #1e293b);
+            margin: 0 0 8px;
+        }
+        .priority-box p {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            color: var(--color-text-muted, #64748b);
+            margin: 0;
+            line-height: 1.55;
+        }
+
+        /* CTA SECTION */
+        .cta-card {
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+            border-radius: var(--rp-radius);
+            padding: 52px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 70% 30%, rgba(230,57,0,0.2) 0%, transparent 60%);
+        }
+        .cta-card-content { position: relative; z-index: 1; }
+        .cta-card h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 0 0 10px;
+        }
+        .cta-card p {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            color: rgba(255,255,255,0.72);
+            margin: 0 0 28px;
+        }
+        .cta-actions {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .promise-grid { grid-template-columns: repeat(2, 1fr); }
+            .steps-grid { grid-template-columns: repeat(2, 1fr); }
+            .exchange-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            .promise-grid { grid-template-columns: 1fr; }
+            .steps-grid { grid-template-columns: 1fr; }
+            .card-body { padding: 20px 18px; }
+            .card-header { padding: 18px 18px 16px; flex-wrap: wrap; }
+            .cta-card { padding: 36px 20px; }
+            .timeline-table thead { display: none; }
+            .timeline-table tbody td { display: block; padding: 6px 14px; border-bottom: none; }
+            .timeline-table tbody tr { border-bottom: 1px solid var(--rp-border); display: block; padding: 10px 0; }
         }
     </style>
 </head>
-
 <body>
-    <!-- Navigation -->
-    <nav class="navbar scrolled">
-        <div class="nav-container">
-            <a href="index.html" class="logo"><img src="../public/images/spareblaze-logo.png" alt="SpareBlaze Logo"
-                    style="height: 54px; width: auto; object-fit: contain;">
+
+<nav class="navbar scrolled">
+    <div class="nav-container">
+        <a href="index.html" class="logo"><img src="../public/images/spareblaze-logo.png" alt="SpareBlaze Logo" style="height:54px;width:auto;object-fit:contain;"></a>
+        <div class="search-container">
+            <div class="search-category" id="custom-dropdown">
+                <div class="dropdown-selected"><span id="dropdown-text">Select Vehicle</span><i class="fa-solid fa-chevron-down"></i></div>
+                <ul class="dropdown-options">
+                    <li data-value="">All Vehicles</li><li data-value="maruti">MARUTI</li><li data-value="hyundai">HYUNDAI</li><li data-value="mahindra">MAHINDRA</li><li data-value="tata">TATA</li><li data-value="honda">HONDA</li><li data-value="toyota">TOYOTA</li><li data-value="kia">KIA</li><li data-value="ford">FORD</li><li data-value="skoda">SKODA</li><li data-value="vw">VW</li><li data-value="renault">RENAULT</li><li data-value="nissan">NISSAN</li><li data-value="chevrolet">CHEVROLET</li><li data-value="fiat">FIAT</li><li data-value="bmw">BMW</li><li data-value="audi">AUDI</li><li data-value="volvo">VOLVO</li>
+                </ul>
+            </div>
+            <input type="text" id="search-input" placeholder="Search by part name, brand, or OEM number...">
+            <button class="search-btn" onclick="window.location.href='search.html'"><i class="fa-solid fa-search"></i></button>
+        </div>
+        <div class="nav-actions">
+            <a href="javascript:void(0);" class="nav-icon-btn"><i class="fa-regular fa-user"></i></a>
+            <button class="nav-icon-btn cart-btn" id="cart-toggle"><i class="fa-solid fa-cart-shopping"></i><span class="cart-badge" id="cart-count">0</span></button>
+            <button class="mobile-menu-btn" id="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </div>
+</nav>
+<div class="mobile-search">
+    <div class="mobile-search-row">
+        <select class="mobile-vehicle-select" id="mobile-vehicle-select">
+            <option value="">All Vehicles</option><option value="maruti">MARUTI</option><option value="hyundai">HYUNDAI</option><option value="mahindra">MAHINDRA</option><option value="tata">TATA</option><option value="honda">HONDA</option><option value="toyota">TOYOTA</option><option value="kia">KIA</option><option value="ford">FORD</option><option value="skoda">SKODA</option><option value="vw">VW</option><option value="renault">RENAULT</option><option value="nissan">NISSAN</option><option value="chevrolet">CHEVROLET</option><option value="fiat">FIAT</option><option value="bmw">BMW</option><option value="audi">AUDI</option><option value="volvo">VOLVO</option>
+        </select>
+        <div class="mobile-search-wrap">
+            <input type="text" id="mobile-search-input" placeholder="Search parts...">
+            <button class="mobile-search-btn"><i class="fa-solid fa-search"></i></button>
+        </div>
+    </div>
+    <div class="search-results" id="mobile-search-results"></div>
+</div>
+
+<div class="nav-categories">
+    <div class="nav-container">
+        <button class="all-categories-btn" onclick="window.location.href='categories.html'">
+            <i class="fa-solid fa-bars-staggered"></i> All Categories
+        </button>
+        <ul class="category-links">
+            <li><a href="after-market.html">After Market</a></li>
+            <li><a href="refurbished.html">Refurbished</a></li>
+            <li><a href="used.html">Used</a></li>
+            <li><a href="oem.html">OEM</a></li>
+            <li><a href="wholesale.html">Wholesale</a></li>
+        </ul>
+        <div class="help-nav-item">
+            <a href="javascript:void(0);" class="help-nav-link">
+                <i class="fa-solid fa-circle-question"></i> Help <i class="fa-solid fa-chevron-down help-chevron"></i>
             </a>
-
-            <div class="search-container">
-                <div class="search-category" id="custom-dropdown">
-                    <div class="dropdown-selected">
-                        <span id="dropdown-text">Select Vehicle</span>
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </div>
-                    <ul class="dropdown-options">
-                        <li data-value="">All Vehicles</li>
-                        <li data-value="maruti">MARUTI</li>
-                        <li data-value="hyundai">HYUNDAI</li>
-                        <li data-value="mahindra">MAHINDRA</li>
-                        <li data-value="tata">TATA</li>
-                        <li data-value="chevrolet">CHEVROLET</li>
-                        <li data-value="honda">HONDA</li>
-                        <li data-value="skoda">SKODA</li>
-                        <li data-value="vw">VW</li>
-                        <li data-value="toyota">TOYOTA</li>
-                        <li data-value="nissan">NISSAN</li>
-                        <li data-value="renault">RENAULT</li>
-                        <li data-value="ford">FORD</li>
-                        <li data-value="fiat">FIAT</li>
-                        <li data-value="kia">KIA</li>
-                    </ul>
-                </div>
-                <input type="text" id="search-input" placeholder="Search by part name, brand, or OEM number...">
-                <button class="search-btn" onclick="window.location.href='search.html'"><i
-                        class="fa-solid fa-search"></i></button>
-            </div>
-
-            <div class="nav-actions">
-                <a href="javascript:void(0);" class="nav-icon-btn"><i class="fa-regular fa-user"></i></a>
-                <button class="nav-icon-btn cart-btn" id="cart-toggle">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    <span class="cart-badge" id="cart-count">0</span>
-                
-                                </button>
-                <button class="mobile-menu-btn" id="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
-            </div>
+            <ul class="help-dropdown-menu">
+                <li><a href="faq.html"><i class="fa-solid fa-comments"></i> FAQ</a></li>
+                <li><a href="shipping-info.html"><i class="fa-solid fa-truck-fast"></i> Shipping Policy</a></li>
+                <li><a href="return-policy.html"><i class="fa-solid fa-rotate-left"></i> Return Policy</a></li>
+                <li><a href="size-guide.html"><i class="fa-solid fa-ruler"></i> Size Guide</a></li>
+                <li><a href="track-order.html"><i class="fa-solid fa-map-location-dot"></i> Track Order</a></li>
+                <li><a href="contact-us.html"><i class="fa-solid fa-headset"></i> Contact Us</a></li>
+            </ul>
         </div>
+    </div>
+</div>
+
+<div class="page-header">
+    <div class="page-header-content">
+        <h1>Return <span class="highlight">Policy</span></h1>
+        <p>Shop with complete confidence. Every eligible purchase is protected by our 30-day hassle-free return guarantee.</p>
+    </div>
+</div>
+
+<div class="breadcrumb-bar">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html"><i class="fa-solid fa-house" style="font-size:0.75rem;"></i> Home</a>
+        <span class="sep"><i class="fa-solid fa-chevron-right" style="font-size:0.65rem;"></i></span>
+        <span class="current">Return Policy</span>
     </nav>
-        <!-- Mobile Search + Vehicle Select (Visible on small screens) -->
-        <div class="mobile-search">
-            <div class="mobile-search-row">
-                <select class="mobile-vehicle-select" id="mobile-vehicle-select">
-                    <option value="">All Vehicles</option>
-                    <option value="maruti">MARUTI</option>
-                    <option value="hyundai">HYUNDAI</option>
-                    <option value="mahindra">MAHINDRA</option>
-                    <option value="tata">TATA</option>
-                    <option value="chevrolet">CHEVROLET</option>
-                    <option value="honda">HONDA</option>
-                    <option value="skoda">SKODA</option>
-                    <option value="vw">VW</option>
-                    <option value="toyota">TOYOTA</option>
-                    <option value="nissan">NISSAN</option>
-                    <option value="renault">RENAULT</option>
-                    <option value="ford">FORD</option>
-                    <option value="fiat">FIAT</option>
-                    <option value="kia">KIA</option>
-                    <option value="bmw">BMW</option>
-                    <option value="audi">AUDI</option>
-                    <option value="volvo">VOLVO</option>
-                </select>
-                <div class="mobile-search-wrap">
-                    <input type="text" id="mobile-search-input" placeholder="Search parts...">
-                    <button class="mobile-search-btn"><i class="fa-solid fa-search"></i></button>
+</div>
+
+<main class="rp-main section-padding">
+    <div class="rp-container">
+
+        <!-- SECTION 1: PROMISE STRIP -->
+        <section>
+            <div class="promise-grid">
+                <div class="promise-card">
+                    <div class="promise-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                    <h3>30-Day Returns</h3>
+                    <p>Return any eligible item within 30 days of delivery — no questions asked on defective or incorrect items.</p>
+                </div>
+                <div class="promise-card">
+                    <div class="promise-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+                    <h3>Full Refund</h3>
+                    <p>Get a complete refund to your original payment method with no deductions on qualifying returns.</p>
+                </div>
+                <div class="promise-card">
+                    <div class="promise-icon"><i class="fa-solid fa-truck-ramp-box"></i></div>
+                    <h3>Free Doorstep Pickup</h3>
+                    <p>We arrange a free courier pickup from your address for all approved returns.</p>
                 </div>
             </div>
-            <div class="search-results" id="mobile-search-results"></div>
-        </div>
+        </section>
 
-    <!-- Secondary Navigation -->
-    <div class="nav-categories">
-        <div class="nav-container">
-            <button class="all-categories-btn" onclick="window.location.href='categories.html'">
-                <i class="fa-solid fa-bars-staggered"></i> All Categories
-            </button>
-            <ul class="category-links">
+        <!-- SECTION 2: ELIGIBILITY -->
+        <section class="policy-card">
+            <div class="card-header green">
+                <div class="card-header-icon green"><i class="fa-solid fa-circle-check"></i></div>
+                <h2>Return Eligibility Criteria</h2>
+            </div>
+            <div class="card-body">
+                <p class="criteria-intro">To qualify for a return, <strong>all</strong> of the following conditions must be met at the time of your return request:</p>
+                <ul class="check-list">
+                    <li>
+                        <span class="ci"><i class="fa-solid fa-check"></i></span>
+                        <span><strong>Within 30 days of delivery date</strong> — Returns initiated after 30 days of the confirmed delivery date will not be accepted.</span>
+                    </li>
+                    <li>
+                        <span class="ci"><i class="fa-solid fa-check"></i></span>
+                        <span><strong>Unused and uninstalled condition</strong> — The part must not have been fitted to or installed in any vehicle. Any fitment marks will void the return eligibility.</span>
+                    </li>
+                    <li>
+                        <span class="ci"><i class="fa-solid fa-check"></i></span>
+                        <span><strong>Original packaging, all accessories &amp; documentation intact</strong> — Return in the original manufacturer packaging with all accessories, bolts, gaskets, and any documentation.</span>
+                    </li>
+                    <li>
+                        <span class="ci"><i class="fa-solid fa-check"></i></span>
+                        <span><strong>Valid Order ID or invoice provided</strong> — You must provide your SpareBlaze Order ID (format: SB-XXXXXXXXX) or a copy of the purchase invoice.</span>
+                    </li>
+                    <li>
+                        <span class="ci"><i class="fa-solid fa-check"></i></span>
+                        <span><strong>Photographic or video evidence for defective claims submitted within 48 hours of delivery</strong> — For items received damaged or defective, clear unboxing evidence must be sent to support@spareblaze.in within 48 hours.</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECTION 3: NON-RETURNABLE -->
+        <section class="policy-card">
+            <div class="card-header red">
+                <div class="card-header-icon red"><i class="fa-solid fa-ban"></i></div>
+                <h2>Items Exempt from Returns</h2>
+            </div>
+            <div class="card-body">
+                <div class="doa-badge">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    These items can only be returned if dead-on-arrival (DOA) with unboxing video proof
+                </div>
+                <ul class="no-return-list">
+                    <li>
+                        <span class="xi"><i class="fa-solid fa-xmark"></i></span>
+                        <span><strong>Electrical &amp; electronic components</strong> — Sensors, ECUs, ignition modules, relays, and all electronic assemblies are non-returnable unless DOA with unboxing video.</span>
+                    </li>
+                    <li>
+                        <span class="xi"><i class="fa-solid fa-xmark"></i></span>
+                        <span><strong>Fluids, oils &amp; lubricants with broken factory seal</strong> — Engine oils, brake fluids, coolants, and any liquid products with tampered or opened seals cannot be returned.</span>
+                    </li>
+                    <li>
+                        <span class="xi"><i class="fa-solid fa-xmark"></i></span>
+                        <span><strong>Final Sale / clearance items</strong> — Products purchased at clearance or final sale prices are not eligible for return or exchange unless defective.</span>
+                    </li>
+                    <li>
+                        <span class="xi"><i class="fa-solid fa-xmark"></i></span>
+                        <span><strong>Installed or used parts showing fitment marks</strong> — Any component with visible signs of installation, mounting scratches, torque marks, or fluid contact is non-returnable.</span>
+                    </li>
+                    <li>
+                        <span class="xi"><i class="fa-solid fa-xmark"></i></span>
+                        <span><strong>Custom or special-order parts sourced on request</strong> — Parts ordered specifically for your vehicle that are not part of regular inventory cannot be returned.</span>
+                    </li>
+                    <li>
+                        <span class="xi"><i class="fa-solid fa-xmark"></i></span>
+                        <span><strong>Perishable items: air filters, cabin filters, bulbs</strong> — These items are non-returnable once removed from their sealed manufacturer packaging.</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECTION 4: HOW TO RETURN -->
+        <section class="policy-card">
+            <div class="card-header orange">
+                <div class="card-header-icon orange"><i class="fa-solid fa-arrows-rotate"></i></div>
+                <h2>How to Return — Step by Step</h2>
+            </div>
+            <div class="card-body">
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <span class="step-number">1</span>
+                        <div class="step-icon"><i class="fa-solid fa-phone-volume"></i></div>
+                        <h4>Initiate</h4>
+                        <p>Contact us within 30 days of delivery via email at returns@spareblaze.in or call 1800 123 4567. Have your Order ID ready.</p>
+                    </div>
+                    <div class="step-card">
+                        <span class="step-number">2</span>
+                        <div class="step-icon"><i class="fa-solid fa-camera"></i></div>
+                        <h4>Document</h4>
+                        <p>Share clear photographs or an unboxing video showing the defect, incorrect part, or damaged packaging with the return request.</p>
+                    </div>
+                    <div class="step-card">
+                        <span class="step-number">3</span>
+                        <div class="step-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                        <h4>Approval</h4>
+                        <p>Our returns team reviews your request in 24–48 business hours and sends you a Return Authorisation (RA) number via email.</p>
+                    </div>
+                    <div class="step-card">
+                        <span class="step-number">4</span>
+                        <div class="step-icon"><i class="fa-solid fa-truck-pickup"></i></div>
+                        <h4>Pickup</h4>
+                        <p>We schedule a free doorstep courier pickup within 2–3 business days. Pack the item securely with the RA number written on the box.</p>
+                    </div>
+                    <div class="step-card">
+                        <span class="step-number">5</span>
+                        <div class="step-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                        <h4>Inspection</h4>
+                        <p>Our warehouse team inspects the returned item within 3–5 business days of receipt to verify it meets all return eligibility criteria.</p>
+                    </div>
+                    <div class="step-card">
+                        <span class="step-number">6</span>
+                        <div class="step-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
+                        <h4>Refund</h4>
+                        <p>Refund is processed within 5–10 business days to your original payment method once inspection approval is confirmed.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: REFUND TIMELINES -->
+        <section class="policy-card">
+            <div class="card-header blue">
+                <div class="card-header-icon blue"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                <h2>Refund Timelines</h2>
+            </div>
+            <div class="card-body" style="padding-top:0; padding-bottom:0;">
+                <table class="timeline-table">
+                    <thead>
+                        <tr>
+                            <th>Payment Method</th>
+                            <th>Refund Timeline</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="method-icon"><i class="fa-solid fa-mobile-screen-button"></i> UPI / Net Banking</span></td>
+                            <td><span class="days-badge">5–7 Business Days</span></td>
+                            <td style="font-size:0.875rem;color:#64748b;">Fastest refund route; credited directly to your registered bank account.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method-icon"><i class="fa-solid fa-credit-card"></i> Credit / Debit Card</span></td>
+                            <td><span class="days-badge">7–10 Business Days</span></td>
+                            <td style="font-size:0.875rem;color:#64748b;">Timeline depends on your issuing bank's processing cycle.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method-icon"><i class="fa-solid fa-wallet"></i> SpareBlaze Wallet</span></td>
+                            <td><span class="days-badge">2–3 Business Days</span></td>
+                            <td style="font-size:0.875rem;color:#64748b;">Instant credit to your SpareBlaze account wallet balance.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="method-icon"><i class="fa-solid fa-money-bills"></i> Cash on Delivery (COD)</span></td>
+                            <td><span class="days-badge">7–14 Business Days</span></td>
+                            <td style="font-size:0.875rem;color:#64748b;">Refunded via bank transfer; please provide your IFSC and account details.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECTION 6: EXCHANGES -->
+        <section class="policy-card">
+            <div class="card-header orange">
+                <div class="card-header-icon orange"><i class="fa-solid fa-right-left"></i></div>
+                <h2>Exchanges &amp; Replacements</h2>
+            </div>
+            <div class="card-body">
+                <div class="exchange-grid">
+                    <div class="exchange-info">
+                        <p>In addition to refunds, SpareBlaze offers <strong>direct part replacement</strong> for items received in a defective condition or where an incorrect part was shipped due to our error. A replacement order will be raised at no additional cost once the original item's return is approved.</p>
+                        <p>To request an exchange instead of a refund, mention this preference when you contact us to initiate the return. Our team will confirm availability of replacement stock before processing.</p>
+                        <p>Exchanges are subject to the same eligibility criteria as standard returns. The replacement item will be dispatched using the same shipping method used for your original order.</p>
+                    </div>
+                    <div>
+                        <div class="priority-box">
+                            <i class="fa-solid fa-bolt"></i>
+                            <div>
+                                <h4>Priority Dispatch for Immobilised Vehicles</h4>
+                                <p>If a defective part has left your vehicle undriveable, let us know when initiating the return. We will prioritise your replacement dispatch — typically within 1 business day — and assign a dedicated support agent to minimise your downtime.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 7: CTA -->
+        <section class="cta-card">
+            <div class="cta-card-content">
+                <h2>Need to Start a Return?</h2>
+                <p>Our returns team is ready to help you Mon–Sat, 9AM–7PM IST. Initiate your return in minutes.</p>
+                <div class="cta-actions">
+                    <a href="contact-us.html" class="btn btn-primary"><i class="fa-solid fa-headset"></i>&nbsp; Contact Support</a>
+                    <a href="mailto:returns@spareblaze.in" class="btn btn-secondary"><i class="fa-solid fa-envelope"></i>&nbsp; returns@spareblaze.in</a>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<footer>
+    <div class="footer-container">
+        <div class="footer-brand">
+            <a href="index.html" class="logo"><img src="../public/images/spareblaze-logo-footer.png" alt="SpareBlaze Logo" style="width:250px;height:auto;"></a>
+            <p>India's trusted e-commerce platform for genuine car and SUV spare parts. Quality assured, delivered nationwide.</p>
+            <div class="social-links">
+                <a href="javascript:void(0);"><i class="fa-brands fa-instagram"></i></a>
+                <a href="javascript:void(0);"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="javascript:void(0);"><i class="fa-brands fa-twitter"></i></a>
+                <a href="javascript:void(0);"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+        </div>
+        <div class="footer-links">
+            <h3>Help</h3>
+            <ul>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="shipping-info.html">Shipping Policy</a></li>
+                <li><a href="return-policy.html">Return Policy</a></li>
+                <li><a href="size-guide.html">Size Guide</a></li>
+                <li><a href="track-order.html">Track Order</a></li>
+                <li><a href="contact-us.html">Contact Us</a></li>
+            </ul>
+        </div>
+        <div class="footer-links">
+            <h3>Shop By Type</h3>
+            <ul>
                 <li><a href="after-market.html">After Market</a></li>
                 <li><a href="refurbished.html">Refurbished</a></li>
                 <li><a href="used.html">Used</a></li>
@@ -165,137 +804,42 @@
                 <li><a href="wholesale.html">Wholesale</a></li>
             </ul>
         </div>
-    </div>
-
-    <!-- Page Header -->
-    <header class="page-header">
-        <h1>Return <span class="highlight">Policy</span></h1>
-        <p>Information regarding our 7 Days Return Policy.</p>
-    </header>
-
-    <!-- Main Content -->
-    <main class="section-padding">
-        <div class="content-section">
-            <div class="policy-block">
-                <h3>7-Day Easy Returns</h3>
-                <p>We want you to be completely satisfied with your purchase. If you receive a product that is
-                    defective, damaged, or completely different from what you ordered, you can return it within 7 days
-                    of delivery.</p>
+        <div class="footer-contact">
+            <h3>Contact</h3>
+            <p><i class="fa-solid fa-phone"></i> +91 1800 123 4567</p>
+            <p><i class="fa-solid fa-envelope"></i> support@spareblaze.in</p>
+            <p><i class="fa-solid fa-location-dot"></i> Bengaluru, Karnataka, India</p>
+            <h3 class="payment-title">Secure Payments</h3>
+            <div class="payment-icons">
+                <i class="fa-brands fa-cc-visa"></i>
+                <i class="fa-brands fa-cc-mastercard"></i>
+                <span class="upi-text">UPI</span>
+                <span class="rupay-text">RuPay</span>
             </div>
-
-            <div class="policy-block">
-                <h3>Conditions for Return</h3>
-                <ul>
-                    <li>The product must be unused and in the same condition that you received it.</li>
-                    <li>It must be in its original packaging along with all original tags, manuals, and accessories.
-                    </li>
-                    <li>A valid proof of purchase (order confirmation email or order ID) is required.</li>
-                </ul>
-            </div>
-
-            <div class="policy-block">
-                <h3>Non-Returnable Items</h3>
-                <p>Certain items are exempt from being returned due to hygiene or safety reasons:</p>
-                <ul>
-                    <li>Electrical components (unless defective upon arrival)</li>
-                    <li>Fluids and oils (if the seal is broken)</li>
-                    <li>Clearance or sale merchandise</li>
-                </ul>
-            </div>
-
-            <div class="policy-block">
-                <h3>How to Initiate a Return</h3>
-                <p>To start a return, please visit our <a href="contact-us.html" class="highlight">Contact Us</a> page
-                    or email us at support@spareblaze.in with your Order ID and photographic evidence of the issue. Our
-                    support team will guide you through the process.</p>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-container">
-            <div class="footer-brand">
-                <a href="index.html" class="logo">
-                    <img src="../public/images/spareblaze-logo-footer.png" alt="SpareBlaze Logo"
-                        style="width: 250px; height: auto;">
-                </a>
-                <p>India's trusted e-commerce platform for genuine car and SUV spare parts. Quality assured, delivered
-                    nationwide.</p>
-                <div class="social-links">
-                    <a href="javascript:void(0);"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="javascript:void(0);"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="javascript:void(0);"><i class="fa-brands fa-twitter"></i></a>
-                    <a href="javascript:void(0);"><i class="fa-brands fa-youtube"></i></a>
-                </div>
-            </div>
-
-            <div class="footer-links">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="index.html">About Us</a></li>
-                    <li><a href="track-order.html">Track Order</a></li>
-                    <li><a href="return-policy.html">Return Policy</a></li>
-                    <li><a href="shipping-info.html">Shipping Info</a></li>
-                    <li><a href="contact-us.html">Contact Us</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-links">
-                <h3>Shop By Type</h3>
-                <ul>
-                    <li><a href="after-market.html">After Market</a></li>
-                    <li><a href="refurbished.html">Refurbished</a></li>
-                    <li><a href="used.html">Used</a></li>
-                    <li><a href="oem.html">OEM</a></li>
-                    <li><a href="wholesale.html">Wholesale</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-contact">
-                <h3>Contact</h3>
-                <p><i class="fa-solid fa-phone"></i> +91 1800 123 4567</p>
-                <p><i class="fa-solid fa-envelope"></i> support@spareblaze.in</p>
-                <p><i class="fa-solid fa-location-dot"></i> Bengaluru, Karnataka, India</p>
-
-                <h3 class="payment-title">Secure Payments</h3>
-                <div class="payment-icons">
-                    <i class="fa-brands fa-cc-visa"></i>
-                    <i class="fa-brands fa-cc-mastercard"></i>
-                    <span class="upi-text">UPI</span>
-                    <span class="rupay-text">RuPay</span>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 SpareBlaze. All rights reserved. Designed for Indian Automotive Market.</p>
-        </div>
-    </footer>
-
-    <!-- Cart Sidebar -->
-    <div class="cart-overlay" id="cart-overlay"></div>
-    <div class="cart-sidebar" id="cart-sidebar">
-        <div class="cart-header">
-            <h3>Your Cart</h3>
-            <button class="close-btn" id="close-cart"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="cart-items" id="cart-items-container">
-            <div class="empty-cart-msg">Your cart is currently empty.</div>
-        </div>
-        <div class="cart-footer">
-            <div class="cart-total">
-                <span>Total:</span>
-                <span class="total-amount" id="cart-total-amount">₹0</span>
-            </div>
-            <button class="btn btn-primary w-100 checkout-btn" id="checkout-btn" disabled>Proceed to Secure
-                Checkout</button>
         </div>
     </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 SpareBlaze. All rights reserved. Designed for Indian Automotive Market.</p>
+    </div>
+</footer>
+<div class="cart-overlay" id="cart-overlay"></div>
+<div class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-header"><h3>Your Cart</h3><button class="close-btn" id="close-cart"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="cart-items" id="cart-items-container"><div class="empty-cart-msg">Your cart is currently empty.</div></div>
+    <div class="cart-footer">
+        <div class="cart-total"><span>Total:</span><span class="total-amount" id="cart-total-amount">&#8377;0</span></div>
+        <button class="btn btn-primary w-100 checkout-btn" id="checkout-btn" disabled>Proceed to Secure Checkout</button>
+    </div>
+</div>
+<script src="../js/script.js"></script>
+<script src="https://code.tidio.co/sienbawteqdozz2om1mswgszpjxm6zxg.js" async></script>
+<button id="scroll-to-top" class="scroll-to-top" aria-label="Scroll to top"><i class="fa-solid fa-chevron-up"></i></button>
 
-    <script src="../js/script.js"></script>
+  <!-- WhatsApp Float Button -->
+  <a id="wa-float-btn" class="wa-float-btn" href="https://wa.me/917259955674" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+    <span class="wa-tooltip">Chat with us</span>
+  </a>
 
-
-    <script src="https://code.tidio.co/sienbawteqdozz2om1mswgszpjxm6zxg.js" async></script>
 </body>
-
 </html>
