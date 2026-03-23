@@ -22,6 +22,8 @@
             max-width: var(--max-width);
             margin: 0 auto;
             padding: 1rem 1.5rem;
+            word-break: break-word;
+            overflow-wrap: break-word;
             font-size: 0.9rem;
             color: var(--color-text-muted);
         }
@@ -46,6 +48,12 @@
         @media (max-width: 900px) {
             .product-overview-container {
                 grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .main-image-box {
+                height: 280px;
+                padding: 1rem;
             }
         }
 
@@ -72,7 +80,6 @@
             max-height: 100%;
             max-width: 100%;
             object-fit: contain;
-            mix-blend-mode: multiply;
         }
 
         .thumbnail-strip {
@@ -103,7 +110,7 @@
         .thumb-box img {
             max-height: 100%;
             max-width: 100%;
-            mix-blend-mode: multiply;
+            object-fit: contain;
         }
 
         /* Info Column */
@@ -111,6 +118,12 @@
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
+            /* contain:layout tells the browser that reflows inside this panel
+               do not affect elements outside it. This prevents text-reflow events
+               (font swap, JS content injection) from propagating up to the fixed
+               navbar's backdrop-filter compositor, eliminating the on-load shiver
+               seen on mobile devices. */
+            contain: layout;
         }
 
         .brand-link-box {
@@ -132,6 +145,8 @@
             font-family: var(--font-heading);
             color: var(--color-text-main);
             line-height: 1.2;
+            word-break: break-word;
+            overflow-wrap: break-word;
         }
 
         .price-block {
@@ -280,7 +295,6 @@
         .fitment-table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 600px;
         }
 
         .fitment-table th {
@@ -411,19 +425,19 @@
                 <div class="discount-badge"
                     style="position: absolute; top: 1.5rem; left: 1.5rem; background: var(--color-error); color: white; padding: 0.3rem 0.8rem; font-weight: bold; border-radius: var(--radius-sm);"
                     id="product-badge">-15%</div>
-                <img id="main-product-img" src="" alt="Product Image">
+                <img id="main-product-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Product Image">
             </div>
             <div class="thumbnail-strip">
-                <div class="thumb-box active"><img id="thumb-1" src="" alt="Thumb 1"></div>
-                <div class="thumb-box"><img id="thumb-2" src="" alt="Thumb 2"></div>
-                <div class="thumb-box"><img id="thumb-3" src="" alt="Thumb 3"></div>
+                <div class="thumb-box active"><img id="thumb-1" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Thumb 1"></div>
+                <div class="thumb-box"><img id="thumb-2" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Thumb 2"></div>
+                <div class="thumb-box"><img id="thumb-3" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Thumb 3"></div>
             </div>
         </div>
 
         <!-- Right: Info Panel -->
         <div class="product-info-panel">
             <div class="brand-link-box">
-                <img id="panel-brand-logo" src="" alt="Brand Logo">
+                <img id="panel-brand-logo" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Brand Logo">
                 <a href="javascript:void(0);" id="view-brand-catalog" style="color: #0b5fc9;">View all <span
                         id="panel-brand-name">Brand</span> products ></a>
             </div>
@@ -589,8 +603,8 @@
 
             <div class="footer-contact">
                 <h3>Contact</h3>
-                <p><i class="fa-solid fa-phone"></i> +91 1800 123 4567</p>
-                <p><i class="fa-solid fa-envelope"></i> support@spareblaze.in</p>
+                <p><i class="fa-solid fa-phone"></i> +91 7259955674</p>
+                <p><i class="fa-solid fa-envelope"></i> support@spareblaze.com</p>
                 <p><i class="fa-solid fa-location-dot"></i> Bengaluru, Karnataka, India</p>
 
                 <h3 class="payment-title">Secure Payments</h3>
@@ -598,7 +612,7 @@
                     <i class="fa-brands fa-cc-visa"></i>
                     <i class="fa-brands fa-cc-mastercard"></i>
                     <span class="upi-text">UPI</span>
-                    <span class="rupay-text">RuPay</span>
+                    <span class="payu-text">PayU</span>
                 </div>
             </div>
         </div>
@@ -625,7 +639,26 @@
                 ...((JSON.parse(localStorage.getItem('sb_cms_data') || '{}').categories || []).flatMap(c => c.products || []))
             ];
 
-            let p = allDatasets.find(item => (item.name || item.title) === productId);
+            // Decode HTML entities (e.g. &#038; → &) for comparison with URL-decoded title
+            function decodeHtmlEntities(str) {
+                var el = document.createElement('div');
+                el.innerHTML = str || '';
+                return el.textContent;
+            }
+            let p = allDatasets.find(item => decodeHtmlEntities(item.name || item.title) === productId);
+
+            // 1b. Secondary lookup: match by the 'link' field's id param (handles short-ID links)
+            if (!p) {
+                p = allDatasets.find(item => {
+                    if (!item.link) return false;
+                    try {
+                        const qIdx = item.link.indexOf('?');
+                        if (qIdx === -1) return false;
+                        const params = new URLSearchParams(item.link.substring(qIdx));
+                        return params.get('id') === productId;
+                    } catch (e) { return false; }
+                });
+            }
 
             // 2. Fallback logic for query params (backward compatibility)
             if (!p) {
@@ -674,25 +707,33 @@
             // Brand Panel
             const pngBrands = ['bmw', 'audi', 'volvo', 'mahindra', 'hyundai', 'honda', 'toyota', 'vw', 'tata', 'ford', 'fiat', 'chevrolet', 'maruti', 'maruti-suzuki'];
             const svgBrands = ['kia', 'nissan', 'renault', 'skoda', 'mg', 'jeep'];
-            let finalLogo = `images/${brandId}.webp`;
+            let finalLogo = `../public/images/${brandId}.webp`;
             if (pngBrands.includes(brandId)) {
-                finalLogo = `images/${brandId}.png`;
-                if (brandId === 'maruti') finalLogo = `images/maruti-suzuki.png`;
+                finalLogo = `../public/images/${brandId}.png`;
+                if (brandId === 'maruti') finalLogo = `../public/images/maruti-suzuki.png`;
             } else if (svgBrands.includes(brandId)) {
-                finalLogo = `images/${brandId}.svg`;
+                finalLogo = `../public/images/${brandId}.svg`;
             }
 
             const brandIcon = document.getElementById('panel-brand-logo');
             brandIcon.src = finalLogo;
-            brandIcon.onerror = function () { this.src = 'images/spareblaze-logo.png'; };
+            brandIcon.onerror = function () {
+                this.onerror = null;
+                this.src = '../public/images/spareblaze-logo.png';
+            };
             document.getElementById('panel-brand-name').textContent = brandName;
             document.getElementById('view-brand-catalog').href = `brand.html?id=${brandId}`;
 
             // Images
-            document.getElementById('main-product-img').src = p.img;
-            document.getElementById('thumb-1').src = p.img;
-            document.getElementById('thumb-2').src = p.img;
-            document.getElementById('thumb-3').src = p.img;
+            const PLACEHOLDER_IMG = 'https://dummyimage.com/600x600/f8f9fa/a3a3a3.png&text=No+Image';
+            const mainImg = document.getElementById('main-product-img');
+            mainImg.src = p.img || PLACEHOLDER_IMG;
+            mainImg.onerror = function () { this.onerror = null; this.src = PLACEHOLDER_IMG; };
+            [document.getElementById('thumb-1'), document.getElementById('thumb-2'), document.getElementById('thumb-3')].forEach(function (th) {
+                if (!th) return;
+                th.src = p.img || PLACEHOLDER_IMG;
+                th.onerror = function () { this.onerror = null; this.src = PLACEHOLDER_IMG; };
+            });
 
             // Price & Saving
             const formatter = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
