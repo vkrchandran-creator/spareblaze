@@ -19,8 +19,9 @@
             { label: 'Wholesale', href: 'wholesale.html' }
         ],
         footer: {
-            phone: '+91 1800 123 4567',
-            email: 'support@spareblaze.in',
+            phone: '+91 7259955674',
+            phone2: '+91 8050819131',
+            email: 'support@spareblaze.com',
             address: 'Bengaluru, Karnataka, India',
             whatsapp: '+91 7259955674',
             instagram: 'javascript:void(0);',
@@ -73,7 +74,13 @@
             primary: '#e63900',
             primarySoft: '#ffede6',
             fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif"
-        }
+        },
+        testimonials: [
+            { name: 'Rahul Sharma', review: 'Great quality OEM parts at affordable prices. Delivered quickly to Bengaluru! Absolutely satisfied with the product and service.' },
+            { name: 'Priya Nair', review: 'Found the exact brake pads I needed for my Maruti Swift. SpareBlaze made it so easy to find genuine parts online. Fast delivery too!' },
+            { name: 'Anil Kumar', review: 'SpareBlaze is my go-to for all car spare parts. Genuine products and fast nationwide shipping. Highly recommended for every car owner!' },
+            { name: 'Meera Pillai', review: 'Amazing customer support helped me find the right part for my Hyundai Creta. Will definitely order again from SpareBlaze.' }
+        ]
     };
 
     let d = null;
@@ -89,10 +96,22 @@
         if (!d.siteIdentity) d.siteIdentity = DEFAULT_DATA.siteIdentity;
         if (!d.footer) d.footer = DEFAULT_DATA.footer;
         if (d.footer && d.footer.whatsapp === undefined) d.footer.whatsapp = DEFAULT_DATA.footer.whatsapp;
+        // Migrate old placeholder phone number to real number
+        if (d.footer && d.footer.phone === '+91 1800 123 4567') {
+            d.footer.phone = '+91 7259955674';
+            d.footer.phone2 = '+91 8050819131';
+            localStorage.setItem(KEY, JSON.stringify(d));
+        }
+        // Migrate old email domain
+        if (d.footer && d.footer.email === 'support@spareblaze.in') {
+            d.footer.email = 'support@spareblaze.com';
+            localStorage.setItem(KEY, JSON.stringify(d));
+        }
         if (!d.ctaBanner) d.ctaBanner = DEFAULT_DATA.ctaBanner;
         if (!d.theme) d.theme = DEFAULT_DATA.theme;
         if (!d.slides || !d.slides.length) d.slides = DEFAULT_DATA.slides;
         if (!d.featuredProducts || !d.featuredProducts.length) d.featuredProducts = DEFAULT_DATA.featuredProducts;
+        if (!d.testimonials || !d.testimonials.length) d.testimonials = DEFAULT_DATA.testimonials;
 
         // Fix for logo path/extension migration
         if (d.siteIdentity && (
@@ -263,9 +282,21 @@
     // ── 7. Footer ──
     function applyFooter() {
         const f = d.footer; if (!f) return;
-        // Contact
+        // Phone numbers — support one or two
+        const phoneNums = [f.phone, f.phone2].filter(Boolean);
+        const phoneParagraphs = [...document.querySelectorAll('.footer-contact p')].filter(p => p.querySelector('.fa-phone'));
+        phoneNums.forEach((num, i) => {
+            if (phoneParagraphs[i]) {
+                phoneParagraphs[i].innerHTML = `<i class="fa-solid fa-phone"></i> ${num}`;
+            } else if (i > 0 && phoneParagraphs[0]) {
+                // Page only has one phone <p> — insert the second one right after
+                const newP = document.createElement('p');
+                newP.innerHTML = `<i class="fa-solid fa-phone"></i> ${num}`;
+                phoneParagraphs[0].after(newP);
+            }
+        });
+        // Email & address
         document.querySelectorAll('.footer-contact p').forEach(p => {
-            if (p.querySelector('.fa-phone') && f.phone) p.innerHTML = `<i class="fa-solid fa-phone"></i> ${f.phone}`;
             if (p.querySelector('.fa-envelope') && f.email) p.innerHTML = `<i class="fa-solid fa-envelope"></i> ${f.email}`;
             if (p.querySelector('.fa-location-dot') && f.address) p.innerHTML = `<i class="fa-solid fa-location-dot"></i> ${f.address}`;
         });
@@ -348,37 +379,29 @@
             .replace('wholesale-parts/images/', '../public/product-images/wholesale/');
     }
 
+    // ── 11. Testimonials ──
+    function applyTestimonials() {
+        const t = d.testimonials; if (!t || !t.length) return;
+        const track = document.getElementById('testimonials-track');
+        if (!track) return;
+        track.innerHTML = t.map(item => `
+                <div class="testimonial-card">
+                    <p class="testimonial-text">&ldquo;${esc(item.review)}&rdquo;</p>
+                    <div class="testimonial-author">&mdash; ${esc(item.name)}</div>
+                </div>`
+        ).join('');
+    }
+
     // ── 10. Category Page (Dynamic Rendering) ──
     function applyCategoryPage() {
         const cats = d.categories || [];
         const pageFile = (window.location.pathname.split('/').pop() || 'index.html').replace('.html', '');
 
-        // Find existing global data if available
-        const globalDataMap = {
-            'after-market': typeof afterMarketProducts !== 'undefined' ? afterMarketProducts : null,
-            'refurbished': typeof refurbishedProducts !== 'undefined' ? refurbishedProducts : null,
-            'used': typeof usedProducts !== 'undefined' ? usedProducts : null,
-            'oem': typeof oemProducts !== 'undefined' ? oemProducts : null,
-            'wholesale': typeof wholesaleProducts !== 'undefined' ? wholesaleProducts : null
-        };
-
-        let catData = cats.find(c => c.id === pageFile);
-
-        // If no CMS data yet, try to use global data from JS files
-        if (!catData && globalDataMap[pageFile]) {
-            catData = {
-                id: pageFile,
-                title: pageFile.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
-                products: globalDataMap[pageFile].map(p => ({
-                    name: p.title || p.name,
-                    price: parseFloat(String(p.amount || p.price).replace(/[^0-9.]/g, '')) || 0,
-                    mrp: parseFloat(String(p.originalPrice || p.mrp || 0).replace(/[^0-9.]/g, '')) || 0,
-                    brand: p.brand,
-                    img: remapImagePath(p.image || p.img),
-                    vehicle: p.vehicle || ''
-                }))
-            };
-        }
+        // Only render dynamically when admin has explicitly saved CMS category data for this page.
+        // Without this guard, the function would wipe the static HTML product grid (which already
+        // has images loading) and replace it with new lazy-loaded <img> elements — causing images
+        // to flash briefly then disappear on every page refresh.
+        const catData = cats.find(c => c.id === pageFile);
 
         if (!catData) return;
 
@@ -428,6 +451,7 @@
         applyCarousel();
         applyWhatsApp();
         applyFeaturedProducts();
+        applyTestimonials();
         applyCategoryPage();
     }
 
