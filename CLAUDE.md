@@ -136,11 +136,40 @@ These pages render product listings using the corresponding dataset file.
 
 ---
 
-## Admin Panel
+## Admin Panel / CMS
 
-`admin.html`
+`frontend/pages/admin/index.html`
 
-A lightweight CMS interface used to modify product datasets.
+A full-featured, client-side CMS that stores all content in `localStorage` (key: `sb_cms_data`).
+
+### CMS Architecture (3-file pattern)
+For each content section, changes coordinate across:
+1. **`frontend/js/data/cms-data.js`** — `DEFAULT_DATA` + merge guard + `applyXxx()` function (called in `applyAll()`)
+2. **`frontend/js/admin/admin.js`** — `DEFAULT_DATA` mirror + `renderXxx()` / `collectXxx()` (wired into `renderAll()` / `collectAll()`)
+3. **`frontend/pages/admin/index.html`** — Sidebar nav item + panel div with editor form
+
+### CMS-Managed Sections
+| Section | Data Key | Target Page |
+|---------|----------|-------------|
+| Hero Slider | `slides` | Homepage |
+| Trust Bar | `trustBar` | Homepage |
+| Car Brands | `carBrands` | Homepage |
+| Top Categories | `topCategories` | Homepage |
+| Featured Products | `featuredProducts` | Homepage |
+| CTA Banner | `ctaBanner` | Homepage |
+| Testimonials | `testimonials` | Homepage |
+| Footer | `footer` | All pages |
+| Navigation | `navLinks` | All pages |
+| Identity (Logo/Meta) | `identity` | All pages |
+| Theme Colors | `theme` | All pages |
+| Category Pages | `categories` | Category listing pages |
+| FAQ Page | `faqPage` | faq.html |
+| Contact Us | `contactPage` | contact-us.html |
+| Return Policy | `returnPolicyPage` | return-policy.html |
+| Shipping Info | `shippingPage` | shipping-info.html |
+| Size Guide | `sizeGuidePage` | size-guide.html |
+| Track Order | `trackOrderPage` | track-order.html |
+| Brand Logos | `brandLogos` | Homepage carousel |
 
 ---
 

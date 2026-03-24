@@ -824,6 +824,15 @@
       <div class="nav-item" onclick="showPanel('featuredprods')"><i class="fa-solid fa-star"></i> Featured Products
       </div>
       <div class="nav-item" onclick="showPanel('ctabanner')"><i class="fa-solid fa-rectangle-ad"></i> CTA Banner</div>
+      <div class="nav-item" onclick="showPanel('testimonials')"><i class="fa-solid fa-comment-dots"></i> Testimonials</div>
+      <div class="nav-label" style="margin-top:1.5rem;padding:0.5rem 1rem;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted)">Content Pages</div>
+      <div class="nav-item" onclick="showPanel('faq')"><i class="fa-solid fa-comments"></i> FAQ Page</div>
+      <div class="nav-item" onclick="showPanel('contact')"><i class="fa-solid fa-headset"></i> Contact Us</div>
+      <div class="nav-item" onclick="showPanel('return-policy')"><i class="fa-solid fa-rotate-left"></i> Return Policy</div>
+      <div class="nav-item" onclick="showPanel('shipping')"><i class="fa-solid fa-truck-fast"></i> Shipping Info</div>
+      <div class="nav-item" onclick="showPanel('size-guide')"><i class="fa-solid fa-ruler"></i> Size Guide</div>
+      <div class="nav-item" onclick="showPanel('track-order')"><i class="fa-solid fa-map-location-dot"></i> Track Order</div>
+      <div class="nav-item" onclick="showPanel('brand-logos')"><i class="fa-solid fa-star"></i> Brand Logos</div>
       <div class="nav-section-label">Catalog Pages</div>
       <div class="nav-item" onclick="showPanel('categories')"><i class="fa-solid fa-box-open"></i> Category Hero/Info
       </div>
@@ -958,9 +967,9 @@
           </div>
           <div class="form-row cols-3">
             <div class="form-group"><label class="lbl">Phone</label><input type="text" id="f-phone"
-                placeholder="+91 1800 123 4567"></div>
+                placeholder="+91 7259955674"></div>
             <div class="form-group"><label class="lbl">Email</label><input type="text" id="f-email"
-                placeholder="support@spareblaze.in"></div>
+                placeholder="support@spareblaze.com"></div>
             <div class="form-group"><label class="lbl">Address</label><input type="text" id="f-address"
                 placeholder="Bengaluru, Karnataka, India"></div>
           </div>
@@ -1118,6 +1127,32 @@
         </div>
       </div>
 
+      <!-- TESTIMONIALS -->
+      <div class="panel" id="panel-testimonials">
+        <div class="topbar">
+          <h1><i class="fa-solid fa-comment-dots" style="color:var(--primary)"></i> Testimonials</h1>
+          <div style="display:flex;gap:.5rem">
+            <button class="btn btn-outline" onclick="addTestimonial()"><i class="fa-solid fa-plus"></i> Add</button>
+            <button class="btn btn-primary" onclick="saveAll()"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+          </div>
+        </div>
+        <div class="card">
+          <p style="color:var(--muted);font-size:.88rem;margin-bottom:1rem">Customer testimonials shown in the homepage carousel. Each entry has a customer name, review text, and a star rating (1–5).</p>
+          <div class="prod-table-wrap">
+            <table class="prod-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Review</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="testimonials-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <!-- CATEGORY PRODUCTS -->
       <div class="panel" id="panel-categories">
         <div class="topbar">
@@ -1235,6 +1270,252 @@
             <label class="lbl">Security Answer</label>
             <input type="text" id="sec-a" placeholder="Your secret answer">
           </div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-faq">
+        <h2><i class="fa-solid fa-comments"></i> FAQ Page Content</h2>
+        <p style="color:var(--muted);margin-bottom:1.5rem">Manage all FAQ content — categories, questions, answers, and the bottom CTA section.</p>
+
+        <div class="card" style="margin-bottom:1.5rem">
+          <h3>Page Header</h3>
+          <table class="prod-table"><tbody>
+            <tr><td style="width:120px">Title (HTML)</td><td><input type="text" id="faq-pageTitle" style="width:100%"></td></tr>
+            <tr><td>Description</td><td><input type="text" id="faq-pageDesc" style="width:100%"></td></tr>
+          </tbody></table>
+        </div>
+
+        <div class="card" style="margin-bottom:1.5rem">
+          <h3>FAQ Categories</h3>
+          <div id="faq-cat-tabs" style="margin-bottom:1rem"></div>
+          <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-bottom:1rem">
+            <table class="prod-table"><tbody>
+              <tr><td style="width:100px">Title</td><td><input type="text" id="faq-cat-title"></td></tr>
+              <tr><td>ID</td><td><input type="text" id="faq-cat-id"></td></tr>
+              <tr><td>Icon Class</td><td><input type="text" id="faq-cat-icon"></td></tr>
+            </tbody></table>
+            <div style="margin-top:0.5rem">
+              <button class="btn btn-danger btn-sm" onclick="delFaqCategory()"><i class="fa-solid fa-trash"></i> Delete Category</button>
+            </div>
+          </div>
+          <h4 style="margin-bottom:0.75rem">Questions & Answers</h4>
+          <table class="prod-table">
+            <thead><tr><th>#</th><th>Question</th><th>Answer (HTML)</th><th>Actions</th></tr></thead>
+            <tbody id="faq-items-tbody"></tbody>
+          </table>
+          <button class="btn btn-outline btn-sm" onclick="addFaqItem()" style="margin-top:0.5rem"><i class="fa-solid fa-plus"></i> Add Question</button>
+        </div>
+
+        <div class="card" style="margin-bottom:1.5rem">
+          <h3>Bottom CTA Section</h3>
+          <table class="prod-table"><tbody>
+            <tr><td style="width:100px">Title</td><td><input type="text" id="faq-ctaTitle" style="width:100%"></td></tr>
+            <tr><td>Description</td><td><input type="text" id="faq-ctaDesc" style="width:100%"></td></tr>
+          </tbody></table>
+          <h4 style="margin:1rem 0 0.5rem">CTA Buttons</h4>
+          <table class="prod-table">
+            <thead><tr><th>Text</th><th>Link</th><th>Icon</th><th></th></tr></thead>
+            <tbody id="faq-cta-tbody"></tbody>
+          </table>
+          <button class="btn btn-outline btn-sm" onclick="addFaqCtaBtn()" style="margin-top:0.5rem"><i class="fa-solid fa-plus"></i> Add Button</button>
+        </div>
+      </div>
+
+      <!-- ══════ CONTACT US PANEL ══════ -->
+      <div class="panel" id="panel-contact">
+        <h2><i class="fa-solid fa-headset"></i> Contact Us Page</h2>
+        <p style="color:var(--muted);margin-bottom:1.5rem">Manage contact channels, info panel, form labels, and quick links.</p>
+
+        <div class="card" style="margin-bottom:1.5rem">
+          <h3>Page Header</h3>
+          <table class="prod-table"><tbody>
+            <tr><td style="width:120px">Title (HTML)</td><td><input type="text" id="cp-pageTitle" style="width:100%"></td></tr>
+            <tr><td>Description</td><td><input type="text" id="cp-pageDesc" style="width:100%"></td></tr>
+          </tbody></table>
+        </div>
+
+        <div class="card" style="margin-bottom:1.5rem">
+          <h3>Support Channels</h3>
+          <table class="prod-table">
+            <thead><tr><th>Icon</th><th>Color</th><th>Title</th><th>Value</th><th>Hours</th><th>Btn Text</th><th>Btn Link</th><th></th></tr></thead>
+            <tbody id="cp-channels-tbody"></tbody>
+          </table>
+          <button class="btn btn-outline btn-sm" onclick="addChannel()" style="margin-top:0.5rem"><i class="fa-solid fa-plus"></i> Add Channel</button>
+        </div>
+
+        <div class="card" style="margin-bottom:1.5rem">
+          <h3>Info Panel</h3>
+          <table class="prod-table"><tbody>
+            <tr><td style="width:100px">Title</td><td><input type="text" id="cp-info-title" style="width:100%"></td></tr>
+            <tr><td>Address</td><td><input type="text" id="cp-info-address" style="width:100%"></td></tr>
+            <tr><td>Phone</td><td><input type="text" id="cp-info-phone" style="width:100%"></td></tr>
+            <tr><td>Email</td><td><input type="text" id="cp-info-email" style="width:100%"></td></tr>
+          </tbody></table>
+          <h4 style="margin:1rem 0 0.5rem">Business Hours</h4>
+          <table class="prod-table">
+            <thead><tr><th>Day</th><th>Time</th><th></th></tr></thead>
+            <tbody id="cp-hours-tbody"></tbody>
+          </table>
+          <button class="btn btn-outline btn-sm" onclick="addInfoHour()" style="margin-top:0.5rem"><i class="fa-solid fa-plus"></i> Add Row</button>
+        </div>
+
+        <div class="card" style="margin-bottom:1.5rem">
+          <h3>Form Labels</h3>
+          <table class="prod-table"><tbody>
+            <tr><td style="width:120px">Heading</td><td><input type="text" id="cp-fl-heading" style="width:100%"></td></tr>
+            <tr><td>Name Label</td><td><input type="text" id="cp-fl-name" style="width:100%"></td></tr>
+            <tr><td>Email Label</td><td><input type="text" id="cp-fl-email" style="width:100%"></td></tr>
+            <tr><td>Phone Label</td><td><input type="text" id="cp-fl-phone" style="width:100%"></td></tr>
+            <tr><td>Subject Label</td><td><input type="text" id="cp-fl-subject" style="width:100%"></td></tr>
+            <tr><td>Message Label</td><td><input type="text" id="cp-fl-message" style="width:100%"></td></tr>
+            <tr><td>Submit Btn</td><td><input type="text" id="cp-fl-submit" style="width:100%"></td></tr>
+            <tr><td>Success Msg</td><td><input type="text" id="cp-fl-success" style="width:100%"></td></tr>
+          </tbody></table>
+        </div>
+
+        <div class="card" style="margin-bottom:1.5rem">
+          <h3>Quick Help Links</h3>
+          <table class="prod-table">
+            <thead><tr><th>Icon</th><th>Title</th><th>Description</th><th>Link</th><th></th></tr></thead>
+            <tbody id="cp-quicklinks-tbody"></tbody>
+          </table>
+          <button class="btn btn-outline btn-sm" onclick="addQuickLink()" style="margin-top:0.5rem"><i class="fa-solid fa-plus"></i> Add Link</button>
+        </div>
+      </div>
+
+      <!-- ══════ RETURN POLICY PANEL ══════ -->
+      <div class="panel" id="panel-return-policy">
+        <h2><i class="fa-solid fa-rotate-left"></i> Return Policy Page</h2>
+        <p style="color:var(--muted);margin-bottom:1.5rem">Manage return policy promise cards and content sections.</p>
+
+        <div class="card" style="margin-bottom:1.5rem">
+          <h3>Page Header</h3>
+          <table class="prod-table"><tbody>
+            <tr><td style="width:120px">Title (HTML)</td><td><input type="text" id="rp-pageTitle" style="width:100%"></td></tr>
+            <tr><td>Description</td><td><input type="text" id="rp-pageDesc" style="width:100%"></td></tr>
+          </tbody></table>
+        </div>
+
+        <div class="card" style="margin-bottom:1.5rem">
+          <h3>Promise Cards</h3>
+          <table class="prod-table">
+            <thead><tr><th>Icon</th><th>Title</th><th>Description</th><th></th></tr></thead>
+            <tbody id="rp-promise-tbody"></tbody>
+          </table>
+          <button class="btn btn-outline btn-sm" onclick="addRpPromise()" style="margin-top:0.5rem"><i class="fa-solid fa-plus"></i> Add Card</button>
+        </div>
+
+        <div class="card" style="margin-bottom:1.5rem">
+          <h3>Policy Sections</h3>
+          <div id="rp-sections-container"></div>
+          <button class="btn btn-outline btn-sm" onclick="addRpSection()" style="margin-top:0.5rem"><i class="fa-solid fa-plus"></i> Add Section</button>
+        </div>
+      </div>
+
+      <!-- ══════ SHIPPING INFO PANEL ══════ -->
+      <div class="panel" id="panel-shipping">
+        <h2><i class="fa-solid fa-truck-fast"></i> Shipping Info Page</h2>
+        <p style="color:var(--muted);margin-bottom:1.5rem">Manage shipping stats, policy sections, and FAQ items.</p>
+
+        <div class="card" style="margin-bottom:1.5rem">
+          <h3>Page Header</h3>
+          <table class="prod-table"><tbody>
+            <tr><td style="width:120px">Title (HTML)</td><td><input type="text" id="sp-pageTitle" style="width:100%"></td></tr>
+            <tr><td>Description</td><td><input type="text" id="sp-pageDesc" style="width:100%"></td></tr>
+          </tbody></table>
+        </div>
+
+        <div class="card" style="margin-bottom:1.5rem">
+          <h3>Stat Cards</h3>
+          <table class="prod-table">
+            <thead><tr><th>Icon</th><th>Value</th><th>Label</th><th></th></tr></thead>
+            <tbody id="sp-stats-tbody"></tbody>
+          </table>
+          <button class="btn btn-outline btn-sm" onclick="addSpStat()" style="margin-top:0.5rem"><i class="fa-solid fa-plus"></i> Add Stat</button>
+        </div>
+
+        <div class="card" style="margin-bottom:1.5rem">
+          <h3>Policy Sections</h3>
+          <div id="sp-sections-container"></div>
+          <button class="btn btn-outline btn-sm" onclick="addSpSection()" style="margin-top:0.5rem"><i class="fa-solid fa-plus"></i> Add Section</button>
+        </div>
+
+        <div class="card" style="margin-bottom:1.5rem">
+          <h3>Shipping FAQ</h3>
+          <table class="prod-table">
+            <thead><tr><th>Question</th><th>Answer</th><th></th></tr></thead>
+            <tbody id="sp-faq-tbody"></tbody>
+          </table>
+          <button class="btn btn-outline btn-sm" onclick="addSpFaq()" style="margin-top:0.5rem"><i class="fa-solid fa-plus"></i> Add FAQ</button>
+        </div>
+      </div>
+
+      <!-- ══════ SIZE GUIDE PANEL ══════ -->
+      <div class="panel" id="panel-size-guide">
+        <h2><i class="fa-solid fa-ruler"></i> Size Guide Page</h2>
+        <p style="color:var(--muted);margin-bottom:1.5rem">Manage size guide page header and content sections (tabs).</p>
+
+        <div class="card" style="margin-bottom:1.5rem">
+          <h3>Page Header</h3>
+          <table class="prod-table"><tbody>
+            <tr><td style="width:120px">Title (HTML)</td><td><input type="text" id="sg-pageTitle" style="width:100%"></td></tr>
+            <tr><td>Description</td><td><input type="text" id="sg-pageDesc" style="width:100%"></td></tr>
+          </tbody></table>
+        </div>
+
+        <div class="card" style="margin-bottom:1.5rem">
+          <h3>Content Tabs</h3>
+          <div id="sg-sections-container"></div>
+          <button class="btn btn-outline btn-sm" onclick="addSgSection()" style="margin-top:0.5rem"><i class="fa-solid fa-plus"></i> Add Tab</button>
+        </div>
+      </div>
+
+      <!-- ══════ TRACK ORDER PANEL ══════ -->
+      <div class="panel" id="panel-track-order">
+        <h2><i class="fa-solid fa-map-location-dot"></i> Track Order Page</h2>
+        <p style="color:var(--muted);margin-bottom:1.5rem">Manage track order page header, form labels, and info cards.</p>
+
+        <div class="card" style="margin-bottom:1.5rem">
+          <h3>Page Header</h3>
+          <table class="prod-table"><tbody>
+            <tr><td style="width:120px">Title (HTML)</td><td><input type="text" id="to-pageTitle" style="width:100%"></td></tr>
+            <tr><td>Description</td><td><input type="text" id="to-pageDesc" style="width:100%"></td></tr>
+          </tbody></table>
+        </div>
+
+        <div class="card" style="margin-bottom:1.5rem">
+          <h3>Form Labels</h3>
+          <table class="prod-table"><tbody>
+            <tr><td style="width:120px">Heading</td><td><input type="text" id="to-fl-heading" style="width:100%"></td></tr>
+            <tr><td>Subtext</td><td><input type="text" id="to-fl-subtext" style="width:100%"></td></tr>
+            <tr><td>Order ID Label</td><td><input type="text" id="to-fl-orderId" style="width:100%"></td></tr>
+            <tr><td>Email Label</td><td><input type="text" id="to-fl-email" style="width:100%"></td></tr>
+            <tr><td>Submit Btn</td><td><input type="text" id="to-fl-submit" style="width:100%"></td></tr>
+          </tbody></table>
+        </div>
+
+        <div class="card" style="margin-bottom:1.5rem">
+          <h3>Info Cards</h3>
+          <table class="prod-table">
+            <thead><tr><th>Icon</th><th>Color</th><th>Title</th><th>Description</th><th></th></tr></thead>
+            <tbody id="to-info-tbody"></tbody>
+          </table>
+          <button class="btn btn-outline btn-sm" onclick="addToInfoCard()" style="margin-top:0.5rem"><i class="fa-solid fa-plus"></i> Add Card</button>
+        </div>
+      </div>
+
+      <!-- ══════ BRAND LOGOS PANEL ══════ -->
+      <div class="panel" id="panel-brand-logos">
+        <h2><i class="fa-solid fa-star"></i> Brand Logos Carousel</h2>
+        <p style="color:var(--muted);margin-bottom:1.5rem">Manage the infinite-scroll brand logos shown on the homepage.</p>
+
+        <div class="card" style="margin-bottom:1.5rem">
+          <h3>Brand Logos</h3>
+          <table class="prod-table">
+            <thead><tr><th>#</th><th>Brand Name</th><th>Image URL</th><th></th></tr></thead>
+            <tbody id="bl-tbody"></tbody>
+          </table>
+          <button class="btn btn-outline btn-sm" onclick="addBrandLogo()" style="margin-top:0.5rem"><i class="fa-solid fa-plus"></i> Add Logo</button>
         </div>
       </div>
 
