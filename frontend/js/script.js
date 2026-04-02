@@ -883,6 +883,16 @@ function setupCartListeners() {
                             phone,
                             amount: totalAmount,
                             productinfo: 'SpareBlaze Auto Parts Order',
+                            address: addressInput.value.trim(),
+                            items: cart.map(item => ({
+                                id:       item.id,
+                                name:     item.title || item.name || 'Auto Part',
+                                brand:    item.brand || '',
+                                price:    item.price,
+                                mrp:      item.mrp || item.price,
+                                quantity: item.quantity,
+                                img:      item.img || item.image || '',
+                            })),
                         }),
                     });
 

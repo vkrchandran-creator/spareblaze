@@ -21,4 +21,10 @@ module.exports = {
   BACKEND_URL:    process.env.BACKEND_URL  || 'http://localhost:5000',
   PAYU_MERCHANT_KEY:  process.env.PAYU_MERCHANT_KEY,
   PAYU_MERCHANT_SALT: process.env.PAYU_MERCHANT_SALT,
+  // SMTP — all optional; email is silently skipped if not configured
+  SMTP_HOST: process.env.SMTP_HOST,
+  SMTP_PORT: process.env.SMTP_PORT || '587',
+  SMTP_USER: process.env.SMTP_USER,
+  SMTP_PASS: process.env.SMTP_PASS,
+  SMTP_FROM: process.env.SMTP_FROM,
 };

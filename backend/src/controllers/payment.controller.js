@@ -1,5 +1,6 @@
 const { success: ok } = require('../utils/apiResponse');
 const paymentService  = require('../services/payment.service');
+const emailService    = require('../services/email.service');
 
 /**
  * POST /api/v1/payments/initiate
@@ -8,8 +9,8 @@ const paymentService  = require('../services/payment.service');
  */
 async function initiate(req, res, next) {
   try {
-    const { firstname, email, phone, amount, productinfo } = req.body;
-    const result = await paymentService.initiate({ firstname, email, phone, amount, productinfo });
+    const { firstname, email, phone, amount, productinfo, items, address } = req.body;
+    const result = await paymentService.initiate({ firstname, email, phone, amount, productinfo, items, address });
     return ok(res, result, 'PayU payment parameters generated.');
   } catch (err) { next(err); }
 }
@@ -23,6 +24,10 @@ async function success(req, res) {
   const frontendUrl = (process.env.FRONTEND_URL || 'http://localhost:3000').split(',')[0].trim().replace(/\/$/, '');
   try {
     const result = await paymentService.handleSuccess(req.body);
+
+    // Send confirmation email — fire-and-forget; never delays the redirect.
+    emailService.sendOrderConfirmation(result).catch(() => {});
+
     const params = new URLSearchParams({
       payment: 'success',
       txnid:   result.txnid,

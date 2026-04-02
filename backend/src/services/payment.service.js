@@ -1,5 +1,19 @@
 const crypto = require('crypto');
 
+// ─── In-memory order store ────────────────────────────────────────────────────
+// Holds full order details (cart items, address, etc.) keyed by txnid.
+// Retrieved on PayU success callback to populate the confirmation email.
+// TODO Phase 5/6: replace with a DB-persisted Order record.
+const pendingOrders = new Map();
+
+// Prune entries older than 2 hours to prevent unbounded memory growth.
+setInterval(() => {
+  const cutoff = Date.now() - 2 * 60 * 60 * 1000;
+  for (const [key, val] of pendingOrders) {
+    if (val.createdAt < cutoff) pendingOrders.delete(key);
+  }
+}, 30 * 60 * 1000); // run every 30 min
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function getPayUCredentials() {
@@ -28,10 +42,10 @@ function computeSHA512(str) {
  *
  * The salt never leaves the server — the frontend only receives the final hash.
  */
-async function initiate({ firstname, email, phone, amount, productinfo }) {
+async function initiate({ firstname, email, phone, amount, productinfo, items = [], address = '' }) {
   const { key, salt } = getPayUCredentials();
 
-  const txnid          = 'SB' + Date.now() + Math.floor(Math.random() * 1000);
+  const txnid           = 'SB' + Date.now() + Math.floor(Math.random() * 1000);
   const formattedAmount = parseFloat(amount).toFixed(2);
 
   const hashString = `${key}|${txnid}|${formattedAmount}|${productinfo}|${firstname}|${email}|||||||||||${salt}`;
@@ -41,6 +55,19 @@ async function initiate({ firstname, email, phone, amount, productinfo }) {
   const payuEndpoint = process.env.NODE_ENV === 'production'
     ? 'https://secure.payu.in/_payment'
     : 'https://test.payu.in/_payment';
+
+  // Store full order details so they're available when PayU hits the success callback.
+  pendingOrders.set(txnid, {
+    firstname,
+    email,
+    phone,
+    amount: formattedAmount,
+    productinfo,
+    items,
+    address,
+    orderDate: new Date(),
+    createdAt: Date.now(),
+  });
 
   return {
     payuEndpoint,
@@ -97,12 +124,23 @@ async function handleSuccess(payuData) {
     throw err;
   }
 
+  // Retrieve and clean up the stored order details for this transaction.
+  const orderData = pendingOrders.get(txnid) || {};
+  pendingOrders.delete(txnid);
+
   return {
     verified:  true,
     status,
     txnid,
     mihpayid:  payuData.mihpayid || '',
     amount,
+    // Merge stored order details so the controller can send the confirmation email.
+    firstname:   orderData.firstname  || payuData.firstname || '',
+    email:       orderData.email      || payuData.email     || '',
+    phone:       orderData.phone      || '',
+    address:     orderData.address    || '',
+    items:       orderData.items      || [],
+    orderDate:   orderData.orderDate  || new Date(),
   };
 }
 
