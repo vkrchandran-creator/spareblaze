@@ -1,6 +1,40 @@
 /**
  * SpareBlaze CMS Admin Panel Script
  */
+
+// ── API base URL — resolved immediately, before anything else runs ────────────
+// Must be var (not const/let) so it is hoisted and safe to use from any
+// function defined anywhere in this file.
+var API = (function () {
+    var proto = window.location.protocol;
+    var host  = window.location.hostname;
+    if (proto === 'file:')                          return 'http://localhost:5000';
+    if (host  === 'localhost' || host === '127.0.0.1') return 'http://localhost:5000';
+    return 'https://api.spareblaze.com';
+}());
+
+// ── file:// warning — show banner and block DB features ──────────────────────
+var IS_FILE_PROTOCOL = window.location.protocol === 'file:';
+if (IS_FILE_PROTOCOL) {
+    document.addEventListener('DOMContentLoaded', function () {
+        var banner = document.createElement('div');
+        banner.id = 'file-protocol-banner';
+        banner.style.cssText = [
+            'position:fixed', 'top:0', 'left:0', 'right:0', 'z-index:9999',
+            'background:#b45309', 'color:#fff', 'padding:.75rem 1.5rem',
+            'font-size:.9rem', 'display:flex', 'align-items:center', 'gap:1rem',
+            'box-shadow:0 2px 8px rgba(0,0,0,.4)'
+        ].join(';');
+        banner.innerHTML =
+            '<i class="fa-solid fa-triangle-exclamation" style="font-size:1.1rem;flex-shrink:0"></i>' +
+            '<span><strong>Admin panel opened as a local file.</strong> ' +
+            'DB features (Categories, Products, Inventory) require the backend to be reachable. ' +
+            'Open via a local server: run <code style="background:rgba(0,0,0,.25);padding:2px 6px;border-radius:4px">npx serve frontend</code> ' +
+            'from the project root, then visit <strong>http://localhost:3000/pages/admin/</strong></span>';
+        document.body.insertBefore(banner, document.body.firstChild);
+    });
+}
+
 const STORAGE_KEY = 'sb_cms_data';
 const AUTH_KEY = 'sb_admin_auth';
 const CRED_KEY = 'sb_admin_creds';
@@ -1986,14 +2020,8 @@ init();
 
 // ══════════════════════════════════════════════════════════════════════════════
 // DB-CONNECTED ADMIN — Login, Categories, Products, Inventory
+// (API base URL is declared at the very top of this file)
 // ══════════════════════════════════════════════════════════════════════════════
-
-var API = (function () {
-    var h = window.location.hostname;
-    return (h === 'localhost' || h === '127.0.0.1')
-        ? 'http://localhost:5000'
-        : 'https://api.spareblaze.com';
-}());
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 
