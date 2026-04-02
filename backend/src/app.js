@@ -21,13 +21,22 @@ const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000')
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (server-to-server, curl, Postman)
-    // if (!origin) return callback(null, true);
     if (!origin || origin === 'null') return callback(null, true);
     if (allowedOrigins.includes(origin)) return callback(null, true);
-    callback(new Error(`CORS: origin '${origin}' is not allowed`));
+    // Return a proper error object (not a thrown Error) so Express CORS
+    // middleware sends a 403 JSON instead of an unhandled 500.
+    callback(null, false);
   },
   credentials: true,
 }));
+
+// Explicit CORS rejection — runs after the cors() middleware sets res.statusCode
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS' && !res.getHeader('Access-Control-Allow-Origin')) {
+    return res.status(403).json({ success: false, message: `CORS: origin '${req.headers.origin}' is not allowed` });
+  }
+  next();
+});
 
 // ── Body parsing ──────────────────────────────────────────────────────────────
 app.use(express.json());
