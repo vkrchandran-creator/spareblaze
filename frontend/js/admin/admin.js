@@ -1988,7 +1988,7 @@ init();
 // DB-CONNECTED ADMIN — Login, Categories, Products, Inventory
 // ══════════════════════════════════════════════════════════════════════════════
 
-const API = (function () {
+var API = (function () {
     var h = window.location.hostname;
     return (h === 'localhost' || h === '127.0.0.1')
         ? 'http://localhost:5000'
@@ -2081,7 +2081,7 @@ async function checkAdminAuth() {
 }
 
 // Override the sidebar logout button to also clear the JWT
-const _origHandleLogout = window.handleLogout;
+var _origHandleLogout = window.handleLogout;
 window.handleLogout = function () {
     clearToken();
     if (typeof _origHandleLogout === 'function') _origHandleLogout();
@@ -2090,6 +2090,10 @@ window.handleLogout = function () {
 // ── DB Categories ─────────────────────────────────────────────────────────────
 
 var dbCats = [];
+var dbProdPage = 1;
+var dbProdSearch = '';
+var dbSearchTimer = null;
+var dbInvPage = 1;
 
 async function dbLoadCategories() {
     const tbody = document.getElementById('db-cat-tbody');
@@ -2163,10 +2167,6 @@ async function dbDeleteCategory(id, name) {
 }
 
 // ── DB Products ───────────────────────────────────────────────────────────────
-
-var dbProdPage = 1;
-var dbProdSearch = '';
-var dbSearchTimer = null;
 
 function dbSearchDebounce() {
     clearTimeout(dbSearchTimer);
@@ -2342,8 +2342,6 @@ async function dbDeleteProduct(id, title) {
 }
 
 // ── DB Inventory ──────────────────────────────────────────────────────────────
-
-var dbInvPage = 1;
 
 async function dbLoadInventory(page) {
     dbInvPage = page || 1;
