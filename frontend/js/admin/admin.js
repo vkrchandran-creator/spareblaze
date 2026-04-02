@@ -2005,33 +2005,31 @@ function authHeaders() {
     return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() };
 }
 
-async function apiGet(path) {
-    const r = await fetch(API + path, { headers: authHeaders() });
-    const j = await r.json();
+async function apiFetch(method, path, body) {
+    var opts = { method: method, headers: authHeaders() };
+    if (body !== undefined) opts.body = JSON.stringify(body);
+    var r;
+    try {
+        r = await fetch(API + path, opts);
+    } catch (netErr) {
+        // Network-level failure — backend unreachable or CORS blocked
+        throw new Error(
+            'Cannot reach the backend at ' + API + '. ' +
+            'Make sure the server is running (npm run dev) and try refreshing. ' +
+            '(' + netErr.message + ')'
+        );
+    }
+    var j;
+    try { j = await r.json(); } catch (_) { throw new Error('Server returned an invalid response (HTTP ' + r.status + ')'); }
+    if (r.status === 401) { clearToken(); showLoginOverlay(); throw Object.assign(new Error(j.message || 'Session expired. Please sign in again.'), { status: 401 }); }
     if (!j.success) throw Object.assign(new Error(j.message || 'API error'), { status: r.status });
     return j;
 }
 
-async function apiPost(path, body) {
-    const r = await fetch(API + path, { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) });
-    const j = await r.json();
-    if (!j.success) throw Object.assign(new Error(j.message || 'API error'), { status: r.status });
-    return j;
-}
-
-async function apiPut(path, body) {
-    const r = await fetch(API + path, { method: 'PUT', headers: authHeaders(), body: JSON.stringify(body) });
-    const j = await r.json();
-    if (!j.success) throw Object.assign(new Error(j.message || 'API error'), { status: r.status });
-    return j;
-}
-
-async function apiDelete(path) {
-    const r = await fetch(API + path, { method: 'DELETE', headers: authHeaders() });
-    const j = await r.json();
-    if (!j.success) throw Object.assign(new Error(j.message || 'API error'), { status: r.status });
-    return j;
-}
+async function apiGet(path)           { return apiFetch('GET',    path); }
+async function apiPost(path, body)    { return apiFetch('POST',   path, body); }
+async function apiPut(path, body)     { return apiFetch('PUT',    path, body); }
+async function apiDelete(path)        { return apiFetch('DELETE', path); }
 
 // ── Login overlay ─────────────────────────────────────────────────────────────
 

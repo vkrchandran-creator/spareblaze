@@ -11,32 +11,29 @@ const app = express();
 app.use(helmet());
 
 // ── CORS ──────────────────────────────────────────────────────────────────────
-// FRONTEND_URL may be a comma-separated list for multi-origin support,
-// e.g. "https://www.spareblaze.com,http://localhost:3000"
-const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000')
+// FRONTEND_URL may be a comma-separated list for explicit production origins.
+// Any localhost / 127.0.0.1 origin (any port) is always allowed in dev so
+// the admin panel works regardless of which port the frontend dev server uses.
+const allowedOrigins = (process.env.FRONTEND_URL || '')
   .split(',')
   .map(o => o.trim())
   .filter(Boolean);
 
+const LOCALHOST_RE = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
+
+function isAllowedOrigin(origin) {
+  if (!origin || origin === 'null') return true;   // curl / Postman / file://
+  if (LOCALHOST_RE.test(origin))   return true;   // any localhost port
+  return allowedOrigins.includes(origin);          // explicit production origins
+}
+
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (server-to-server, curl, Postman)
-    if (!origin || origin === 'null') return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
-    // Return a proper error object (not a thrown Error) so Express CORS
-    // middleware sends a 403 JSON instead of an unhandled 500.
+    if (isAllowedOrigin(origin)) return callback(null, true);
     callback(null, false);
   },
   credentials: true,
 }));
-
-// Explicit CORS rejection — runs after the cors() middleware sets res.statusCode
-app.use((req, res, next) => {
-  if (req.method === 'OPTIONS' && !res.getHeader('Access-Control-Allow-Origin')) {
-    return res.status(403).json({ success: false, message: `CORS: origin '${req.headers.origin}' is not allowed` });
-  }
-  next();
-});
 
 // ── Body parsing ──────────────────────────────────────────────────────────────
 app.use(express.json());
