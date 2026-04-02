@@ -18,6 +18,16 @@ router.get('/search',
 // GET /api/v1/products/category/:slug
 router.get('/category/:slug', controller.byCategory);
 
+// GET /api/v1/products/brands — public list of distinct brands (must be before /:id)
+router.get('/brands', async (req, res, next) => {
+  try {
+    const adminService = require('../services/admin.service');
+    const { success } = require('../utils/apiResponse');
+    const list = await adminService.getBrands();
+    return success(res, list);
+  } catch (err) { next(err); }
+});
+
 // GET /api/v1/products/:id
 router.get('/:id', controller.getOne);
 

@@ -834,9 +834,12 @@
       <div class="nav-item" onclick="showPanel('track-order')"><i class="fa-solid fa-map-location-dot"></i> Track Order</div>
       <div class="nav-item" onclick="showPanel('brand-logos')"><i class="fa-solid fa-star"></i> Brand Logos</div>
       <div class="nav-section-label">Catalog Pages</div>
+      <div class="nav-item" onclick="showPanel('db-categories')"><i class="fa-solid fa-tags"></i> DB Categories</div>
+      <div class="nav-item" onclick="showPanel('db-products')"><i class="fa-solid fa-database"></i> DB Products</div>
+      <div class="nav-item" onclick="showPanel('db-inventory')"><i class="fa-solid fa-boxes-stacked"></i> Inventory</div>
       <div class="nav-item" onclick="showPanel('categories')"><i class="fa-solid fa-box-open"></i> Category Hero/Info
       </div>
-      <div class="nav-item" onclick="showPanel('allproducts')"><i class="fa-solid fa-list-check"></i> All Products
+      <div class="nav-item" onclick="showPanel('allproducts')"><i class="fa-solid fa-list-check"></i> CMS Products
       </div>
       <div class="nav-section-label">Settings</div>
       <div class="nav-item" onclick="showPanel('security')"><i class="fa-solid fa-shield-halved"></i> Security</div>
@@ -1519,6 +1522,76 @@
         </div>
       </div>
 
+      <!-- ══════ DB CATEGORIES PANEL ══════ -->
+      <div class="panel" id="panel-db-categories">
+        <div class="topbar">
+          <h1><i class="fa-solid fa-tags" style="color:var(--primary)"></i> DB Categories</h1>
+          <button class="btn btn-primary" onclick="openAddCategory()"><i class="fa-solid fa-plus"></i> Add Category</button>
+        </div>
+        <div class="card">
+          <p style="color:var(--muted);font-size:.85rem;margin-bottom:1rem">Manage product categories stored in the database. Deleting a category with products is not allowed.</p>
+          <div id="cat-db-error" style="display:none;background:rgba(255,77,79,.1);border:1px solid var(--danger);border-radius:6px;padding:.75rem;margin-bottom:1rem;color:var(--danger);font-size:.85rem"></div>
+          <div id="add-cat-form" style="display:none;background:var(--bg-hover);border-radius:8px;padding:1rem;margin-bottom:1rem">
+            <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:.75rem;align-items:end">
+              <div><label class="lbl">Category Name *</label><input type="text" id="new-cat-name" style="width:100%" placeholder="e.g. Refurbished"></div>
+              <div><label class="lbl">Parent Category (optional)</label><select id="new-cat-parent" style="width:100%"><option value="">None (top-level)</option></select></div>
+              <div style="display:flex;gap:.5rem">
+                <button class="btn btn-primary btn-sm" onclick="submitAddCategory()">Add</button>
+                <button class="btn btn-outline btn-sm" onclick="document.getElementById('add-cat-form').style.display='none'">Cancel</button>
+              </div>
+            </div>
+          </div>
+          <table class="prod-table">
+            <thead><tr><th>Name</th><th>Slug</th><th>Products</th><th>Parent</th><th>Actions</th></tr></thead>
+            <tbody id="db-cat-tbody"><tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--muted)">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ══════ DB PRODUCTS PANEL ══════ -->
+      <div class="panel" id="panel-db-products">
+        <div class="topbar">
+          <h1><i class="fa-solid fa-database" style="color:var(--primary)"></i> DB Products</h1>
+          <div style="display:flex;gap:.75rem">
+            <select id="db-prod-cat-filter" class="form-control" style="width:180px" onchange="dbLoadProducts(1)">
+              <option value="">All Categories</option>
+            </select>
+            <button class="btn btn-primary" onclick="openAddProduct()"><i class="fa-solid fa-plus"></i> Add Product</button>
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex;gap:.75rem;margin-bottom:1rem;align-items:center">
+            <input type="text" id="db-prod-search" placeholder="Search products…" style="flex:1;max-width:320px" oninput="dbSearchDebounce()">
+            <span id="db-prod-count" style="color:var(--muted);font-size:.85rem"></span>
+          </div>
+          <div class="prod-table-wrap">
+            <table class="prod-table">
+              <thead><tr><th>Image</th><th>Title</th><th>Brand</th><th>Category</th><th>Price ₹</th><th>MRP ₹</th><th>Disc %</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="db-prod-tbody"><tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--muted)">Loading…</td></tr></tbody>
+            </table>
+          </div>
+          <div id="db-prod-pagination" style="display:flex;gap:.5rem;justify-content:center;margin-top:1rem;flex-wrap:wrap"></div>
+        </div>
+      </div>
+
+      <!-- ══════ DB INVENTORY PANEL ══════ -->
+      <div class="panel" id="panel-db-inventory">
+        <div class="topbar">
+          <h1><i class="fa-solid fa-boxes-stacked" style="color:var(--primary)"></i> Inventory</h1>
+          <button class="btn btn-outline" onclick="dbLoadInventory(1)"><i class="fa-solid fa-refresh"></i> Refresh</button>
+        </div>
+        <div class="card">
+          <p style="color:var(--muted);font-size:.85rem;margin-bottom:1rem">Update stock quantities. Products at or below low-stock threshold are highlighted.</p>
+          <div class="prod-table-wrap">
+            <table class="prod-table">
+              <thead><tr><th>Product</th><th>Category</th><th>Price ₹</th><th>Qty</th><th>Low Stock Threshold</th><th>Save</th></tr></thead>
+              <tbody id="db-inv-tbody"><tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--muted)">Loading…</td></tr></tbody>
+            </table>
+          </div>
+          <div id="db-inv-pagination" style="display:flex;gap:.5rem;justify-content:center;margin-top:1rem;flex-wrap:wrap"></div>
+        </div>
+      </div>
+
       <div class="save-bar">
         <div class="hint"><i class="fa-solid fa-info-circle"></i> Changes apply to the live site instantly on next page
           open.</div>
@@ -1527,6 +1600,56 @@
       </div>
     </main>
   </div>
+  <!-- ══════ PRODUCT EDIT MODAL ══════ -->
+  <div id="prod-modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;align-items:center;justify-content:center">
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;width:min(640px,95vw);max-height:90vh;overflow-y:auto">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+        <h2 id="prod-modal-title" style="font-size:1.1rem">Add Product</h2>
+        <button onclick="closeProdModal()" style="background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <input type="hidden" id="pm-id">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div style="grid-column:1/-1"><label class="lbl">Title *</label><input type="text" id="pm-title" style="width:100%" placeholder="Full product name"></div>
+        <div><label class="lbl">Brand</label><input type="text" id="pm-brand" style="width:100%" placeholder="e.g. Bosch"></div>
+        <div>
+          <label class="lbl">Category *</label>
+          <select id="pm-cat" style="width:100%"></select>
+        </div>
+        <div><label class="lbl">Price ₹ *</label><input type="number" id="pm-price" style="width:100%" placeholder="0" min="0" step="0.01"></div>
+        <div><label class="lbl">MRP ₹</label><input type="number" id="pm-mrp" style="width:100%" placeholder="0" min="0" step="0.01"></div>
+        <div><label class="lbl">Discount %</label><input type="number" id="pm-disc" style="width:100%" placeholder="0" min="0" max="100"></div>
+        <div><label class="lbl">Stock Qty</label><input type="number" id="pm-qty" style="width:100%" placeholder="0" min="0"></div>
+        <div style="grid-column:1/-1"><label class="lbl">Image URL</label><input type="text" id="pm-img" style="width:100%" placeholder="https://... or /product-images/..."></div>
+        <div style="grid-column:1/-1"><label class="lbl">Description</label><textarea id="pm-desc" rows="3" style="width:100%" placeholder="Product description"></textarea></div>
+        <div style="grid-column:1/-1"><label class="lbl">SKU</label><input type="text" id="pm-sku" style="width:100%" placeholder="Optional unique SKU"></div>
+      </div>
+      <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.5rem">
+        <button class="btn btn-outline" onclick="closeProdModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveProdModal()"><i class="fa-solid fa-floppy-disk"></i> Save Product</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ ADMIN LOGIN OVERLAY ══════ -->
+  <div id="admin-login-overlay" style="display:none;position:fixed;inset:0;background:var(--bg-base);z-index:2000;align-items:center;justify-content:center">
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:2.5rem;width:min(400px,95vw);text-align:center">
+      <div style="font-size:2rem;font-weight:800;color:var(--primary);margin-bottom:.5rem">SpareBlaze</div>
+      <p style="color:var(--muted);margin-bottom:2rem;font-size:.9rem">Admin Panel — Sign in to continue</p>
+      <div id="login-error" style="display:none;background:rgba(255,77,79,.15);border:1px solid var(--danger);border-radius:6px;padding:.75rem;margin-bottom:1rem;color:var(--danger);font-size:.85rem"></div>
+      <div style="text-align:left;margin-bottom:1rem">
+        <label class="lbl">Email</label>
+        <input type="email" id="login-email" style="width:100%" placeholder="admin@spareblaze.com" value="admin@spareblaze.com">
+      </div>
+      <div style="text-align:left;margin-bottom:1.5rem">
+        <label class="lbl">Password</label>
+        <input type="password" id="login-password" style="width:100%" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="doLogin()" id="login-btn">
+        <i class="fa-solid fa-right-to-bracket"></i> Sign In
+      </button>
+    </div>
+  </div>
+
   <input type="file" id="prod-file-input" accept="image/*" style="display:none">
   <input type="file" id="slide-file-input" accept="image/*" style="display:none">
   <div class="toast" id="toast"></div>

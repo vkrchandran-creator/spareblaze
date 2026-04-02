@@ -1984,3 +1984,444 @@ function renderSecurity() {
 // Init
 init();
 
+// ══════════════════════════════════════════════════════════════════════════════
+// DB-CONNECTED ADMIN — Login, Categories, Products, Inventory
+// ══════════════════════════════════════════════════════════════════════════════
+
+const API = (function () {
+    var h = window.location.hostname;
+    return (h === 'localhost' || h === '127.0.0.1')
+        ? 'http://localhost:5000'
+        : 'https://api.spareblaze.com';
+}());
+
+// ── Auth ──────────────────────────────────────────────────────────────────────
+
+function getToken() { return localStorage.getItem('sb_admin_token') || ''; }
+function setToken(t) { localStorage.setItem('sb_admin_token', t); }
+function clearToken() { localStorage.removeItem('sb_admin_token'); }
+
+function authHeaders() {
+    return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() };
+}
+
+async function apiGet(path) {
+    const r = await fetch(API + path, { headers: authHeaders() });
+    const j = await r.json();
+    if (!j.success) throw Object.assign(new Error(j.message || 'API error'), { status: r.status });
+    return j;
+}
+
+async function apiPost(path, body) {
+    const r = await fetch(API + path, { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) });
+    const j = await r.json();
+    if (!j.success) throw Object.assign(new Error(j.message || 'API error'), { status: r.status });
+    return j;
+}
+
+async function apiPut(path, body) {
+    const r = await fetch(API + path, { method: 'PUT', headers: authHeaders(), body: JSON.stringify(body) });
+    const j = await r.json();
+    if (!j.success) throw Object.assign(new Error(j.message || 'API error'), { status: r.status });
+    return j;
+}
+
+async function apiDelete(path) {
+    const r = await fetch(API + path, { method: 'DELETE', headers: authHeaders() });
+    const j = await r.json();
+    if (!j.success) throw Object.assign(new Error(j.message || 'API error'), { status: r.status });
+    return j;
+}
+
+// ── Login overlay ─────────────────────────────────────────────────────────────
+
+function showLoginOverlay() {
+    const el = document.getElementById('admin-login-overlay');
+    if (el) el.style.display = 'flex';
+}
+
+function hideLoginOverlay() {
+    const el = document.getElementById('admin-login-overlay');
+    if (el) el.style.display = 'none';
+}
+
+async function doLogin() {
+    const email = document.getElementById('login-email').value.trim();
+    const pass  = document.getElementById('login-password').value;
+    const errEl = document.getElementById('login-error');
+    const btn   = document.getElementById('login-btn');
+    errEl.style.display = 'none';
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Signing in…';
+    try {
+        const j = await apiPost('/api/v1/auth/login', { email, password: pass });
+        setToken(j.data.token);
+        hideLoginOverlay();
+        showToast('Signed in as ' + (j.data.user.name || email));
+        dbLoadCategories();
+    } catch (e) {
+        errEl.textContent = e.message || 'Login failed. Check credentials.';
+        errEl.style.display = 'block';
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign In';
+    }
+}
+
+async function checkAdminAuth() {
+    if (!getToken()) { showLoginOverlay(); return false; }
+    try {
+        await apiGet('/api/v1/auth/me');
+        return true;
+    } catch (_) {
+        clearToken();
+        showLoginOverlay();
+        return false;
+    }
+}
+
+// Override the sidebar logout button to also clear the JWT
+const _origHandleLogout = window.handleLogout;
+window.handleLogout = function () {
+    clearToken();
+    if (typeof _origHandleLogout === 'function') _origHandleLogout();
+};
+
+// ── DB Categories ─────────────────────────────────────────────────────────────
+
+var dbCats = [];
+
+async function dbLoadCategories() {
+    const tbody = document.getElementById('db-cat-tbody');
+    const errEl = document.getElementById('cat-db-error');
+    if (!tbody) return;
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:1.5rem;color:var(--muted)">Loading…</td></tr>';
+    if (errEl) errEl.style.display = 'none';
+    try {
+        const j = await apiGet('/api/v1/categories');
+        dbCats = j.data || [];
+        populateCatSelects();
+        tbody.innerHTML = dbCats.length === 0
+            ? '<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--muted)">No categories yet.</td></tr>'
+            : dbCats.map(function (c) {
+                var parentName = c.parentId ? ((dbCats.find(function (p) { return p.id === c.parentId; }) || {}).name || c.parentId) : '—';
+                return '<tr>' +
+                    '<td>' + esc(c.name) + '</td>' +
+                    '<td style="color:var(--muted);font-size:.82rem">' + esc(c.slug) + '</td>' +
+                    '<td>' + (c._count ? c._count.products : '—') + '</td>' +
+                    '<td>' + parentName + '</td>' +
+                    '<td><button class="btn btn-danger btn-sm" onclick="dbDeleteCategory(\'' + c.id + '\',\'' + esc(c.name) + '\')"><i class="fa-solid fa-trash"></i></button></td>' +
+                    '</tr>';
+            }).join('');
+    } catch (e) {
+        if (errEl) { errEl.textContent = e.message; errEl.style.display = 'block'; }
+        if (e.status === 401 || e.status === 403) showLoginOverlay();
+    }
+}
+
+function populateCatSelects() {
+    const opts = dbCats.map(function (c) { return '<option value="' + c.id + '">' + esc(c.name) + '</option>'; }).join('');
+    const parentSel = document.getElementById('new-cat-parent');
+    if (parentSel) parentSel.innerHTML = '<option value="">None (top-level)</option>' + opts;
+    const filterSel = document.getElementById('db-prod-cat-filter');
+    if (filterSel) filterSel.innerHTML = '<option value="">All Categories</option>' + opts;
+    const pmCat = document.getElementById('pm-cat');
+    if (pmCat) pmCat.innerHTML = opts;
+}
+
+function openAddCategory() {
+    document.getElementById('add-cat-form').style.display = 'block';
+    document.getElementById('new-cat-name').focus();
+}
+
+async function submitAddCategory() {
+    const name     = document.getElementById('new-cat-name').value.trim();
+    const parentId = document.getElementById('new-cat-parent').value || null;
+    const errEl    = document.getElementById('cat-db-error');
+    if (!name) { if (errEl) { errEl.textContent = 'Category name is required.'; errEl.style.display = 'block'; } return; }
+    try {
+        await apiPost('/api/v1/categories', { name, parentId });
+        document.getElementById('add-cat-form').style.display = 'none';
+        document.getElementById('new-cat-name').value = '';
+        showToast('Category "' + name + '" created.');
+        dbLoadCategories();
+    } catch (e) {
+        if (errEl) { errEl.textContent = e.message; errEl.style.display = 'block'; }
+    }
+}
+
+async function dbDeleteCategory(id, name) {
+    if (!confirm('Delete category "' + name + '"? This cannot be undone.')) return;
+    const errEl = document.getElementById('cat-db-error');
+    try {
+        await apiDelete('/api/v1/categories/' + id);
+        showToast('Category deleted.');
+        dbLoadCategories();
+    } catch (e) {
+        if (errEl) { errEl.textContent = e.message; errEl.style.display = 'block'; }
+    }
+}
+
+// ── DB Products ───────────────────────────────────────────────────────────────
+
+var dbProdPage = 1;
+var dbProdSearch = '';
+var dbSearchTimer = null;
+
+function dbSearchDebounce() {
+    clearTimeout(dbSearchTimer);
+    dbSearchTimer = setTimeout(function () {
+        dbProdSearch = (document.getElementById('db-prod-search') || {}).value || '';
+        dbLoadProducts(1);
+    }, 400);
+}
+
+async function dbLoadProducts(page) {
+    dbProdPage = page || 1;
+    const tbody    = document.getElementById('db-prod-tbody');
+    const countEl  = document.getElementById('db-prod-count');
+    const pagEl    = document.getElementById('db-prod-pagination');
+    if (!tbody) return;
+
+    const catId  = (document.getElementById('db-prod-cat-filter') || {}).value || '';
+    const search = dbProdSearch;
+
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:1.5rem;color:var(--muted)">Loading…</td></tr>';
+
+    try {
+        var url = '/api/v1/products?page=' + dbProdPage + '&limit=20';
+        if (catId)  url += '&category=' + encodeURIComponent(catId);
+        if (search) url = '/api/v1/products/search?q=' + encodeURIComponent(search) + '&page=' + dbProdPage + '&limit=20';
+
+        const j   = await apiGet(url);
+        const prods = j.data || [];
+        const pg    = j.pagination || {};
+
+        if (countEl) countEl.textContent = (pg.total || prods.length) + ' products';
+
+        tbody.innerHTML = prods.length === 0
+            ? '<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--muted)">No products found.</td></tr>'
+            : prods.map(function (p) {
+                var img   = (p.images && p.images[0]) ? p.images[0] : '';
+                var stock = p.inventory ? p.inventory.quantity : '—';
+                var active = p.isActive ? '<span style="color:var(--success);font-size:.8rem">Active</span>' : '<span style="color:var(--danger);font-size:.8rem">Inactive</span>';
+                return '<tr>' +
+                    '<td><img src="' + esc(img || 'https://dummyimage.com/40x40/20243a/888') + '" style="width:40px;height:40px;object-fit:cover;border-radius:4px" onerror="this.src=\'https://dummyimage.com/40x40/20243a/888\'"></td>' +
+                    '<td style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(p.title) + '</td>' +
+                    '<td>' + esc(p.brand || '—') + '</td>' +
+                    '<td>' + esc(p.category ? p.category.name : '—') + '</td>' +
+                    '<td>₹' + parseFloat(p.price).toLocaleString('en-IN') + '</td>' +
+                    '<td>₹' + parseFloat(p.mrp).toLocaleString('en-IN') + '</td>' +
+                    '<td>' + (p.discountPercent || 0) + '%</td>' +
+                    '<td>' + stock + '</td>' +
+                    '<td>' + active + '</td>' +
+                    '<td style="white-space:nowrap">' +
+                        '<button class="btn btn-outline btn-sm" style="margin-right:.3rem" onclick="openEditProduct(\'' + p.id + '\')"><i class="fa-solid fa-pen"></i></button>' +
+                        '<button class="btn btn-danger btn-sm" onclick="dbDeleteProduct(\'' + p.id + '\',\'' + esc(p.title.substring(0, 30)) + '\')"><i class="fa-solid fa-trash"></i></button>' +
+                    '</td>' +
+                    '</tr>';
+            }).join('');
+
+        // Pagination buttons
+        if (pagEl && pg.totalPages > 1) {
+            var btns = '';
+            for (var i = 1; i <= pg.totalPages; i++) {
+                btns += '<button class="btn ' + (i === dbProdPage ? 'btn-primary' : 'btn-outline') + ' btn-sm" onclick="dbLoadProducts(' + i + ')">' + i + '</button>';
+            }
+            pagEl.innerHTML = btns;
+        } else if (pagEl) { pagEl.innerHTML = ''; }
+
+    } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:1.5rem;color:var(--danger)">' + esc(e.message) + '</td></tr>';
+        if (e.status === 401 || e.status === 403) showLoginOverlay();
+    }
+}
+
+// ── Product Modal ─────────────────────────────────────────────────────────────
+
+function openAddProduct() {
+    document.getElementById('prod-modal-title').textContent = 'Add Product';
+    document.getElementById('pm-id').value    = '';
+    document.getElementById('pm-title').value = '';
+    document.getElementById('pm-brand').value = '';
+    document.getElementById('pm-price').value = '';
+    document.getElementById('pm-mrp').value   = '';
+    document.getElementById('pm-disc').value  = '0';
+    document.getElementById('pm-qty').value   = '0';
+    document.getElementById('pm-img').value   = '';
+    document.getElementById('pm-desc').value  = '';
+    document.getElementById('pm-sku').value   = '';
+    if (dbCats.length === 0) dbLoadCategories();
+    document.getElementById('prod-modal-overlay').style.display = 'flex';
+}
+
+async function openEditProduct(id) {
+    try {
+        const j = await apiGet('/api/v1/products/' + id);
+        const p = j.data;
+        document.getElementById('prod-modal-title').textContent = 'Edit Product';
+        document.getElementById('pm-id').value    = p.id;
+        document.getElementById('pm-title').value = p.title;
+        document.getElementById('pm-brand').value = p.brand || '';
+        document.getElementById('pm-price').value = p.price;
+        document.getElementById('pm-mrp').value   = p.mrp;
+        document.getElementById('pm-disc').value  = p.discountPercent || 0;
+        document.getElementById('pm-qty').value   = p.inventory ? p.inventory.quantity : 0;
+        document.getElementById('pm-img').value   = (p.images && p.images[0]) || '';
+        document.getElementById('pm-desc').value  = p.description || '';
+        document.getElementById('pm-sku').value   = p.sku || '';
+        // Select correct category
+        const pmCat = document.getElementById('pm-cat');
+        if (pmCat && p.category) {
+            for (var i = 0; i < pmCat.options.length; i++) {
+                if (pmCat.options[i].value === p.categoryId) { pmCat.selectedIndex = i; break; }
+            }
+        }
+        document.getElementById('prod-modal-overlay').style.display = 'flex';
+    } catch (e) {
+        showToast('Error: ' + e.message);
+    }
+}
+
+function closeProdModal() {
+    document.getElementById('prod-modal-overlay').style.display = 'none';
+}
+
+async function saveProdModal() {
+    const id    = document.getElementById('pm-id').value;
+    const title = document.getElementById('pm-title').value.trim();
+    const price = parseFloat(document.getElementById('pm-price').value);
+    const catId = document.getElementById('pm-cat').value;
+    if (!title) { showToast('Title is required.'); return; }
+    if (isNaN(price) || price < 0) { showToast('Valid price is required.'); return; }
+    if (!catId) { showToast('Category is required.'); return; }
+
+    const imgVal = document.getElementById('pm-img').value.trim();
+    const body   = {
+        title,
+        brand:           document.getElementById('pm-brand').value.trim() || undefined,
+        categoryId:      catId,
+        price,
+        mrp:             parseFloat(document.getElementById('pm-mrp').value) || price,
+        discountPercent: parseInt(document.getElementById('pm-disc').value) || 0,
+        images:          imgVal ? [imgVal] : [],
+        description:     document.getElementById('pm-desc').value.trim() || undefined,
+        sku:             document.getElementById('pm-sku').value.trim() || undefined,
+    };
+
+    try {
+        if (id) {
+            await apiPut('/api/v1/products/' + id, body);
+            // Update stock if qty changed
+            const qty = parseInt(document.getElementById('pm-qty').value) || 0;
+            await apiPut('/api/v1/admin/inventory/' + id, { quantity: qty });
+            showToast('Product updated.');
+        } else {
+            const j = await apiPost('/api/v1/products', body);
+            const newId = j.data && j.data.id;
+            if (newId) {
+                const qty = parseInt(document.getElementById('pm-qty').value) || 0;
+                if (qty > 0) await apiPut('/api/v1/admin/inventory/' + newId, { quantity: qty });
+            }
+            showToast('Product created.');
+        }
+        closeProdModal();
+        dbLoadProducts(dbProdPage);
+    } catch (e) {
+        showToast('Error: ' + e.message);
+    }
+}
+
+async function dbDeleteProduct(id, title) {
+    if (!confirm('Deactivate "' + title + '…"? The product will be hidden from the store.')) return;
+    try {
+        await apiDelete('/api/v1/products/' + id);
+        showToast('Product deactivated.');
+        dbLoadProducts(dbProdPage);
+    } catch (e) { showToast('Error: ' + e.message); }
+}
+
+// ── DB Inventory ──────────────────────────────────────────────────────────────
+
+var dbInvPage = 1;
+
+async function dbLoadInventory(page) {
+    dbInvPage = page || 1;
+    const tbody = document.getElementById('db-inv-tbody');
+    const pagEl = document.getElementById('db-inv-pagination');
+    if (!tbody) return;
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--muted)">Loading…</td></tr>';
+
+    try {
+        const j    = await apiGet('/api/v1/admin/inventory?page=' + dbInvPage + '&limit=20');
+        const items = j.data || [];
+        const pg    = j.pagination || {};
+
+        tbody.innerHTML = items.length === 0
+            ? '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--muted)">No inventory records.</td></tr>'
+            : items.map(function (inv) {
+                var p       = inv.product || {};
+                var lowFlag = inv.quantity <= inv.lowStockThreshold;
+                var rowStyle = lowFlag ? 'background:rgba(246,166,9,.08)' : '';
+                return '<tr style="' + rowStyle + '">' +
+                    '<td style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' +
+                        (lowFlag ? '<span title="Low stock" style="color:var(--warning);margin-right:.4rem"><i class="fa-solid fa-triangle-exclamation"></i></span>' : '') +
+                        esc(p.title || '—') +
+                    '</td>' +
+                    '<td>' + esc(p.category ? p.category.name : '—') + '</td>' +
+                    '<td>₹' + parseFloat(p.price || 0).toLocaleString('en-IN') + '</td>' +
+                    '<td><input type="number" id="inv-qty-' + esc(inv.productId) + '" value="' + inv.quantity + '" min="0" style="width:70px" onchange="this.dataset.dirty=\'1\'"></td>' +
+                    '<td>' + inv.lowStockThreshold + '</td>' +
+                    '<td><button class="btn btn-primary btn-sm" onclick="saveInventoryRow(\'' + esc(inv.productId) + '\')"><i class="fa-solid fa-check"></i></button></td>' +
+                    '</tr>';
+            }).join('');
+
+        if (pagEl && pg.totalPages > 1) {
+            var btns = '';
+            for (var i = 1; i <= pg.totalPages; i++) {
+                btns += '<button class="btn ' + (i === dbInvPage ? 'btn-primary' : 'btn-outline') + ' btn-sm" onclick="dbLoadInventory(' + i + ')">' + i + '</button>';
+            }
+            pagEl.innerHTML = btns;
+        } else if (pagEl) { pagEl.innerHTML = ''; }
+
+    } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--danger)">' + esc(e.message) + '</td></tr>';
+        if (e.status === 401 || e.status === 403) showLoginOverlay();
+    }
+}
+
+async function saveInventoryRow(productId) {
+    const inp = document.getElementById('inv-qty-' + productId);
+    if (!inp) return;
+    const qty = parseInt(inp.value, 10);
+    if (isNaN(qty) || qty < 0) { showToast('Invalid quantity.'); return; }
+    try {
+        await apiPut('/api/v1/admin/inventory/' + productId, { quantity: qty });
+        inp.dataset.dirty = '';
+        showToast('Stock updated.');
+    } catch (e) { showToast('Error: ' + e.message); }
+}
+
+// ── Wire panel activation to auto-load data ──────────────────────────────────
+
+var _origShowPanel = window.showPanel;
+window.showPanel = function (name) {
+    if (typeof _origShowPanel === 'function') _origShowPanel(name);
+    if (name === 'db-categories') {
+        if (!getToken()) { showLoginOverlay(); return; }
+        dbLoadCategories();
+    }
+    if (name === 'db-products') {
+        if (!getToken()) { showLoginOverlay(); return; }
+        if (dbCats.length === 0) dbLoadCategories();
+        dbLoadProducts(1);
+    }
+    if (name === 'db-inventory') {
+        if (!getToken()) { showLoginOverlay(); return; }
+        dbLoadInventory(1);
+    }
+};
+
+// ── Check auth on page load ───────────────────────────────────────────────────
+checkAdminAuth();
+
