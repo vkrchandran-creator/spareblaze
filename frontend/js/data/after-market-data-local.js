@@ -5802,7 +5802,7 @@ const afterMarketProducts = [
     {
         "title": "BMW Genuine Oil Filter (High Performance) for 3/5 Series",
         "image": "after-market-parts/images/oil-filter.jpg",
-        "link": "product.html?id=BMW%20Genuine%20Oil%20Filter",
+        "link": "product.html?id=BMW%20Genuine%20Oil%20Filter%20(High%20Performance)%20for%203%2F5%20Series",
         "price": "₹3,200.00",
         "originalPrice": "₹3,800.00",
         "amount": "3200.00",
@@ -5812,7 +5812,7 @@ const afterMarketProducts = [
     {
         "title": "Audi A4/A6 Front Brake Pads Set - Premium Performance",
         "image": "after-market-parts/images/brake-pads.jpg",
-        "link": "product.html?id=Audi%20Front%20Brake%20Pads",
+        "link": "product.html?id=Audi%20A4%2FA6%20Front%20Brake%20Pads%20Set%20-%20Premium%20Performance",
         "price": "₹8,500.00",
         "originalPrice": "₹10,500.00",
         "amount": "8500.00",
@@ -5822,7 +5822,7 @@ const afterMarketProducts = [
     {
         "title": "Volvo XC60/XC90 Air Filter Element - OEM Genuine",
         "image": "after-market-parts/images/air-filter.jpg",
-        "link": "product.html?id=Volvo%20Air%20Filter",
+        "link": "product.html?id=Volvo%20XC60%2FXC90%20Air%20Filter%20Element%20-%20OEM%20Genuine",
         "price": "₹4,200.00",
         "originalPrice": "₹5,200.00",
         "amount": "4200.00",
@@ -5832,7 +5832,7 @@ const afterMarketProducts = [
     {
         "title": "BMW M-Performance Spark Plugs (Set of 6)",
         "image": "after-market-parts/images/spark-plug.jpg",
-        "link": "product.html?id=BMW%20Spark%20Plugs",
+        "link": "product.html?id=BMW%20M-Performance%20Spark%20Plugs%20(Set%20of%206)",
         "price": "₹12,000.00",
         "originalPrice": "₹14,500.00",
         "amount": "12000.00",
@@ -5842,7 +5842,7 @@ const afterMarketProducts = [
     {
         "title": "Audi Genuine Fuel Filter for Q7/A8",
         "image": "after-market-parts/images/oil-filter.jpg",
-        "link": "product.html?id=Audi%20Fuel%20Filter",
+        "link": "product.html?id=Audi%20Genuine%20Fuel%20Filter%20for%20Q7%2FA8",
         "price": "₹4,800.00",
         "originalPrice": "₹5,800.00",
         "amount": "4800.00",
@@ -5852,7 +5852,7 @@ const afterMarketProducts = [
     {
         "title": "Volvo LED Headlamp Control Module - XC40/V60",
         "image": "after-market-parts/images/fog_lamps.jpg",
-        "link": "product.html?id=Volvo%20Headlamp%20Module",
+        "link": "product.html?id=Volvo%20LED%20Headlamp%20Control%20Module%20-%20XC40%2FV60",
         "price": "₹15,400.00",
         "originalPrice": "₹18,500.00",
         "amount": "15400.00",

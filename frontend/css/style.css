@@ -483,7 +483,7 @@ button {
 .mobile-vehicle-select {
     flex-shrink: 0;
     width: 130px;
-    padding: 0.55rem 0.5rem;
+    padding: 0.55rem 1.75rem 0.55rem 0.5rem;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     background: var(--color-bg-base);
@@ -827,7 +827,7 @@ button {
 
 @media (max-width: 768px) {
     .hero {
-        min-height: 400px;
+        min-height: 520px;
         margin-bottom: 30px;
     }
 }
@@ -1311,10 +1311,22 @@ button {
     align-items: center;
     justify-content: center;
     border-bottom: 1px solid var(--color-border);
+    overflow: hidden;
+}
+
+/* When a link wraps the image inside the card, make it fill the flex container
+   so that max-height/max-width on the img resolve correctly. */
+.product-img-wrap > a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
 }
 
 .product-img-wrap img {
     max-height: 100%;
+    max-width: 100%;
     object-fit: contain;
     transition: transform var(--transition-smooth);
 }
@@ -1450,6 +1462,117 @@ button {
 .add-cart-btn:hover:not(.added) {
     background: #c7320a;
     transform: translateY(-1px);
+}
+
+/* Testimonials */
+.testimonials-section {
+    background: var(--color-bg-base);
+}
+
+.testimonials-carousel {
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.testimonials-slider {
+    position: relative;
+    overflow: hidden;
+    padding: 0 2rem;
+}
+
+.testimonials-track {
+    display: flex;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.testimonial-card {
+    min-width: 100%;
+    padding: 2.5rem 3rem;
+    background: var(--color-bg-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-subtle);
+    border: 1px solid var(--color-border);
+    text-align: center;
+}
+
+.testimonial-text {
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: var(--color-text-main);
+    margin-bottom: 1.5rem;
+    font-style: italic;
+}
+
+.testimonial-author {
+    font-weight: 600;
+    color: var(--color-primary);
+    font-size: 0.95rem;
+}
+
+.testimonials-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: var(--shadow-subtle);
+    transition: all var(--transition-fast);
+    color: var(--color-text-main);
+    font-size: 0.875rem;
+}
+
+.testimonials-btn.prev { left: 0; }
+.testimonials-btn.next { right: 0; }
+
+.testimonials-btn:hover {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-glow);
+}
+
+.testimonials-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+.testimonials-dots .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-border);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.testimonials-dots .dot.active {
+    background: var(--color-primary);
+    width: 24px;
+    border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+    .testimonials-slider {
+        padding: 0 1rem;
+    }
+
+    .testimonial-card {
+        padding: 2rem 1.5rem;
+    }
+
+    .testimonial-text {
+        font-size: 0.95rem;
+    }
 }
 
 /* CTA Banner */
@@ -1597,12 +1720,13 @@ footer {
     border-radius: 3px;
 }
 
-.payment-icons .rupay-text {
+.payment-icons .payu-text {
     font-size: 1rem;
     font-weight: 700;
-    color: #e03b0c;
-    border-left: 2px solid;
-    padding-left: 2px;
+    color: #002970;
+    background: #f5f5f5;
+    border-radius: 3px;
+    padding: 2px 5px;
 }
 
 .footer-bottom {
@@ -1617,7 +1741,7 @@ footer {
 /* Scroll to Top Button */
 .scroll-to-top {
     position: fixed;
-    bottom: 5rem;
+    bottom: 4.75rem;
     right: 2rem;
     width: 44px;
     height: 44px;
@@ -1899,9 +2023,24 @@ body.cart-open iframe[src*="tidiochat"] {
      *
      * .page-header already has padding-top: 8rem (128px) which is sufficient.
      * The hero slider (index.html) has no such offset, so we add it here.
+     * .breadcrumbs and .brand-hero are the first elements on brand/product pages
+     * and also need the same clearance.
      */
     .hero {
         margin-top: 128px;
+    }
+
+    /* brand.html / product.html: breadcrumbs is the topmost element — must clear
+       fixed navbar (~74-82px) + mobile-search (~57px) = ~131px total.
+       9rem = 144px gives a safe 13-17px gap. Override the inline 1rem padding. */
+    .breadcrumbs {
+        padding-top: 9rem !important;
+    }
+
+    /* brand.html: brand-hero sits directly below breadcrumbs on mobile so it
+       doesn't need full clearance, but needs enough top breathing room. */
+    .brand-hero {
+        padding-top: 1.5rem !important;
     }
 
     .footer-container {
@@ -1911,7 +2050,30 @@ body.cart-open iframe[src*="tidiochat"] {
 
 @media (max-width: 768px) {
     .hero h1 {
-        font-size: 2.5rem;
+        font-size: 2rem;
+    }
+
+    .hero p {
+        font-size: 0.95rem;
+    }
+
+    /* Hide prev/next arrows on mobile — swipe to navigate */
+    .slider-btn {
+        display: none !important;
+    }
+
+    /* Tighten hero content so text & buttons don't overlap */
+    .hero-content {
+        gap: 0.8rem;
+        padding: 1.25rem 1.25rem 0;
+        margin-left: 0;
+        max-width: 100%;
+    }
+
+    .slide {
+        align-items: center;
+        padding-top: 1.5rem;
+        padding-bottom: 80px; /* room for dots */
     }
 
     .hero-buttons {
@@ -1921,6 +2083,8 @@ body.cart-open iframe[src*="tidiochat"] {
 
     .hero-buttons .btn {
         width: 100%;
+        padding: 0.7rem 1rem;
+        font-size: 0.9rem;
     }
 
     .section-header h2 {
@@ -1935,10 +2099,10 @@ body.cart-open iframe[src*="tidiochat"] {
 
 /* ─── Internal Page Layout QA ─────────────────────────── */
 
-/* Ensure the page-header on inner pages clears both fixed bars */
+/* Ensure the page-header on inner pages clears both fixed bars.
+   On mobile: navbar ~74-82px + mobile-search ~57px = ~131px → 9rem (144px) safe. */
 .page-header {
-    padding-top: 8rem;
-    /* 73px navbar + 44px cat-bar + extra */
+    padding-top: 9rem;
 }
 
 /* Constrain page-header / page-hero text to match nav & footer width */
@@ -2036,7 +2200,7 @@ body.cart-open iframe[src*="tidiochat"] {
 
 /* Page hero spacing fix for pages with two fixed bars */
 .page-hero {
-    padding-top: 8rem;
+    padding-top: 9rem;
 }
 
 /* Footer category heading consistent margin */
@@ -2059,6 +2223,7 @@ body.cart-open iframe[src*="tidiochat"] {
     right: 30px;
     z-index: 1000;
     font-family: var(--font-main);
+    background: transparent;
 }
 
 .chat-button {
@@ -2100,15 +2265,19 @@ body.cart-open iframe[src*="tidiochat"] {
     bottom: 80px;
     right: 0;
     width: 320px;
+    /* navbar ~76px + widget bottom 30px + window offset 80px + 34px breathing room = 220px */
+    max-height: calc(100vh - 220px);
     background: var(--color-bg-surface);
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-xl);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15), 0 2px 10px rgba(0, 0, 0, 0.08);
     overflow: hidden;
     transform: translateY(20px);
     opacity: 0;
     visibility: hidden;
     transition: all var(--transition-smooth);
     border: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
 }
 
 .chat-window.active {
@@ -2124,6 +2293,7 @@ body.cart-open iframe[src*="tidiochat"] {
     display: flex;
     align-items: center;
     gap: 1rem;
+    flex-shrink: 0;
 }
 
 .chat-header img {
@@ -2148,8 +2318,10 @@ body.cart-open iframe[src*="tidiochat"] {
     padding: 1.5rem;
     background: #f0f2f5;
     background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
-    background-size: contain;
-    min-height: 150px;
+    background-size: 300px auto; /* tile the pattern naturally instead of stretching */
+    min-height: 120px;
+    max-height: 220px; /* cap body height so it doesn't greedily fill the window and appear as a large grey block */
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -2209,6 +2381,7 @@ body.cart-open iframe[src*="tidiochat"] {
 .chat-footer {
     padding: 1rem;
     background: var(--color-bg-surface);
+    flex-shrink: 0;
 }
 
 .btn-chat-connect {
@@ -2232,25 +2405,31 @@ body.cart-open iframe[src*="tidiochat"] {
     background: #128c7e;
 }
 
-@media (max-width: 480px) {
-    .chat-widget {
-        bottom: 20px;
-        right: 20px;
+/* ── Floating buttons: mobile alignment ──────────────────────────────────── */
+/* scroll-to-top mirrors the WA button bottom so they sit level on opposite sides.
+   chat-widget stacks below scroll-to-top to avoid overlap. */
+@media (max-width: 768px) {
+    .scroll-to-top {
+        bottom: 2.25rem;
+        right: 1rem;
     }
 
-    .chat-window {
-        width: calc(100vw - 40px);
-        bottom: 70px;
+    /* Chat widget sits below scroll-to-top — no overlap */
+    .chat-widget {
+        bottom: 0.5rem;
+        right: 1rem;
     }
 }
-
 
 /* Absolute Final Mobile Layout Overrides for Catalog/Search & Global Overflow */
 @media (max-width: 768px) {
     body {
         width: 100% !important;
         overflow-x: hidden !important;
-        position: relative !important;
+        /* position: relative removed — it creates a stacking/compositing context
+           that causes position:fixed elements (navbar, mobile-search) to trigger
+           visible jitter on load on iOS Safari and Android Chrome. overflow-x
+           hidden is sufficient to prevent horizontal scroll. */
     }
 
     .nav-container {
@@ -2259,8 +2438,22 @@ body.cart-open iframe[src*="tidiochat"] {
     }
 
     .logo img {
-        height: 24px !important;
-        /* Smaller logo for mobile */
+        height: 48px !important;
+    }
+
+    /* With 48px logo the navbar is ~74px tall; push mobile-search down */
+    .mobile-search {
+        top: 74px;
+    }
+
+    /* Mobile nav-menu must start below navbar + mobile-search */
+    .mobile-nav-menu {
+        top: 120px;
+    }
+
+    /* Adjust hero to clear taller nav stack */
+    .hero {
+        margin-top: 120px !important;
     }
 
     .footer-brand .logo img {
@@ -2326,6 +2519,29 @@ body.cart-open iframe[src*="tidiochat"] {
         line-height: 1.4 !important;
         padding: 0 0.5rem !important;
     }
+
+    html {
+        overflow-x: hidden !important;
+    }
+
+    .product-title {
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+    }
+
+    .fitment-table {
+        min-width: 0 !important;
+    }
+
+    .breadcrumbs {
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+    }
+
+    .info-table td {
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+    }
 }
 
 @media (max-width: 350px) {
@@ -2335,7 +2551,7 @@ body.cart-open iframe[src*="tidiochat"] {
     }
 
     .logo img {
-        height: 20px !important;
+        height: 40px !important;
     }
 
     .footer-brand .logo img {
@@ -2345,19 +2561,24 @@ body.cart-open iframe[src*="tidiochat"] {
 }
 
 @media (max-width: 480px) {
+    .scroll-to-top {
+        bottom: 0.25rem;
+        right: 1rem;
+    }
+
+    /* Hide chat widget on very small screens — WA button covers this */
     .chat-widget {
-        bottom: 20px;
-        right: 20px;
+        display: none;
     }
 
     .chat-window {
         width: calc(100vw - 40px);
         bottom: 70px;
+        max-height: calc(100vh - 200px);
     }
 
-    .scroll-to-top {
-        bottom: 6rem;
-        right: 1rem;
+    .wa-float-btn {
+        bottom: 0.25rem !important;
     }
 }
 
@@ -2525,7 +2746,7 @@ body.cart-open iframe[src*="tidiochat"] {
 .wa-float-btn {
     position: fixed;
     left: 1.25rem;
-    bottom: 5.5rem;
+    bottom: 4.75rem;
     width: 56px;
     height: 56px;
     background: #25D366;
@@ -2595,7 +2816,7 @@ body.cart-open iframe[src*="tidiochat"] {
         width: 50px;
         height: 50px;
         left: 0.75rem;
-        bottom: 4.5rem;
+        bottom: 2.25rem;
     }
 
     .wa-float-btn i {
@@ -2605,5 +2826,21 @@ body.cart-open iframe[src*="tidiochat"] {
     /* Hide tooltip on touch devices — no hover state */
     .wa-float-btn .wa-tooltip {
         display: none;
+    }
+
+    /* ── Product Detail Page – mobile image box fix ─────────────────────────
+       The inline <style> blocks in product.html and all legacy static product
+       pages set .main-image-box { height: 450px } without a media query.
+       Because those <style> blocks are parsed after this external sheet, we
+       need !important to ensure the mobile values win in the cascade.
+    ────────────────────────────────────────────────────────────────────────── */
+    .main-image-box {
+        height: 280px !important;
+        padding: 1rem !important;
+    }
+
+    /* Tighten the two-column → one-column product overview gap on mobile */
+    .product-overview-container {
+        gap: 1.5rem !important;
     }
 }

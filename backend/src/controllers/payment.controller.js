@@ -20,7 +20,7 @@ async function initiate(req, res, next) {
  * Verifies the response hash, then redirects to the frontend success page.
  */
 async function success(req, res) {
-  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+  const frontendUrl = (process.env.FRONTEND_URL || 'http://localhost:3000').split(',')[0].trim().replace(/\/$/, '');
   try {
     const result = await paymentService.handleSuccess(req.body);
     const params = new URLSearchParams({
@@ -28,9 +28,11 @@ async function success(req, res) {
       txnid:   result.txnid,
       id:      result.mihpayid,
     });
-    return res.redirect(`${frontendUrl}/index.html?${params.toString()}`);
+    // Redirect to / (Vercel rewrites / → /pages/index.html).
+    // Avoid /index.html — that file is under /pages/ and would 404 at root.
+    return res.redirect(`${frontendUrl}/?${params.toString()}`);
   } catch {
-    return res.redirect(`${frontendUrl}/index.html?payment=failed`);
+    return res.redirect(`${frontendUrl}/?payment=failed`);
   }
 }
 
@@ -39,10 +41,10 @@ async function success(req, res) {
  * PayU redirects the user's browser here after a failed or cancelled payment.
  */
 async function failure(req, res) {
-  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+  const frontendUrl = (process.env.FRONTEND_URL || 'http://localhost:3000').split(',')[0].trim().replace(/\/$/, '');
   const txnid = req.body.txnid || '';
   const params = new URLSearchParams({ payment: 'failed', txnid });
-  return res.redirect(`${frontendUrl}/index.html?${params.toString()}`);
+  return res.redirect(`${frontendUrl}/?${params.toString()}`);
 }
 
 module.exports = { initiate, success, failure };

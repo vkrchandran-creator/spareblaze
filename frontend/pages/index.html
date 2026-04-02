@@ -67,7 +67,7 @@
                     <i class="fa-solid fa-cart-shopping"></i>
                     <span class="cart-badge" id="cart-count">0</span>
                 </button>
-                <button class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-expanded="false" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
             </div>
         </div>
     </nav>
@@ -371,6 +371,28 @@
         </div>
     </section>
 
+    <!-- Testimonials -->
+    <section class="testimonials-section section-padding">
+        <div class="section-header">
+            <h2>What Our <span class="highlight">Customers Say</span></h2>
+            <p>Real reviews from verified buyers across India</p>
+        </div>
+        <div class="testimonials-carousel">
+            <div class="testimonials-slider">
+                <div class="testimonials-track" id="testimonials-track">
+                    <!-- Populated by CMS -->
+                </div>
+                <button class="testimonials-btn prev" id="testimonials-prev" aria-label="Previous testimonial">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button class="testimonials-btn next" id="testimonials-next" aria-label="Next testimonial">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+            <div class="testimonials-dots" id="testimonials-dots"></div>
+        </div>
+    </section>
+
     <!-- Banner -->
     <section class="cta-banner">
         <div class="cta-content">
@@ -424,8 +446,9 @@
 
             <div class="footer-contact">
                 <h3>Contact</h3>
-                <p><i class="fa-solid fa-phone"></i> +91 1800 123 4567</p>
-                <p><i class="fa-solid fa-envelope"></i> support@spareblaze.in</p>
+                <p><i class="fa-solid fa-phone"></i> +91 7259955674</p>
+                <p><i class="fa-solid fa-phone"></i> +91 8050819131</p>
+                <p><i class="fa-solid fa-envelope"></i> support@spareblaze.com</p>
                 <p><i class="fa-solid fa-location-dot"></i> Bengaluru, Karnataka, India</p>
 
                 <h3 class="payment-title">Secure Payments</h3>
@@ -434,7 +457,7 @@
                     <i class="fa-brands fa-cc-mastercard"></i>
                     <!-- SVG UPI Logo representation -->
                     <span class="upi-text">UPI</span>
-                    <span class="rupay-text">RuPay</span>
+                    <span class="payu-text">PayU</span>
                 </div>
             </div>
         </div>

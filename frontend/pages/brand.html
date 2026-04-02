@@ -514,8 +514,8 @@
 
             <div class="footer-contact">
                 <h3>Contact</h3>
-                <p><i class="fa-solid fa-phone"></i> +91 1800 123 4567</p>
-                <p><i class="fa-solid fa-envelope"></i> support@spareblaze.in</p>
+                <p><i class="fa-solid fa-phone"></i> +91 7259955674</p>
+                <p><i class="fa-solid fa-envelope"></i> support@spareblaze.com</p>
                 <p><i class="fa-solid fa-location-dot"></i> Bengaluru, Karnataka, India</p>
 
                 <h3 class="payment-title">Secure Payments</h3>
@@ -523,7 +523,7 @@
                     <i class="fa-brands fa-cc-visa"></i>
                     <i class="fa-brands fa-cc-mastercard"></i>
                     <span class="upi-text">UPI</span>
-                    <span class="rupay-text">RuPay</span>
+                    <span class="payu-text">PayU</span>
                 </div>
             </div>
         </div>
@@ -631,7 +631,7 @@
                 const partNo = Math.random().toString(36).substring(2, 10).toUpperCase();
                 const discount = Math.round(((prod.mrp - prod.price) / prod.mrp) * 100);
                 const isFastDelivery = Math.random() > 0.3 ? 'true' : 'false';
-                const productUrl = 'product.html?id=' + encodeURIComponent(displayName + ' ' + prod.name);
+                const productUrl = 'product.html?id=' + encodeURIComponent(displayName + ' ' + prod.name) + '&price=' + prod.price + '&mrp=' + prod.mrp + '&img=' + encodeURIComponent(prod.img) + '&brand=' + encodeURIComponent(displayName);
                 productsHTML += '<div class="prod-card product-card" data-price="' + prod.price + '" data-discount="' + discount + '" data-vehicles="' + brandId + '" data-fast-delivery="' + isFastDelivery + '"><div class="prod-img-box"><a style="display:contents;" href="' + productUrl + '"><img src="' + prod.img + '" alt="' + prod.name + '" onerror="this.src=&apos;https://dummyimage.com/300x300/f3f4f6/aaa&apos;"></a><div class="discount-badge">-' + discount + '%</div></div><div class="prod-info"><a href="' + productUrl + '"><h3 class="prod-title" style="transition:color 0.2s;cursor:pointer" onmouseover="this.style.color=&apos;var(--color-primary)&apos;" onmouseout="this.style.color=&apos;var(--color-text-main)&apos;">' + displayName + ' ' + prod.name + '</h3></a><div class="prod-part-no">Part No: ' + partNo + '</div><div class="prod-price-area"><span class="price-current">₹' + prod.price.toLocaleString('en-IN') + '</span><span class="price-mrp">₹' + prod.mrp.toLocaleString('en-IN') + '</span></div><div class="prod-meta"><span><i class="fa-solid fa-check-circle"></i> Ships in 24 hrs</span><span style="color:var(--color-text-muted)"><i class="fa-solid fa-credit-card"></i> Secure Payment (UPI / Card)</span></div><a href="' + productUrl + '" class="btn-view" style="display:block;text-decoration:none">View Details</a></div></div>';
             }
             grid.innerHTML = productsHTML;

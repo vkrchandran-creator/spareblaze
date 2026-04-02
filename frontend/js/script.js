@@ -38,7 +38,7 @@ const products = [
         compatibility: "Chevrolet Cruze (2009-2016)",
         price: 35000,
         originalPrice: 38000,
-        image: "images/products/cruze_headlights.png",
+        image: "../public/images/products/cruze_headlights.png",
         category: "electricals",
         badge: "Premium Upgrade",
         fastDelivery: true
@@ -50,7 +50,7 @@ const products = [
         compatibility: "Nissan Sylphy, Livina",
         price: 18000,
         originalPrice: 19000,
-        image: "images/products/nissan_clutch_kit.png",
+        image: "../public/images/products/nissan_clutch_kit.png",
         category: "engine",
         badge: "Genuine",
         fastDelivery: true
@@ -62,7 +62,7 @@ const products = [
         compatibility: "Mahindra Scorpio S2, S3",
         price: 975,
         originalPrice: 1255,
-        image: "images/products/scorpio_fog_light.png",
+        image: "../public/images/products/scorpio_fog_light.png",
         category: "electricals",
         badge: "Sale",
         fastDelivery: true
@@ -74,7 +74,7 @@ const products = [
         compatibility: "Universal High Performance",
         price: 92000,
         originalPrice: 110000,
-        image: "images/products/brake_rotor.jpg",
+        image: "../public/images/products/brake_rotor.jpg",
         category: "brakes",
         badge: "Extreme Performance",
         fastDelivery: false
@@ -86,7 +86,7 @@ const products = [
         compatibility: "Chevrolet Cruze (AT)",
         price: 15000,
         originalPrice: 20000,
-        image: "images/products/fog_lamps.jpg",
+        image: "../public/images/products/fog_lamps.jpg",
         category: "electricals",
         badge: "Authentic Used",
         fastDelivery: true
@@ -98,7 +98,7 @@ const products = [
         compatibility: "Fits Most Car Models (17-19 inch)",
         price: 18000,
         originalPrice: 25000,
-        image: "images/products/brake_rotor.jpg",
+        image: "../public/images/products/brake_rotor.jpg",
         category: "suspension",
         badge: "Premium",
         fastDelivery: true
@@ -110,7 +110,7 @@ const products = [
         compatibility: "Kia Seltos / Carens",
         price: 4500,
         originalPrice: 5200,
-        image: "images/products/brake_rotor.jpg",
+        image: "../public/images/products/brake_rotor.jpg",
         category: "brakes",
         badge: "Premium",
         fastDelivery: false
@@ -122,7 +122,7 @@ const products = [
         compatibility: "Toyota Innova Crysta",
         price: 1250,
         originalPrice: 1500,
-        image: "images/products/strut_mount.jpg",
+        image: "../public/images/products/strut_mount.jpg",
         category: "suspension",
         badge: "",
         fastDelivery: true
@@ -134,7 +134,7 @@ const products = [
         compatibility: "BMW 3 Series, 5 Series, X1, X3",
         price: 3200,
         originalPrice: 3800,
-        image: "images/products/oil-filter.jpg",
+        image: "../public/images/products/oil-filter.jpg",
         category: "engine",
         badge: "Performance",
         fastDelivery: true
@@ -146,7 +146,7 @@ const products = [
         compatibility: "Audi A4, A6, Q3, Q5",
         price: 8500,
         originalPrice: 10500,
-        image: "images/products/brake-pads.jpg",
+        image: "../public/images/products/brake-pads.jpg",
         category: "brakes",
         badge: "Premium",
         fastDelivery: true
@@ -158,7 +158,7 @@ const products = [
         compatibility: "Volvo XC60, XC90, S60, S90",
         price: 4200,
         originalPrice: 5200,
-        image: "images/products/air-filter.jpg",
+        image: "../public/images/products/air-filter.jpg",
         category: "engine",
         badge: "OEM Genuine",
         fastDelivery: false
@@ -170,7 +170,7 @@ const products = [
         compatibility: "BMW M3, M5, X5 M, X6 M",
         price: 12000,
         originalPrice: 14500,
-        image: "images/products/spark-plug.jpg",
+        image: "../public/images/products/spark-plug.jpg",
         category: "electricals",
         badge: "M-Performance",
         fastDelivery: true
@@ -182,7 +182,7 @@ const products = [
         compatibility: "Audi A3, A4, A8, Q7",
         price: 4800,
         originalPrice: 5800,
-        image: "images/products/oil-filter.jpg",
+        image: "../public/images/products/oil-filter.jpg",
         category: "engine",
         badge: "",
         fastDelivery: true
@@ -194,7 +194,7 @@ const products = [
         compatibility: "Volvo XC40, V60, V90",
         price: 15400,
         originalPrice: 18500,
-        image: "images/products/fog_lamps.jpg",
+        image: "../public/images/products/fog_lamps.jpg",
         category: "electricals",
         badge: "New Arrival",
         fastDelivery: true
@@ -206,7 +206,7 @@ const products = [
         compatibility: "BMW 2 Series, 3 Series, 4 Series",
         price: 18000,
         originalPrice: 22500,
-        image: "images/products/brake_rotor.jpg",
+        image: "../public/images/products/brake_rotor.jpg",
         category: "brakes",
         badge: "",
         fastDelivery: false
@@ -218,7 +218,7 @@ const products = [
         compatibility: "Audi Q5, Q7, A6",
         price: 24500,
         originalPrice: 29800,
-        image: "images/products/radiator_fan.jpg",
+        image: "../public/images/products/shock-absorber.jpg",
         category: "engine",
         badge: "",
         fastDelivery: true
@@ -230,7 +230,7 @@ const products = [
         compatibility: "Volvo S60, XC60, XC90",
         price: 2100,
         originalPrice: 2800,
-        image: "images/products/air-filter.jpg",
+        image: "../public/images/products/air-filter.jpg",
         category: "engine",
         badge: "Eco-Friendly",
         fastDelivery: true
@@ -244,6 +244,7 @@ let cart = [];
 document.addEventListener('DOMContentLoaded', () => {
     // Visitor Tracker Already Init at top
     initSlider();
+    initTestimonialsCarousel();
     initCustomDropdown();
     renderFeaturedProducts();
     setupCartListeners();
@@ -251,7 +252,9 @@ document.addEventListener('DOMContentLoaded', () => {
     setupScrollEffects();
     setupMobileMenu();
     setupMobileSearch();
+    setupHelpDropdown();
     checkPaymentStatus();
+    initScrollToTop();
 });
 
 // Show a toast based on PayU callback redirect params (?payment=success|failed)
@@ -261,7 +264,7 @@ function checkPaymentStatus() {
     if (!status) return;
 
     const isSuccess = status === 'success';
-    const message   = isSuccess
+    const message = isSuccess
         ? 'Payment successful! Your order is confirmed.'
         : 'Payment failed or was cancelled. Please try again.';
 
@@ -288,15 +291,20 @@ function checkPaymentStatus() {
 (function moveTidioToLeft() {
     function applyTidioLeft() {
         const el = document.getElementById('tidio-chat');
-        if (el) {
+        if (!el) return;
+        // Only write styles when the position has actually drifted — avoids
+        // triggering paint/composite cycles on every interval tick, which
+        // caused visible jitter on mobile product pages.
+        if (el.style.getPropertyValue('left') !== '20px') {
             el.style.setProperty('left', '20px', 'important');
             el.style.setProperty('right', 'auto', 'important');
-            // Also reposition the inner iframe if present
-            const iframe = document.getElementById('tidio-chat-code');
-            if (iframe) {
-                iframe.style.setProperty('left', '0', 'important');
-                iframe.style.setProperty('right', 'auto', 'important');
-            }
+            el.style.setProperty('bottom', '80px', 'important');
+        }
+        const iframe = document.getElementById('tidio-chat-code');
+        if (iframe && iframe.style.getPropertyValue('left') !== '0px') {
+            iframe.style.setProperty('left', '0px', 'important');
+            iframe.style.setProperty('right', 'auto', 'important');
+            iframe.style.setProperty('bottom', '80px', 'important');
         }
     }
 
@@ -350,6 +358,65 @@ function initCustomDropdown() {
 }
 
 // --- Slider Logic ---
+function initTestimonialsCarousel() {
+    const track = document.getElementById('testimonials-track');
+    if (!track) return;
+    const dotsContainer = document.getElementById('testimonials-dots');
+    const prevBtn = document.getElementById('testimonials-prev');
+    const nextBtn = document.getElementById('testimonials-next');
+
+    let current = 0;
+    let interval;
+
+    function goTo(idx) {
+        const count = track.children.length;
+        if (!count) return;
+        current = (idx + count) % count;
+        track.style.transform = `translateX(-${current * 100}%)`;
+        if (dotsContainer) {
+            dotsContainer.querySelectorAll('.dot').forEach((dot, i) => dot.classList.toggle('active', i === current));
+        }
+        resetInterval();
+    }
+
+    function buildDots() {
+        if (!dotsContainer) return;
+        dotsContainer.innerHTML = '';
+        Array.from(track.children).forEach((_, i) => {
+            const dot = document.createElement('div');
+            dot.className = i === 0 ? 'dot active' : 'dot';
+            dot.addEventListener('click', () => goTo(i));
+            dotsContainer.appendChild(dot);
+        });
+    }
+
+    function resetInterval() {
+        clearInterval(interval);
+        interval = setInterval(() => goTo(current + 1), 5000);
+    }
+
+    function init() {
+        buildDots();
+        goTo(0);
+    }
+
+    if (prevBtn) prevBtn.addEventListener('click', () => goTo(current - 1));
+    if (nextBtn) nextBtn.addEventListener('click', () => goTo(current + 1));
+
+    // CMS populates the track asynchronously — observe until cards are injected
+    if (track.children.length > 0) {
+        init();
+    } else {
+        const observer = new MutationObserver(() => {
+            if (track.children.length > 0) {
+                observer.disconnect();
+                init();
+            }
+        });
+        observer.observe(track, { childList: true });
+    }
+}
+
 function initSlider() {
     const heroSlider = document.getElementById('hero-slider');
     if (!heroSlider) return;
@@ -408,6 +475,19 @@ function initSlider() {
     if (prevBtn) prevBtn.addEventListener('click', () => { prevSlide(); resetInterval(); });
     if (nextBtn) nextBtn.addEventListener('click', () => { nextSlide(); resetInterval(); });
 
+    // Touch swipe support for mobile
+    let touchStartX = 0;
+    heroSlider.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].clientX;
+    }, { passive: true });
+    heroSlider.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(dx) > 40) {
+            if (dx < 0) { nextSlide(); } else { prevSlide(); }
+            resetInterval();
+        }
+    }, { passive: true });
+
     // Ensure first slide is active immediately
     updateSlider();
 
@@ -433,6 +513,7 @@ function renderFeaturedProducts() {
 
     const params = new URLSearchParams(window.location.search);
     const catParam = params.get('category');
+    const qParam = params.get('q');
 
     if (catParam) {
         window.ACTIVE_CATEGORY = catParam;
@@ -445,8 +526,28 @@ function renderFeaturedProducts() {
 
     let productsToRender = products;
 
-    // Support CMS-driven featured products if they exist and we're not on a category filter
-    if (window.__sbCmsFeatured && window.__sbCmsFeatured.length > 0 && !window.ACTIVE_CATEGORY) {
+    if (qParam) {
+        // Search results page: filter the full catalog by the query
+        const term = qParam.toLowerCase().trim();
+        productsToRender = products.filter(p =>
+            p.title.toLowerCase().includes(term) ||
+            p.brand.toLowerCase().includes(term) ||
+            (p.compatibility && p.compatibility.toLowerCase().includes(term))
+        );
+
+        // Update page header meta
+        const searchTermEl = document.querySelector('.search-term');
+        if (searchTermEl) searchTermEl.textContent = '"' + qParam + '"';
+        const countEl = document.getElementById('product-count');
+        if (countEl) countEl.textContent = productsToRender.length;
+
+        // Pre-populate the search inputs with the query
+        const searchInputEl = document.getElementById('search-input');
+        if (searchInputEl) searchInputEl.value = qParam;
+        const mobileInputEl = document.getElementById('mobile-search-input');
+        if (mobileInputEl) mobileInputEl.value = qParam;
+    } else if (window.__sbCmsFeatured && window.__sbCmsFeatured.length > 0 && !window.ACTIVE_CATEGORY) {
+        // Support CMS-driven featured products if they exist and we're not on a category filter
         productsToRender = window.__sbCmsFeatured.map((p, idx) => ({
             id: p.id || ('cms-' + idx),
             title: p.title,
@@ -488,16 +589,18 @@ function renderFeaturedProducts() {
         const btnClass = isInCart ? 'add-cart-btn added' : 'add-cart-btn';
         const btnIcon = isInCart ? 'fa-check' : 'fa-plus';
 
+        const detailUrl = `product.html?id=${encodeURIComponent(product.title)}&price=${product.price}&mrp=${product.originalPrice || product.price}&img=${encodeURIComponent(product.image)}&brand=${encodeURIComponent(product.brand)}&vehicle=${encodeURIComponent(product.compatibility || '')}`;
+
         card.innerHTML = `
             <div class="product-img-wrap">
                 ${badgeHtml}
-                <a href="product.html?id=${encodeURIComponent(product.title)}">
+                <a href="${detailUrl}">
                     <img src="${product.image}" alt="${product.title}" loading="lazy">
                 </a>
             </div>
             <div class="product-info">
                 <div class="product-brand">${product.brand}</div>
-                <h3 class="product-title"><a href="product.html?id=${encodeURIComponent(product.title)}">${product.title}</a></h3>
+                <h3 class="product-title"><a href="${detailUrl}">${product.title}</a></h3>
                 <div class="product-price">
                     ${formatCurrency(product.price)}
                     ${product.originalPrice > product.price ? `<span>${formatCurrency(product.originalPrice)}</span>` : ''}
@@ -506,7 +609,7 @@ function renderFeaturedProducts() {
                     <i class="fa-solid fa-circle-check"></i> ${product.compatibility}
                 </div>
                 <div class="product-actions">
-                    <button class="btn view-details-btn" onclick="window.location.href='product.html?id=${product.id}'">
+                    <button class="btn view-details-btn" onclick="window.location.href='${detailUrl}'">
                         <i class="fa-solid fa-eye"></i> View Details
                     </button>
                     <button class="btn btn-primary ${btnClass}" data-id="${product.id}" onclick="toggleCartItem(${product.id}, this)">
@@ -599,6 +702,11 @@ function setupCartListeners() {
 
     if (cartToggle && cartOverlay && cartSidebar) {
         cartToggle.addEventListener('click', () => {
+            // Re-append to body end so cart elements are last in DOM order.
+            // Tidio loads async and appends its iframe after page load, so without
+            // this re-append, Tidio's z-index tie would win due to later DOM position.
+            document.body.appendChild(cartOverlay);
+            document.body.appendChild(cartSidebar);
             cartOverlay.classList.add('active');
             cartSidebar.classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -619,7 +727,7 @@ function setupCartListeners() {
     let proceedPayBtn = document.getElementById('proceed-pay-btn');
     let checkoutModal = document.getElementById('checkout-modal');
     let checkoutModalOverlay = document.getElementById('checkout-modal-overlay');
-    
+
     // Dynamically inject checkout modal if missing
     if (!checkoutModal) {
         const modalHtml = `
@@ -672,12 +780,12 @@ function setupCartListeners() {
         const div = document.createElement('div');
         div.innerHTML = modalHtml;
         document.body.appendChild(div);
-        
+
         proceedPayBtn = document.getElementById('proceed-pay-btn');
         checkoutModal = document.getElementById('checkout-modal');
         checkoutModalOverlay = document.getElementById('checkout-modal-overlay');
     }
-    
+
     const closeCheckoutBtn = document.getElementById('close-checkout');
 
     const closeCheckout = () => {
@@ -693,11 +801,11 @@ function setupCartListeners() {
             if (cart.length > 0) {
                 // Hide cart sidebar & open checkout modal
                 closeCart();
-                
+
                 // Set total
                 const totalAmount = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
                 document.getElementById('checkout-final-amount').textContent = formatCurrency(totalAmount);
-                
+
                 // Show checkout modal
                 if (checkoutModalOverlay) checkoutModalOverlay.classList.add('active');
                 if (checkoutModal) checkoutModal.classList.add('active');
@@ -753,25 +861,27 @@ function setupCartListeners() {
                 proceedPayBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
                 proceedPayBtn.disabled = true;
 
-                // Backend URL — update this to your deployed backend URL in production
-                const BACKEND_URL = window.BACKEND_URL || 'http://localhost:5000';
-
                 try {
                     const totalAmount = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-                    const firstname   = nameInput.value.trim().replace(/[^a-zA-Z\s]/g, '');
-                    const email       = emailInput.value.trim();
-                    const phone       = phoneInput.value.trim().replace(/[^0-9]/g, '');
+                    const firstname = nameInput.value.trim().replace(/[^a-zA-Z\s]/g, '');
+                    const email = emailInput.value.trim();
+                    const phone = phoneInput.value.trim().replace(/[^0-9]/g, '');
 
-                    // Get PayU form params (including hash) from the backend.
+                    // Get PayU form params (including hash) from the Vercel serverless function.
                     // The salt never leaves the server — this keeps credentials secure.
-                    const res = await fetch(`${BACKEND_URL}/api/v1/payments/initiate`, {
+                    // const res = await fetch('/api/payments/initiate', {
+                    const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                        ? 'http://localhost:5000'
+                        : 'https://api.spareblaze.com';
+
+                    const res = await fetch(`${API_BASE_URL}/api/v1/payments/initiate`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             firstname,
                             email,
                             phone,
-                            amount:      totalAmount,
+                            amount: totalAmount,
                             productinfo: 'SpareBlaze Auto Parts Order',
                         }),
                     });
@@ -787,8 +897,8 @@ function setupCartListeners() {
 
                     for (const [name, value] of Object.entries(params)) {
                         const input = document.createElement('input');
-                        input.type  = 'hidden';
-                        input.name  = name;
+                        input.type = 'hidden';
+                        input.name = name;
                         input.value = value;
                         form.appendChild(input);
                     }
@@ -799,7 +909,7 @@ function setupCartListeners() {
                 } catch (err) {
                     console.error('Payment initiation error:', err);
                     proceedPayBtn.innerHTML = 'Proceed to Pay 🔒';
-                    proceedPayBtn.disabled  = false;
+                    proceedPayBtn.disabled = false;
                     alert('Unable to initiate payment. Please try again.');
                 }
             }
@@ -828,7 +938,7 @@ window.buyNow = function (productData) {
         cart.push({ ...productData, quantity: 1 });
         updateCartUI();
     }
-    
+
     // Simulate clicking the checkout button immediately
     const checkoutBtn = document.getElementById('checkout-btn');
     if (checkoutBtn && !checkoutBtn.disabled) {
@@ -950,11 +1060,36 @@ function updateCartUI() {
 // --- Search Logic ---
 function setupSearch() {
     const searchInput = document.getElementById('search-input');
+    if (!searchInput) return;
+
+    // Navigate to (or re-filter on) the search page with the current query
+    function navigateToSearch() {
+        const q = searchInput.value.trim();
+        if (!q) return;
+        window.location.href = 'search.html?q=' + encodeURIComponent(q);
+    }
+
+    // Wire the search button
+    const searchBtn = searchInput.closest('.search-container')
+        ? searchInput.closest('.search-container').querySelector('.search-btn')
+        : null;
+    if (searchBtn) {
+        searchBtn.removeAttribute('onclick');
+        searchBtn.addEventListener('click', navigateToSearch);
+    }
+
+    // Submit on Enter
+    searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') navigateToSearch();
+    });
+
+    // Autocomplete dropdown (only present on pages that include #search-results)
     const searchResults = document.getElementById('search-results');
-    if (!searchInput || !searchResults) return;
+    if (!searchResults) return;
 
     searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
+        const rawQuery = e.target.value.trim();
+        const query = rawQuery.toLowerCase();
 
         if (query.length < 2) {
             searchResults.classList.remove('active');
@@ -967,9 +1102,11 @@ function setupSearch() {
             p.compatibility.toLowerCase().includes(query)
         );
 
+        const searchUrl = 'search.html?q=' + encodeURIComponent(rawQuery);
+
         if (filtered.length > 0) {
             searchResults.innerHTML = filtered.slice(0, 5).map(p => `
-            <div class="search-result-item" onclick="window.location.href='search.html'">
+            <div class="search-result-item" onclick="window.location.href='${searchUrl}'">
                     <i class="fa-solid fa-cog" style="font-size: 1.5rem; color: var(--color-text-muted);"></i>
                     <div class="search-result-info">
                         <h4>${p.title}</h4>
@@ -981,7 +1118,7 @@ function setupSearch() {
             // Add view all link if there are many results
             if (filtered.length > 5) {
                 searchResults.innerHTML += `
-            <div class="search-result-item" style="justify-content: center; color: var(--color-primary); font-weight: 500;" onclick="window.location.href='search.html'">
+            <div class="search-result-item" style="justify-content: center; color: var(--color-primary); font-weight: 500;" onclick="window.location.href='${searchUrl}'">
                 View all ${filtered.length} results
             </div>
             `;
@@ -989,7 +1126,7 @@ function setupSearch() {
         } else {
             searchResults.innerHTML = `
             <div class="search-result-item" style="justify-content: center; color: var(--color-text-muted);">
-                No parts found for "${query}"
+                No parts found for "${rawQuery}"
             </div>
             `;
         }
@@ -1009,13 +1146,33 @@ function setupSearch() {
 function setupScrollEffects() {
     const navbar = document.querySelector('.navbar');
     if (!navbar) return;
-    window.addEventListener('scroll', () => {
+
+    function updateScrolled() {
         if (window.scrollY > 50) {
             navbar.classList.add('scrolled');
         } else {
             navbar.classList.remove('scrolled');
         }
+    }
+
+    // WHY: product pages (and legacy static pages) hardcode class="navbar scrolled"
+    // in HTML. Mobile Chrome fires a synthetic scroll event as the URL bar
+    // collapses on page load with scrollY still near 0, which removes .scrolled
+    // and triggers the CSS transition: background/box-shadow (0.3s). The navbar's
+    // backdrop-filter then forces a full compositor repaint during those 0.3s —
+    // that is exactly what causes the visible shiver on mobile product pages.
+    //
+    // Fix: suppress the transition before syncing the initial scroll state, then
+    // re-enable it after the browser has committed the first paint (double-rAF).
+    navbar.style.transition = 'none';
+    updateScrolled();
+    requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+            navbar.style.transition = '';
+        });
     });
+
+    window.addEventListener('scroll', updateScrolled, { passive: true });
 }
 
 // --- Mobile Menu (hamburger) ---
@@ -1061,9 +1218,9 @@ function setupMobileMenu() {
 
 // --- Mobile Search (vehicle select + search input) ---
 function setupMobileSearch() {
-    const mobileInput   = document.getElementById('mobile-search-input');
+    const mobileInput = document.getElementById('mobile-search-input');
     const mobileResults = document.getElementById('mobile-search-results');
-    const mobileSelect  = document.getElementById('mobile-vehicle-select');
+    const mobileSelect = document.getElementById('mobile-vehicle-select');
     if (!mobileInput) return;
 
     // Vehicle select: navigate to brand page (same logic as desktop dropdown)
@@ -1076,11 +1233,32 @@ function setupMobileSearch() {
         });
     }
 
-    // Search input: reuse the shared search logic
+    // Navigate to search page with the current mobile query
+    function navigateToMobileSearch() {
+        const q = mobileInput.value.trim();
+        if (!q) return;
+        window.location.href = 'search.html?q=' + encodeURIComponent(q);
+    }
+
+    // Wire the mobile search button
+    const mobileSearchBtn = mobileInput.closest('.mobile-search-wrap')
+        ? mobileInput.closest('.mobile-search-wrap').querySelector('.mobile-search-btn')
+        : null;
+    if (mobileSearchBtn) {
+        mobileSearchBtn.addEventListener('click', navigateToMobileSearch);
+    }
+
+    // Submit on Enter
+    mobileInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') navigateToMobileSearch();
+    });
+
+    // Autocomplete dropdown
     if (!mobileResults) return;
 
     mobileInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
+        const rawQuery = e.target.value.trim();
+        const query = rawQuery.toLowerCase();
         if (query.length < 2) {
             mobileResults.classList.remove('active');
             return;
@@ -1092,9 +1270,11 @@ function setupMobileSearch() {
             (p.compatibility && p.compatibility.toLowerCase().includes(query))
         );
 
+        const searchUrl = 'search.html?q=' + encodeURIComponent(rawQuery);
+
         if (filtered.length > 0) {
             mobileResults.innerHTML = filtered.slice(0, 5).map(p => `
-                <div class="search-result-item" onclick="window.location.href='search.html'">
+                <div class="search-result-item" onclick="window.location.href='${searchUrl}'">
                     <i class="fa-solid fa-cog" style="font-size:1.3rem;color:var(--color-text-muted)"></i>
                     <div class="search-result-info">
                         <h4>${p.title}</h4>
@@ -1104,7 +1284,7 @@ function setupMobileSearch() {
         } else {
             mobileResults.innerHTML = `
                 <div class="search-result-item" style="justify-content:center;color:var(--color-text-muted)">
-                    No parts found for "${query}"
+                    No parts found for "${rawQuery}"
                 </div>`;
         }
         mobileResults.classList.add('active');
@@ -1145,3 +1325,59 @@ window.buyNow = function (product) {
 
 
 
+
+// --- Help Dropdown (nav bar) ---
+function setupHelpDropdown() {
+    const helpItem = document.querySelector('.help-nav-item');
+    const helpLink = document.querySelector('.help-nav-link');
+    if (!helpItem || !helpLink) return;
+
+    // Toggle open/closed on click (works on desktop AND touch/mobile)
+    helpLink.addEventListener('click', (e) => {
+        e.stopPropagation();
+        helpItem.classList.toggle('open');
+    });
+
+    // Close when clicking anywhere outside the dropdown
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.help-nav-item')) {
+            helpItem.classList.remove('open');
+        }
+    });
+
+    // Close when pressing Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') helpItem.classList.remove('open');
+    });
+
+    // Inject Help links into the mobile hamburger menu (built dynamically in setupMobileMenu)
+    // We wait a tick so setupMobileMenu has already created the menu element
+    setTimeout(() => {
+        const mobileMenu = document.getElementById('mobile-nav-menu');
+        if (!mobileMenu || mobileMenu.querySelector('.mobile-help-header')) return;
+
+        const helpSection = document.createElement('div');
+        helpSection.innerHTML = `
+            <div class="mobile-nav-header mobile-help-header">Help</div>
+            <ul>
+                <li><a href="faq.html"><i class="fa-solid fa-comments" style="width:1.2em"></i> FAQ</a></li>
+                <li><a href="shipping-info.html"><i class="fa-solid fa-truck-fast" style="width:1.2em"></i> Shipping Policy</a></li>
+                <li><a href="return-policy.html"><i class="fa-solid fa-rotate-left" style="width:1.2em"></i> Return Policy</a></li>
+                <li><a href="size-guide.html"><i class="fa-solid fa-ruler" style="width:1.2em"></i> Size Guide</a></li>
+                <li><a href="track-order.html"><i class="fa-solid fa-map-location-dot" style="width:1.2em"></i> Track Order</a></li>
+                <li><a href="contact-us.html"><i class="fa-solid fa-headset" style="width:1.2em"></i> Contact Us</a></li>
+            </ul>`;
+        mobileMenu.appendChild(helpSection);
+    }, 0);
+}
+
+function initScrollToTop() {
+    const btn = document.getElementById('scroll-to-top');
+    if (!btn) return;
+    window.addEventListener('scroll', () => {
+        btn.classList.toggle('visible', window.scrollY > 300);
+    }, { passive: true });
+    btn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}

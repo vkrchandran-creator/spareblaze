@@ -16,9 +16,16 @@
     { "source": "/contact-us", "destination": "/pages/contact-us.html" },
     { "source": "/return-policy", "destination": "/pages/return-policy.html" },
     { "source": "/shipping-info", "destination": "/pages/shipping-info.html" },
-    { "source": "/track-order", "destination": "/pages/track-order.html" }
+    { "source": "/track-order", "destination": "/pages/track-order.html" },
+    { "source": "/faq", "destination": "/pages/faq.html" },
+    { "source": "/size-guide", "destination": "/pages/size-guide.html" }
   ],
   "env": {
     "API_BASE_URL": "https://api.spareblaze.com"
+  },
+  "functions": {
+    "api/payments/initiate.js": { "memory": 128, "maxDuration": 10 },
+    "api/payments/success.js":  { "memory": 128, "maxDuration": 10 },
+    "api/payments/failure.js":  { "memory": 128, "maxDuration": 10 }
   }
 }
