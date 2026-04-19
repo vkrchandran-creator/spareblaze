@@ -878,6 +878,7 @@
         <summary><i class="fa-solid fa-database"></i> Catalog DB</summary>
         <div class="nav-item" onclick="showPanel('db-categories')"><i class="fa-solid fa-tags"></i> DB Categories</div>
         <div class="nav-item" onclick="showPanel('db-brands')"><i class="fa-solid fa-copyright"></i> DB Brands</div>
+        <div class="nav-item" onclick="showPanel('db-vehicles')"><i class="fa-solid fa-car"></i> DB Vehicles</div>
         <div class="nav-item" onclick="showPanel('db-products')"><i class="fa-solid fa-database"></i> DB Products</div>
         <div class="nav-item" onclick="showPanel('db-inventory')"><i class="fa-solid fa-boxes-stacked"></i> Inventory</div>
         <div class="nav-item" onclick="showPanel('categories')"><i class="fa-solid fa-box-open"></i> Category Hero/Info</div>
@@ -1731,13 +1732,73 @@
           <input type="checkbox" id="pm-featured" style="width:auto">
           <label class="lbl" for="pm-featured" style="margin-bottom:0">Show this product in Featured Products</label>
         </div>
-        <div style="grid-column:1/-1"><label class="lbl">Image URL</label><input type="text" id="pm-img" style="width:100%" placeholder="https://... or /product-images/..."></div>
+        
+        <div style="grid-column:1/-1">
+          <label class="lbl">Part Numbers</label>
+          <input type="text" id="db-prod-partNumbers" style="width:100%" placeholder="Comma separated, e.g. 1A2B3C, 4X5Y6Z">
+        </div>
+        
+        <div style="grid-column:1/-1">
+          <label class="lbl">Compatible Vehicles</label>
+          <select id="db-prod-compatibility" multiple style="width:100%; height: 100px; padding: 0.5rem; border: 1px solid var(--border); border-radius: var(--radius);"></select>
+          <small style="color:var(--muted)">Hold Ctrl/Cmd to select multiple</small>
+        </div>
+
+        <div style="grid-column:1/-1">
+            <label class="lbl">Product Images</label>
+            <div id="db-prod-image-dropzone" style="border: 2px dashed var(--border); padding: 2rem; text-align: center; border-radius: var(--radius); cursor: pointer; transition: all 0.2s ease;">
+                <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem;"></i>
+                <div style="font-weight: 500;">Click or drag images here</div>
+                <div style="font-size: 0.85rem; color: var(--muted); margin-top: 0.25rem;">JPEG, PNG up to 5MB</div>
+                <input type="file" id="db-prod-file-upload" multiple accept="image/*" style="display:none;">
+                <input type="hidden" id="db-prod-images" value="[]">
+                <input type="hidden" id="pm-img" value=""> <!-- fallback -->
+            </div>
+            <div id="db-prod-image-preview" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem;"></div>
+        </div>
+
         <div style="grid-column:1/-1"><label class="lbl">Description</label><textarea id="pm-desc" rows="3" style="width:100%" placeholder="Product description"></textarea></div>
         <div style="grid-column:1/-1"><label class="lbl">SKU</label><input type="text" id="pm-sku" style="width:100%" placeholder="Optional unique SKU"></div>
       </div>
       <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.5rem">
         <button class="btn btn-outline" onclick="closeProdModal()">Cancel</button>
         <button class="btn btn-primary" onclick="saveProdModal()"><i class="fa-solid fa-floppy-disk"></i> Save Product</button>
+      </div>
+
+      <!-- ══════ DB VEHICLES PANEL ══════ -->
+      <div class="panel" id="panel-db-vehicles">
+        <div class="topbar">
+          <h1><i class="fa-solid fa-car" style="color:var(--primary)"></i> DB Vehicles</h1>
+        </div>
+        <p style="color:var(--muted);margin-bottom:1.5rem">Manage vehicle makes and models used for product compatibility tracking across your catalog.</p>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(400px, 1fr));gap:2rem;">
+            <!-- Brands -->
+            <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                <h3>Vehicle Brands (Makes)</h3>
+            </div>
+            <table class="prod-table">
+                <thead><tr><th>ID</th><th>Make Name</th><th>Slug</th><th>Active</th></tr></thead>
+                <tbody id="db-vehicle-brands-tbody">
+                <!-- Dynamically populated -->
+                </tbody>
+            </table>
+            </div>
+            
+            <!-- Models -->
+            <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                <h3>Vehicle Models</h3>
+            </div>
+            <table class="prod-table">
+                <thead><tr><th>ID</th><th>Model Name</th><th>Make</th><th>Slug</th></tr></thead>
+                <tbody id="db-vehicle-models-tbody">
+                <!-- Dynamically populated -->
+                </tbody>
+            </table>
+            </div>
+        </div>
       </div>
     </div>
   </div>

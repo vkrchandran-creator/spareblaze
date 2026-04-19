@@ -124,9 +124,10 @@ model Product {
   price              Decimal  @db.Decimal(10, 2)
   mrp                Decimal  @db.Decimal(10, 2)
   discountPercent    Int      @default(0)
-  images             Json
+  images             String[]
+  partNumbers        String[]
   specifications     Json?
-  compatibleVehicles Json?
+  
   isActive           Boolean  @default(true)
   isFeatured         Boolean  @default(false)
   createdAt          DateTime @default(now())
@@ -135,6 +136,7 @@ model Product {
   inventory  Inventory?
   cartItems  CartItem[]
   orderItems OrderItem[]
+  compatibleVehicles ProductVehicle[]
 
   @@index([categoryId])
   @@index([brand])
@@ -144,6 +146,42 @@ model Product {
   @@index([pricingModel])
   @@index([isActive])
   @@index([isFeatured])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Compatibility & Vehicles
+// ─────────────────────────────────────────────────────────────────────────────
+
+model VehicleBrand {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  isActive  Boolean  @default(true)
+
+  models    VehicleModel[]
+}
+
+model VehicleModel {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String
+  brandId   String
+
+  brand     VehicleBrand @relation(fields: [brandId], references: [id])
+  products  ProductVehicle[]
+
+  @@unique([brandId, slug])
+}
+
+model ProductVehicle {
+  id         String @id @default(uuid())
+  productId  String
+  vehicleId  String
+
+  product    Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  vehicle    VehicleModel @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, vehicleId])
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

@@ -48,6 +48,10 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', service: 'spareblaze-api', env: process.env.NODE_ENV });
 });
 
+// ── Static Files ──────────────────────────────────────────────────────────────
+const path = require('path');
+app.use('/public/uploads', express.static(path.join(__dirname, '../../frontend/public/uploads')));
+
 // ── API Routes ────────────────────────────────────────────────────────────────
 app.use('/api/v1/auth', require('./routes/auth.routes'));
 app.use('/api/v1/products', require('./routes/product.routes'));
@@ -56,6 +60,8 @@ app.use('/api/v1/cart', require('./routes/cart.routes'));
 app.use('/api/v1/orders', require('./routes/order.routes'));
 app.use('/api/v1/payments', require('./routes/payment.routes'));
 app.use('/api/v1/admin', require('./routes/admin.routes'));
+app.use('/api/v1/upload', require('./routes/upload.routes'));
+app.use('/api/v1/vehicles', require('./routes/vehicle.routes'));
 
 // ── 404 handler ───────────────────────────────────────────────────────────────
 app.use((req, res) => {

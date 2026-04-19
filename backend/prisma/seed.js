@@ -53,6 +53,14 @@ const CATEGORY_TREE = [
   { name: 'General', children: ['Universal Parts'] },
 ];
 
+const VEHICLE_DATA = [
+  { brand: 'Tata', models: ['Punch', 'Safari', 'Nexon', 'Harrier', 'Tiago'] },
+  { brand: 'Kia', models: ['Sonet', 'Seltos', 'Carens'] },
+  { brand: 'Maruti Suzuki', models: ['Swift', 'Baleno', 'Brezza', 'Dzire'] },
+  { brand: 'Hyundai', models: ['Creta', 'Venue', 'i20', 'Verna'] },
+  { brand: 'Mahindra', models: ['Thar', 'XUV700', 'Scorpio'] }
+];
+
 // ─── Data sources ─────────────────────────────────────────────────────────────
 
 const afterMarketProducts = require(path.join(SEEDS, 'after-market-data.js'));
@@ -170,6 +178,29 @@ async function seedCategoryTree() {
   return categories;
 }
 
+async function seedVehicleTree() {
+  const vehicleModelsList = [];
+  for (const vData of VEHICLE_DATA) {
+    const brandSlug = slugifyBrand(vData.brand);
+    const brand = await prisma.vehicleBrand.upsert({
+      where: { slug: brandSlug },
+      update: { name: vData.brand, isActive: true },
+      create: { name: vData.brand, slug: brandSlug, isActive: true },
+    });
+    
+    for (const modelName of vData.models) {
+      const modelSlug = slugifyBrand(modelName);
+      const dbModel = await prisma.vehicleModel.upsert({
+        where: { brandId_slug: { brandId: brand.id, slug: modelSlug } },
+        update: { name: modelName },
+        create: { name: modelName, slug: modelSlug, brandId: brand.id },
+      });
+      vehicleModelsList.push(dbModel);
+    }
+  }
+  return vehicleModelsList;
+}
+
 function inferCategoryName(raw) {
   const title = decodeHtml(raw.title || '').toLowerCase();
   if (/(brake pad|front pads|rear pads|p\d{5})/.test(title)) return 'Brake Pads';
@@ -261,6 +292,10 @@ async function main() {
   const categoryByName = new Map(categories.map((category) => [category.name, category]));
   console.log(`   ✓ ${categories.length} categories ready\n`);
 
+  console.log('── Creating vehicles...');
+  const vehicleModelsList = await seedVehicleTree();
+  console.log(`   ✓ ${vehicleModelsList.length} vehicle models ready\n`);
+
   // ── 2. Products ─────────────────────────────────────────────────────────────
 
   const batches = [
@@ -294,6 +329,18 @@ async function main() {
 
       if (!title) { skipped++; continue; }
 
+      // Pick 1-3 random vehicle models for compatibility
+      const numVehicles = Math.floor(Math.random() * 3) + 1;
+      const assignedVehicles = [];
+      for(let i=0; i<numVehicles; i++) {
+        const randomModel = vehicleModelsList[Math.floor(Math.random() * vehicleModelsList.length)];
+        if(!assignedVehicles.some(v => v.id === randomModel.id)) {
+           assignedVehicles.push(randomModel);
+        }
+      }
+      
+      const partNumbers = [`SB-${Math.floor(Math.random() * 90000 + 10000)}`];
+
       try {
         const product = await prisma.product.upsert({
           where:  { slug },
@@ -309,6 +356,7 @@ async function main() {
             condition: attributes.condition,
             pricingModel: attributes.pricingModel,
             images: image ? [image] : [],
+            partNumbers: partNumbers,
             isActive: true,
             isFeatured: isFeaturedProduct,
           },
@@ -325,10 +373,19 @@ async function main() {
             mrp,
             discountPercent: discount,
             images:          image ? [image] : [],
+            partNumbers:     partNumbers,
             isActive:        true,
             isFeatured:      isFeaturedProduct,
           },
         });
+
+        for (const vModel of assignedVehicles) {
+          await prisma.productVehicle.upsert({
+            where: { productId_vehicleId: { productId: product.id, vehicleId: vModel.id } },
+            update: {},
+            create: { productId: product.id, vehicleId: vModel.id }
+          });
+        }
 
         // Create inventory record if it doesn't exist
         await prisma.inventory.upsert({

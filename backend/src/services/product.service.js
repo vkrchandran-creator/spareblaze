@@ -54,7 +54,7 @@ const DETAIL_SELECT = {
   description:        true,
   sku:                true,
   specifications:     true,
-  compatibleVehicles: true,
+  partNumbers: true, compatibleVehicles: { select: { vehicle: { select: { id: true, name: true, slug: true, brand: { select: { id: true, name: true } } } } } },
   createdAt:          true,
   updatedAt:          true,
 };
@@ -157,6 +157,22 @@ function appendProductFilters(where, query = {}) {
 
   if (query.category) {
     andConditions.push({ category: { slug: query.category.toLowerCase() } });
+  }
+
+  if (query.vehicle) {
+    andConditions.push({
+      compatibleVehicles: {
+        some: { vehicle: { slug: query.vehicle } }
+      }
+    });
+  }
+
+  if (query.vehicle) {
+    andConditions.push({
+      compatibleVehicles: {
+        some: { vehicle: { slug: query.vehicle } }
+      }
+    });
   }
 
   if (brands.length) {
@@ -367,7 +383,7 @@ async function getOne(idOrSlug) {
     throw err;
   }
 
-  return product;
+  if (product && product.compatibleVehicles) { product.compatibleVehicles = product.compatibleVehicles.map(cv => ({ id: cv.vehicle.id, brand: cv.vehicle.brand.name, model: cv.vehicle.name, slug: cv.vehicle.slug })); } return product;
 }
 
 /**
@@ -407,9 +423,12 @@ async function create(data) {
       mrp:             parseFloat(mrp),
       discountPercent: parseInt(discountPercent) || 0,
       images,
+      partNumbers,
       isFeatured: toBoolean(isFeatured),
       specifications:     specifications     || undefined,
-      compatibleVehicles: compatibleVehicles || undefined,
+      compatibleVehicles: compatibleVehicles && compatibleVehicles.length > 0 ? {
+        create: compatibleVehicles.map(vid => ({ vehicleId: vid }))
+      } : undefined,
       inventory: {
         create: { quantity: 0, lowStockThreshold: 5 },
       },
@@ -469,7 +488,7 @@ async function update(id, data) {
   if (data.isFeatured !== undefined) updateData.isFeatured = toBoolean(data.isFeatured);
 
   // Prevent direct inventory updates through this endpoint
-  delete updateData.inventory;
+  if (data.partNumbers !== undefined) updateData.partNumbers = data.partNumbers; if (data.images !== undefined) updateData.images = data.images; delete updateData.inventory; if (data.compatibleVehicles !== undefined) { updateData.compatibleVehicles = { deleteMany: {}, create: data.compatibleVehicles.map(vid => ({ vehicleId: vid })) }; }
 
   const product = await prisma.product.update({
     where:  { id },

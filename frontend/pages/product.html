@@ -654,6 +654,9 @@
                     img: firstImage ? ('../public/' + String(firstImage).replace(/^\//, '')) : '',
                     vehicle: vehicleLabel,
                     partNo: apiProduct.sku || apiProduct.slug || apiProduct.id,
+                    partNumbers: apiProduct.partNumbers || [],
+                    compatibleVehicles: apiProduct.compatibleVehicles || [],
+                    allImages: apiProduct.images || [],
                     category: categoryName,
                     description: apiProduct.description || ''
                 };
@@ -737,6 +740,9 @@
                     ''));
                 p.mrp = typeof p.mrp === 'number' ? p.mrp : parseFloat(String(p.originalPrice || p.mrp || 0).replace(/[^0-9.]/g,
                     ''));
+                p.partNumbers = p.partNumbers || (p.partNo ? [p.partNo] : []);
+                p.compatibleVehicles = p.compatibleVehicles || [];
+                p.allImages = p.allImages && p.allImages.length ? p.allImages : [p.img];
                 p.partNo = p.partNo || 'SB-' + Math.floor(Math.random() * 90000 + 10000);
             }
 
@@ -774,51 +780,55 @@
             // Images
             const PLACEHOLDER_IMG = 'https://dummyimage.com/600x600/f8f9fa/a3a3a3.png&text=No+Image';
             const mainImg = document.getElementById('main-product-img');
-            mainImg.src = p.img || PLACEHOLDER_IMG;
+            const allImgs = (p.allImages && p.allImages.length > 0) ? p.allImages : [p.img || PLACEHOLDER_IMG];
+            mainImg.src = allImgs[0];
             mainImg.onerror = function () { this.onerror = null; this.src = PLACEHOLDER_IMG; };
-            [document.getElementById('thumb-1'), document.getElementById('thumb-2'), document.getElementById('thumb-3')].forEach(function (th) {
-                if (!th) return;
-                th.src = p.img || PLACEHOLDER_IMG;
-                th.onerror = function () { this.onerror = null; this.src = PLACEHOLDER_IMG; };
-            });
-
-            // Price & Saving
-            const formatter = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
-            document.getElementById('product-price').textContent = formatter.format(p.price);
-            document.getElementById('product-mrp').textContent = `MRP ${formatter.format(p.mrp)}`;
-
-            if (p.mrp > p.price) {
-                const saving = p.mrp - p.price;
-                const percent = Math.round((saving / p.mrp) * 100);
-                document.getElementById('product-saving').textContent = `(Save ${percent}%)`;
-                document.getElementById('product-badge').textContent = `-${percent}%`;
-                document.getElementById('product-saving').style.display = 'block';
-                document.getElementById('product-badge').style.display = 'inline-block';
-                document.getElementById('product-mrp').style.display = 'inline';
-            } else {
-                document.getElementById('product-saving').style.display = 'none';
-                document.getElementById('product-badge').style.display = 'none';
-                document.getElementById('product-mrp').style.display = 'none';
+            
+            const thumbStrip = document.querySelector('.thumbnail-strip');
+            if (thumbStrip && allImgs.length > 1) {
+                thumbStrip.innerHTML = allImgs.map((src, i) => `<div class="thumb-box ${i===0?'active':''}"><img src="${src}" alt="Thumb ${i+1}" onerror="this.src='${PLACEHOLDER_IMG}'"></div>`).join('');
+                const thumbBoxes = thumbStrip.querySelectorAll('.thumb-box');
+                thumbBoxes.forEach(box => {
+                    box.addEventListener('click', function() {
+                        thumbBoxes.forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        mainImg.src = this.querySelector('img').src;
+                    });
+                });
+            } else if (thumbStrip) {
+                thumbStrip.style.display = 'none';
+            }
+                    });
+                 }
             }
 
             // Specs
-            document.getElementById('spec-part-no').textContent = p.partNo || 'N/A';
+            document.getElementById('spec-part-no').textContent = (p.partNumbers && p.partNumbers.length) ? p.partNumbers.join(', ') : (p.partNo || 'N/A');
             document.getElementById('spec-class').textContent = p.category || 'Automotive Part';
             document.getElementById('spec-mfg').textContent = `${brandName} Genuine`;
+
+            
+            // Fitment Table
+            const fitmentTbody = document.getElementById('fitment-tbody');
+            if (fitmentTbody) {
+                if (p.compatibleVehicles && p.compatibleVehicles.length > 0) {
+                    fitmentTbody.innerHTML = p.compatibleVehicles.map(v => 
+                        `<tr>
+                            <td>${v.brand || v.make || brandName}</td>
+                            <td>${v.name || v.model || v || 'Unknown'}</td>
+                            <td>All Years</td>
+                            <td>Various</td>
+                            <td>Applicable</td>
+                        </tr>`
+                    ).join('');
+                } else {
+                    fitmentTbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--color-text-muted)">Universal Fit / Not specified</td></tr>`;
+                }
+            }
 
             // Description
             document.getElementById('product-description').textContent = p.description ||
                 `High-quality ${p.name} from ${brandName}. This genuine spare part is specifically designed for ${p.vehicle || 'your vehicle'}, ensuring perfect fitment and reliable performance. Precision-engineered to meet OEM standards and built to withstand rigorous Indian road conditions.`;
-
-            // Thumbnails
-            const thumbs = document.querySelectorAll('.thumb-box');
-            thumbs.forEach(thumb => {
-                thumb.addEventListener('click', function () {
-                    thumbs.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    document.getElementById('main-product-img').src = this.querySelector('img').src;
-                });
-            });
 
             // Cart Actions
             const cartData = { id: p.partNo, title: p.name, price: p.price, img: p.img };

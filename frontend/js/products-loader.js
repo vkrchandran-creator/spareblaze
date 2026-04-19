@@ -72,7 +72,7 @@
     var inStock  = p.inventory && p.inventory.quantity > 0;
     var vehicles = vehicleAttr(p.compatibleVehicles);
     var brandName = (p.brandRef && p.brandRef.name) || p.brand || '';
-    var detailUrl = 'product.html?id=' + encodeURIComponent(p.slug || p.id || p.title);
+    var detailUrl = 'product?id=' + encodeURIComponent(p.slug || p.id || p.title);
 
     return '<div class="product-card"' +
       ' data-price="'    + price.toFixed(2)    + '"' +
@@ -110,7 +110,7 @@
         '<div class="product-actions">' +
           '<a href="' + detailUrl + '" class="btn view-details-btn"><i class="fa-solid fa-eye"></i> View Details</a>' +
           '<button class="btn btn-primary add-cart-btn"' +
-            ' onclick="addToCart({id:\'' + p.id + '\',title:' + JSON.stringify(p.title) + ',price:' + price + ',mrp:' + mrp + ',img:' + JSON.stringify(img) + '})">' +
+            ' data-cart-id="' + p.id + '" data-cart-title="' + p.title.replace(/"/g, `&quot;`) + '" data-cart-price="' + price + '" data-cart-mrp="' + mrp + '" data-cart-img="' + img.replace(/"/g, `&quot;`) + '" onclick="addToCart({id: this.dataset.cartId, title: this.dataset.cartTitle, price: parseFloat(this.dataset.cartPrice), mrp: parseFloat(this.dataset.cartMrp), img: this.dataset.cartImg})">' +
             '<i class="fa-solid fa-cart-plus"></i> Add to Cart' +
           '</button>' +
         '</div>' +

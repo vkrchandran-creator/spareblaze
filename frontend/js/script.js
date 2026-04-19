@@ -648,7 +648,7 @@ function renderProductCards(productsToRender, featuredGrid) {
         const btnClass = isInCart ? 'add-cart-btn added' : 'add-cart-btn';
         const btnIcon = isInCart ? 'fa-check' : 'fa-plus';
         const detailKey = product.slug || product.id || product.title;
-        const detailUrl = `product.html?id=${encodeURIComponent(detailKey)}&price=${product.price}&mrp=${product.originalPrice || product.price}&img=${encodeURIComponent(product.image)}&brand=${encodeURIComponent(product.brand)}&vehicle=${encodeURIComponent(product.compatibility || '')}`;
+        const detailUrl = `product?id=${encodeURIComponent(detailKey)}&price=${product.price}&mrp=${product.originalPrice || product.price}&img=${encodeURIComponent(product.image)}&brand=${encodeURIComponent(product.brand)}&vehicle=${encodeURIComponent(product.compatibility || '')}`;
         const productIdLiteral = JSON.stringify(product.id);
 
         card.innerHTML = `
@@ -672,7 +672,7 @@ function renderProductCards(productsToRender, featuredGrid) {
                     <button class="btn view-details-btn" onclick="window.location.href='${detailUrl}'">
                         <i class="fa-solid fa-eye"></i> View Details
                     </button>
-                    <button class="btn btn-primary ${btnClass}" data-id="${product.id}" onclick='toggleCartItem(${productIdLiteral}, this)'>
+                    <button class="btn btn-primary ${btnClass}" data-id="${product.id}" onclick="toggleCartItem(this.dataset.id, this)">
                         <i class="fa-solid ${btnIcon}"></i> Add to Cart
                     </button>
                 </div>
