@@ -543,36 +543,12 @@
 
     // ── 4. Car Brands grid ──
     function applyCarBrands() {
-        const cb = d.carBrands; if (!cb || !cb.length) return;
-        const grid = document.querySelector('.makers-grid');
-        if (!grid) return;
-        grid.innerHTML = cb.map(b => `<a href="brand.html?id=${esc(b.id)}" class="maker-card">${esc(b.label)}</a>`).join('');
+        // Car brands now render from the Brand table via script.js.
     }
 
     // ── 5. Top Categories ──
     function applyTopCategories() {
-        const tc = d.topCategories; if (!tc || !tc.length) return;
-        const grid = document.querySelector('.categories-grid');
-        if (!grid) return;
-        grid.innerHTML = tc.map(c => {
-            const isImg = c.icon && (c.icon.includes('.') || c.icon.includes('/'));
-            const iconHtml = isImg
-                ? `<img src="${c.icon}" alt="${c.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                   <i class="fa-solid fa-gears" style="display:none; font-size: 3rem; color: var(--color-primary);"></i>`
-                : `<i class="${c.icon}"></i>`;
-
-            return `
-                <div class="category-card">
-                    <div class="cat-icon">
-                        ${iconHtml}
-                    </div>
-                    <div class="cat-content">
-                        <h3>${c.name}</h3>
-                        <a href="${c.href}" class="cat-action">Explore <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-            `;
-        }).join('');
+        // Top categories now render from the Category table via script.js.
     }
 
     // ── 6. CTA Banner ──
@@ -666,7 +642,7 @@
 
     // ── 10. Featured Products ──
     function applyFeaturedProducts() {
-        if (d.featuredProducts) window.__sbCmsFeatured = d.featuredProducts;
+        // Featured products now render from the Product table via script.js.
     }
 
     // ── Image Path Remapper ──
@@ -1096,14 +1072,7 @@
 
     // ── 18. Brand Logos Carousel ──
     function applyBrandLogos() {
-        var logos = d.brandLogos; if (!logos || !logos.length) return;
-        var track = document.querySelector('.carousel-track');
-        if (!track) return;
-        // Build two sets (original + duplicate) for infinite scroll
-        var items = logos.map(function (b) {
-            return '<a href="' + esc(b.href || '#') + '" class="carousel-item"><img src="' + esc(b.img) + '" alt="' + esc(b.name) + '"></a>';
-        }).join('');
-        track.innerHTML = items + items;
+        // Brand logos now render from Brand.logoUrl via script.js.
     }
 
     function applyAll() {

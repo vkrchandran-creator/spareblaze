@@ -625,9 +625,52 @@
     <script src="../js/data/wholesale-data-local.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', async function () {
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id') || '';
+            const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+                ? 'http://localhost:5000'
+                : 'https://api.spareblaze.com';
+
+            function normalizeApiProduct(apiProduct) {
+                if (!apiProduct) return null;
+                const images = Array.isArray(apiProduct.images) ? apiProduct.images : [];
+                const firstImage = images.length ? images[0] : '';
+                const categoryName = apiProduct.category && apiProduct.category.name ? apiProduct.category.name : 'Automotive Part';
+                let vehicleLabel = 'Universal Fit';
+
+                if (Array.isArray(apiProduct.compatibleVehicles) && apiProduct.compatibleVehicles.length) {
+                    const v = apiProduct.compatibleVehicles[0];
+                    vehicleLabel = [v.make || v.brand, v.model, v.year].filter(Boolean).join(' ') || vehicleLabel;
+                }
+
+                return {
+                    id: apiProduct.id,
+                    name: apiProduct.title,
+                    title: apiProduct.title,
+                    brand: apiProduct.brand || 'SpareBlaze',
+                    price: parseFloat(apiProduct.price || 0),
+                    mrp: parseFloat(apiProduct.mrp || apiProduct.price || 0),
+                    img: firstImage ? ('../public/' + String(firstImage).replace(/^\//, '')) : '',
+                    vehicle: vehicleLabel,
+                    partNo: apiProduct.sku || apiProduct.slug || apiProduct.id,
+                    category: categoryName,
+                    description: apiProduct.description || ''
+                };
+            }
+
+            async function fetchProductFromApi(idOrSlug) {
+                if (!idOrSlug) return null;
+                try {
+                    const response = await fetch(`${API_BASE}/api/v1/products/${encodeURIComponent(idOrSlug)}`);
+                    const json = await response.json();
+                    if (!response.ok || !json.success || !json.data) return null;
+                    return normalizeApiProduct(json.data);
+                } catch (error) {
+                    console.warn('[product] API lookup failed, falling back to local data.', error);
+                    return null;
+                }
+            }
 
             // 1. Data Merging / Identification
             const allDatasets = [
@@ -645,7 +688,11 @@
                 el.innerHTML = str || '';
                 return el.textContent;
             }
-            let p = allDatasets.find(item => decodeHtmlEntities(item.name || item.title) === productId);
+            let p = await fetchProductFromApi(productId);
+
+            if (!p) {
+                p = allDatasets.find(item => decodeHtmlEntities(item.name || item.title) === productId);
+            }
 
             // 1b. Secondary lookup: match by the 'link' field's id param (handles short-ID links)
             if (!p) {
@@ -760,7 +807,7 @@
             document.getElementById('spec-mfg').textContent = `${brandName} Genuine`;
 
             // Description
-            document.getElementById('product-description').textContent =
+            document.getElementById('product-description').textContent = p.description ||
                 `High-quality ${p.name} from ${brandName}. This genuine spare part is specifically designed for ${p.vehicle || 'your vehicle'}, ensuring perfect fitment and reliable performance. Precision-engineered to meet OEM standards and built to withstand rigorous Indian road conditions.`;
 
             // Thumbnails

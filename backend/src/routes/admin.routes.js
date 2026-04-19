@@ -17,5 +17,12 @@ router.put('/inventory/:productId',
 );
 router.get('/users',                   controller.users);
 router.get('/brands',                  controller.brands);
+router.post('/brands',
+  [body('name').trim().notEmpty().withMessage('Brand name is required')],
+  validate,
+  controller.createBrand,
+);
+router.put('/brands/:id',             controller.updateBrand);
+router.delete('/brands/:id',           controller.deleteBrand);
 
 module.exports = router;

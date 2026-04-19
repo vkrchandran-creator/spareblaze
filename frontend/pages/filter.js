@@ -1,6 +1,8 @@
 (function () {
     'use strict';
 
+    var searchDebounceTimer = null;
+
     /* ─── Helpers ──────────────────────────────────────────── */
 
     function getFilterGroup(headingText) {
@@ -19,6 +21,45 @@
         if (!label) return '';
         // textContent includes child element text; inputs have no text, icons have none either
         return label.textContent.trim().toLowerCase();
+    }
+
+    function getApiBase() {
+        var configured = window.BACKEND_URL || window.API_BASE;
+        if (configured) return String(configured).replace(/\/$/, '');
+        var host = window.location.hostname;
+        return (host === 'localhost' || host === '127.0.0.1') ? 'http://localhost:5000' : '';
+    }
+
+    async function hydrateBrandFilters() {
+        var group = getFilterGroup('Vehicle Brand');
+        if (!group) return;
+
+        try {
+            var response = await fetch(getApiBase() + '/api/v1/products/brands');
+            var payload = await response.json();
+            if (!response.ok || !payload.success) return;
+
+            var brands = Array.isArray(payload.data) ? payload.data : [];
+            if (!brands.length) return;
+
+            var title = group.querySelector('h4');
+            group.innerHTML = '';
+            if (title) group.appendChild(title);
+
+            brands.forEach(function (brand) {
+                var brandName = (brand && brand.name) ? String(brand.name).trim() : '';
+                if (!brandName) return;
+
+                var label = document.createElement('label');
+                label.className = 'filter-option';
+                label.innerHTML = '<input type="checkbox" value="' + brandName.replace(/"/g, '&quot;') + '"> ' + brandName;
+                group.appendChild(label);
+            });
+
+            bindSidebarFilterInputs();
+        } catch (_err) {
+            // Keep static fallback brands if API is unavailable.
+        }
     }
 
     /* ─── Read active filter values ───────────────────────── */
@@ -42,9 +83,19 @@
         if (!group) return [];
         const brands = [];
         group.querySelectorAll('input[type="checkbox"]:checked').forEach(function (cb) {
-            brands.push(getLabelText(cb));
+            brands.push((cb.value || getLabelText(cb)).trim());
         });
         return brands;
+    }
+
+    function getCheckedValues(headingText) {
+        const group = getFilterGroup(headingText);
+        if (!group) return [];
+        const values = [];
+        group.querySelectorAll('input[type="checkbox"]:checked').forEach(function (cb) {
+            values.push((cb.value || getLabelText(cb)).trim());
+        });
+        return values;
     }
 
     function getSelectedDiscountMin() {
@@ -68,9 +119,52 @@
         return cb ? cb.checked : false;
     }
 
+    function getSearchTerm() {
+        const desktopSearch = document.getElementById('search-input');
+        const mobileSearch = document.getElementById('mobile-search-input');
+        return ((desktopSearch && desktopSearch.value) || (mobileSearch && mobileSearch.value) || '').trim();
+    }
+
+    function getSortValue() {
+        const sortBy = document.getElementById('sort-by');
+        return sortBy ? sortBy.value : 'Best Match';
+    }
+
+    function getDbFilterPayload() {
+        const priceRange = getActivePriceRange();
+
+        return {
+            minPrice: priceRange ? priceRange.min : null,
+            maxPrice: priceRange && Number.isFinite(priceRange.max) ? priceRange.max : null,
+            brands: getSelectedBrands(),
+            type: getCheckedValues('Product Type'),
+            condition: getCheckedValues('Condition'),
+            pricing_model: getCheckedValues('Pricing Model'),
+            minDiscount: getSelectedDiscountMin(),
+            inStock: isFastDeliveryOn(),
+            sortLabel: getSortValue(),
+            q: getSearchTerm()
+        };
+    }
+
+    function requestDbProducts() {
+        document.dispatchEvent(new CustomEvent('sb:product-filters-change', {
+            detail: getDbFilterPayload()
+        }));
+    }
+
+    function isDbBackedListing() {
+        return !!window.SB_DB_PRODUCTS_LOADER;
+    }
+
     /* ─── Main filter logic ────────────────────────────────── */
 
     function applyFilters() {
+        if (isDbBackedListing()) {
+            requestDbProducts();
+            return;
+        }
+
         const cards = document.querySelectorAll('.prod-grid .product-card, .products-grid .product-card');
         const priceRange = getActivePriceRange();
         const brands = getSelectedBrands();
@@ -137,6 +231,11 @@
     /* ─── Sort logic ───────────────────────────────────────── */
 
     function applySort(value) {
+        if (isDbBackedListing()) {
+            requestDbProducts();
+            return;
+        }
+
         const grid = document.querySelector('.prod-grid') || document.querySelector('.products-grid');
         if (!grid) return;
 
@@ -169,19 +268,63 @@
         document.querySelectorAll('.sidebar-filters input[type="radio"]').forEach(function (r) {
             r.checked = false;
         });
+
+        const desktopSearch = document.getElementById('search-input');
+        const mobileSearch = document.getElementById('mobile-search-input');
+        if (desktopSearch) desktopSearch.value = '';
+        if (mobileSearch) mobileSearch.value = '';
+
+        const sortBy = document.getElementById('sort-by');
+        if (sortBy) sortBy.value = 'Best Match';
+
         applyFilters();
     }
 
     /* ─── Init ─────────────────────────────────────────────── */
 
+    function bindSidebarFilterInputs() {
+        const sidebar = document.querySelector('.sidebar-filters');
+        if (!sidebar) return;
+
+        sidebar.querySelectorAll('input').forEach(function (input) {
+            if (input.dataset.sbFilterBound === '1') return;
+            input.dataset.sbFilterBound = '1';
+            input.addEventListener('change', applyFilters);
+        });
+    }
+
+    function ensureAttributeFilters() {
+        const sidebar = document.querySelector('.sidebar-filters');
+        if (!sidebar || sidebar.dataset.sbAttributeFilters === '1') return;
+        sidebar.dataset.sbAttributeFilters = '1';
+
+        const markup = [
+            '<div class="filter-group sb-attribute-filter"><h4>Product Type</h4>',
+            '<label class="filter-option"><input type="checkbox" value="oem"> OEM</label>',
+            '<label class="filter-option"><input type="checkbox" value="aftermarket"> Aftermarket</label>',
+            '</div>',
+            '<div class="filter-group sb-attribute-filter"><h4>Condition</h4>',
+            '<label class="filter-option"><input type="checkbox" value="new"> New</label>',
+            '<label class="filter-option"><input type="checkbox" value="used"> Used</label>',
+            '<label class="filter-option"><input type="checkbox" value="refurbished"> Refurbished</label>',
+            '</div>',
+            '<div class="filter-group sb-attribute-filter"><h4>Pricing Model</h4>',
+            '<label class="filter-option"><input type="checkbox" value="retail"> Retail</label>',
+            '<label class="filter-option"><input type="checkbox" value="wholesale"> Wholesale</label>',
+            '</div>'
+        ].join('');
+
+        sidebar.insertAdjacentHTML('beforeend', markup);
+        bindSidebarFilterInputs();
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         const sidebar = document.querySelector('.sidebar-filters');
         if (!sidebar) return;
 
-        // Wire up all filter inputs
-        sidebar.querySelectorAll('input').forEach(function (input) {
-            input.addEventListener('change', applyFilters);
-        });
+        ensureAttributeFilters();
+        bindSidebarFilterInputs();
+        hydrateBrandFilters();
 
         // Wire up sort dropdown
         const sortBy = document.getElementById('sort-by');
@@ -191,6 +334,15 @@
                 applyFilters();
             });
         }
+
+        ['search-input', 'mobile-search-input'].forEach(function (id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.addEventListener('input', function () {
+                window.clearTimeout(searchDebounceTimer);
+                searchDebounceTimer = window.setTimeout(applyFilters, 300);
+            });
+        });
 
         // Inject "Clear Filters" link at the bottom of the sidebar
         const clearBtn = document.createElement('button');

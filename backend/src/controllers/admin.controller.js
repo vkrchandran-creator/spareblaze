@@ -35,9 +35,30 @@ async function users(req, res, next) {
 
 async function brands(req, res, next) {
   try {
-    const list = await adminService.getBrands();
+    const list = await adminService.getBrands(req.query);
     return success(res, list);
   } catch (err) { next(err); }
 }
 
-module.exports = { dashboard, inventory, updateStock, users, brands };
+async function createBrand(req, res, next) {
+  try {
+    const brand = await adminService.createBrand(req.body);
+    return success(res, brand, 'Brand created successfully.', 201);
+  } catch (err) { next(err); }
+}
+
+async function deleteBrand(req, res, next) {
+  try {
+    await adminService.deleteBrand(req.params.id);
+    return success(res, null, 'Brand deleted successfully.');
+  } catch (err) { next(err); }
+}
+
+async function updateBrand(req, res, next) {
+  try {
+    const brand = await adminService.updateBrand(req.params.id, req.body);
+    return success(res, brand, 'Brand updated successfully.');
+  } catch (err) { next(err); }
+}
+
+module.exports = { dashboard, inventory, updateStock, users, brands, createBrand, updateBrand, deleteBrand };

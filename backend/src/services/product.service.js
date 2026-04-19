@@ -7,25 +7,50 @@ const DEFAULT_LIMIT = 20;
 const MAX_LIMIT     = 100;
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const PRODUCT_TYPES = new Set(['oem', 'aftermarket']);
+const PRODUCT_CONDITIONS = new Set(['new', 'used', 'refurbished']);
+const PRICING_MODELS = new Set(['retail', 'wholesale']);
+const GENERIC_BRAND_SLUG = 'generic';
+const LEGACY_ATTRIBUTE_CATEGORY_MAP = {
+  aftermarket: { type: 'aftermarket' },
+  'after-market': { type: 'aftermarket' },
+  oem: { type: 'oem' },
+  used: { condition: 'used' },
+  refurbished: { condition: 'refurbished' },
+  wholesale: { pricingModel: 'wholesale' },
+};
+
+const PRODUCT_FIELD_NAMES = new Set(
+  (((prisma._runtimeDataModel || {}).models || {}).Product || { fields: [] }).fields.map((field) => field.name),
+);
+const HAS_PRODUCT_ATTRIBUTES = ['type', 'condition', 'pricingModel'].every((field) => PRODUCT_FIELD_NAMES.has(field));
 
 /** Fields returned on every product list item */
-const LIST_SELECT = {
+const LIST_SELECT = Object.assign({
   id:             true,
   title:          true,
   slug:           true,
   brand:          true,
+  brandId:        true,
+  brandRef:       { select: { id: true, name: true, slug: true, logoUrl: true } },
   price:          true,
   mrp:            true,
   discountPercent:true,
   images:         true,
   isActive:       true,
+  isFeatured:     true,
   category:       { select: { id: true, name: true, slug: true } },
   inventory:      { select: { quantity: true } },
-};
+}, HAS_PRODUCT_ATTRIBUTES ? {
+  type:           true,
+  condition:      true,
+  pricingModel:   true,
+} : {});
 
 /** Full fields for a single product detail page */
 const DETAIL_SELECT = {
   ...LIST_SELECT,
+  categoryId:         true,
   description:        true,
   sku:                true,
   specifications:     true,
@@ -56,6 +81,141 @@ function buildPaginationMeta(page, limit, total) {
   return { page, limit, total, totalPages: Math.ceil(total / limit) };
 }
 
+function toBoolean(value) {
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'string') return value.toLowerCase() === 'true';
+  return Boolean(value);
+}
+
+function slugify(value) {
+  return String(value || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+}
+
+function parseBrandList(query) {
+  if (Array.isArray(query.brands)) {
+    return query.brands
+      .map((brand) => String(brand).trim().replace(/-/g, ' '))
+      .filter(Boolean);
+  }
+
+  if (typeof query.brands === 'string' && query.brands.trim()) {
+    return query.brands
+      .split(',')
+      .map((brand) => brand.trim().replace(/-/g, ' '))
+      .filter(Boolean);
+  }
+
+  if (query.brand) {
+    return [String(query.brand).trim().replace(/-/g, ' ')].filter(Boolean);
+  }
+
+  return [];
+}
+
+function normalizeAllowed(value, allowed, fallback = null) {
+  const normalized = String(value || '').trim().toLowerCase().replace(/-/g, '_');
+  return allowed.has(normalized) ? normalized : fallback;
+}
+
+function parseAttributeList(value, allowed) {
+  const rawValues = Array.isArray(value) ? value : String(value || '').split(',');
+  return rawValues
+    .map((item) => normalizeAllowed(item, allowed))
+    .filter(Boolean);
+}
+
+function appendAttributeFilter(andConditions, field, rawValue, allowed) {
+  const values = parseAttributeList(rawValue, allowed);
+  if (values.length === 1) andConditions.push({ [field]: values[0] });
+  if (values.length > 1) andConditions.push({ [field]: { in: values } });
+}
+
+function withLegacyCategoryMapping(query = {}) {
+  const next = { ...query };
+  const legacySlug = query.category ? String(query.category).trim().toLowerCase() : '';
+  const mapped = LEGACY_ATTRIBUTE_CATEGORY_MAP[legacySlug];
+
+  if (!mapped) return next;
+
+  delete next.category;
+  if (mapped.type && !next.type) next.type = mapped.type;
+  if (mapped.condition && !next.condition) next.condition = mapped.condition;
+  if (mapped.pricingModel && !next.pricing_model && !next.pricingModel) next.pricing_model = mapped.pricingModel;
+  return next;
+}
+
+function appendProductFilters(where, query = {}) {
+  query = withLegacyCategoryMapping(query);
+  const andConditions = [];
+  const brands = parseBrandList(query);
+  const searchTerm = query.q ? String(query.q).trim() : '';
+
+  if (query.category) {
+    andConditions.push({ category: { slug: query.category.toLowerCase() } });
+  }
+
+  if (brands.length) {
+    andConditions.push({
+      OR: brands.map((brand) => ({
+        OR: [
+          { brandId: brand },
+          { brand: { contains: brand } },
+          { brandRef: { is: { slug: slugify(brand) } } },
+          { brandRef: { is: { name: { contains: brand } } } },
+        ],
+      })).flatMap((item) => item.OR),
+    });
+  }
+
+  if (query.minPrice || query.maxPrice) {
+    const price = {};
+    if (query.minPrice) price.gte = parseFloat(query.minPrice);
+    if (query.maxPrice) price.lte = parseFloat(query.maxPrice);
+    andConditions.push({ price });
+  }
+
+  if (query.minDiscount) {
+    andConditions.push({ discountPercent: { gte: parseInt(query.minDiscount, 10) || 0 } });
+  }
+
+  if (query.inStock === 'true') {
+    andConditions.push({ inventory: { quantity: { gt: 0 } } });
+  }
+
+  if (query.isFeatured === 'true') {
+    andConditions.push({ isFeatured: true });
+  }
+
+  if (HAS_PRODUCT_ATTRIBUTES) {
+    appendAttributeFilter(andConditions, 'type', query.type, PRODUCT_TYPES);
+    appendAttributeFilter(andConditions, 'condition', query.condition, PRODUCT_CONDITIONS);
+    appendAttributeFilter(andConditions, 'pricingModel', query.pricing_model || query.pricingModel, PRICING_MODELS);
+  }
+
+  if (searchTerm) {
+    andConditions.push({
+      OR: [
+        { title: { contains: searchTerm } },
+        { brand: { contains: searchTerm } },
+        { brandRef: { is: { name: { contains: searchTerm } } } },
+        { description: { contains: searchTerm } },
+        { sku: { contains: searchTerm } },
+      ],
+    });
+  }
+
+  if (andConditions.length) {
+    where.AND = andConditions;
+  }
+
+  return where;
+}
+
 /**
  * Generate a URL-safe slug. Checks the DB for collisions and appends
  * a counter suffix until it finds a unique value.
@@ -82,6 +242,49 @@ async function uniqueSlug(title, excludeId = null) {
   }
 }
 
+async function ensureBrand(brandName) {
+  const name = String(brandName || '').trim();
+  if (!name) return resolveBrandBySlug(GENERIC_BRAND_SLUG);
+
+  const slug = slugify(name);
+  const existingBrand = await prisma.brand.findFirst({
+    where: { slug, isActive: true },
+    select: { id: true, name: true },
+  });
+
+  if (existingBrand) return { brand: existingBrand.name, brandId: existingBrand.id };
+  return resolveBrandBySlug(GENERIC_BRAND_SLUG);
+}
+
+async function resolveBrandBySlug(slug) {
+  const brand = await prisma.brand.upsert({
+    where: { slug },
+    update: { isActive: true },
+    create: { name: slug === GENERIC_BRAND_SLUG ? 'Generic' : slug, slug, isActive: true },
+    select: { id: true, name: true },
+  });
+
+  return { brand: brand.name, brandId: brand.id };
+}
+
+async function resolveBrand({ brandId, brand }) {
+  if (brandId) {
+    const brandRecord = await prisma.brand.findFirst({
+      where: { id: brandId, isActive: true },
+      select: { id: true, name: true },
+    });
+    if (!brandRecord) {
+      const err = new Error('Brand not found.');
+      err.status = 404;
+      throw err;
+    }
+    return { brand: brandRecord.name, brandId: brandRecord.id };
+  }
+
+  // Backward compatibility for older API consumers that still send brand text.
+  return ensureBrand(brand);
+}
+
 // ─── Service Functions ────────────────────────────────────────────────────────
 
 /**
@@ -100,23 +303,7 @@ async function uniqueSlug(title, excludeId = null) {
 async function list(query = {}) {
   const { page, limit, skip } = parsePagination(query);
   const orderBy = buildSortOrder(query.sort);
-
-  const where = { isActive: true };
-
-  if (query.category) {
-    where.category = { slug: query.category.toLowerCase() };
-  }
-  if (query.brand) {
-    where.brand = { equals: query.brand, mode: 'insensitive' };
-  }
-  if (query.minPrice || query.maxPrice) {
-    where.price = {};
-    if (query.minPrice) where.price.gte = parseFloat(query.minPrice);
-    if (query.maxPrice) where.price.lte = parseFloat(query.maxPrice);
-  }
-  if (query.inStock === 'true') {
-    where.inventory = { quantity: { gt: 0 } };
-  }
+  const where = appendProductFilters({ isActive: true }, query);
 
   const [products, total] = await Promise.all([
     prisma.product.findMany({ where, select: LIST_SELECT, orderBy, skip, take: limit }),
@@ -132,39 +319,22 @@ async function list(query = {}) {
  * For larger catalogs: upgrade to pg_trgm or Meilisearch.
  */
 async function search(q, query = {}) {
-  const { page, limit, skip } = parsePagination(query);
-  const term = q.trim();
-
-  const where = {
-    isActive: true,
-    OR: [
-      { title: { contains: term, mode: 'insensitive' } },
-      { brand: { contains: term, mode: 'insensitive' } },
-      { description: { contains: term, mode: 'insensitive' } },
-    ],
-  };
-
-  const [products, total] = await Promise.all([
-    prisma.product.findMany({
-      where,
-      select:  LIST_SELECT,
-      orderBy: { createdAt: 'desc' },
-      skip,
-      take: limit,
-    }),
-    prisma.product.count({ where }),
-  ]);
-
-  return { products, pagination: buildPaginationMeta(page, limit, total) };
+  return list({ ...query, q: q.trim() });
 }
 
 /**
  * Products filtered by category slug, with all list query params supported.
  */
 async function byCategory(slug, query = {}) {
+  const legacySlug = String(slug || '').trim().toLowerCase();
+  const legacyAttributes = LEGACY_ATTRIBUTE_CATEGORY_MAP[legacySlug];
+  if (legacyAttributes) {
+    return list({ ...query, ...legacyAttributes });
+  }
+
   // Confirm the category exists first
   const category = await prisma.category.findUnique({
-    where:  { slug: slug.toLowerCase() },
+    where:  { slug: legacySlug },
     select: { id: true, name: true, slug: true },
   });
 
@@ -206,9 +376,10 @@ async function getOne(idOrSlug) {
  */
 async function create(data) {
   const {
-    title, description, sku, brand, categoryId,
+    title, description, sku, brand, brandId, categoryId, type, condition,
+    pricing_model: pricingModelSnake, pricingModel,
     price, mrp, discountPercent = 0, images = [],
-    specifications, compatibleVehicles,
+    specifications, compatibleVehicles, isFeatured = false,
   } = data;
 
   // Verify category exists
@@ -220,14 +391,23 @@ async function create(data) {
   }
 
   const slug = await uniqueSlug(title);
+  const brandData = await resolveBrand({ brandId, brand });
 
   const product = await prisma.product.create({
     data: {
-      title, slug, description, sku, brand, categoryId,
+      title, slug, description, sku, categoryId,
+      brand:   brandData.brand,
+      brandId: brandData.brandId,
+      ...(HAS_PRODUCT_ATTRIBUTES ? {
+        type: normalizeAllowed(type, PRODUCT_TYPES, 'aftermarket'),
+        condition: normalizeAllowed(condition, PRODUCT_CONDITIONS, 'new'),
+        pricingModel: normalizeAllowed(pricingModelSnake || pricingModel, PRICING_MODELS, 'retail'),
+      } : {}),
       price:           parseFloat(price),
       mrp:             parseFloat(mrp),
       discountPercent: parseInt(discountPercent) || 0,
       images,
+      isFeatured: toBoolean(isFeatured),
       specifications:     specifications     || undefined,
       compatibleVehicles: compatibleVehicles || undefined,
       inventory: {
@@ -257,14 +437,36 @@ async function update(id, data) {
   }
 
   const updateData = { ...data };
+  delete updateData.brandRef;
+  if (updateData.pricing_model !== undefined) {
+    updateData.pricingModel = updateData.pricing_model;
+    delete updateData.pricing_model;
+  }
 
   if (data.price !== undefined) updateData.price = parseFloat(data.price);
   if (data.mrp   !== undefined) updateData.mrp   = parseFloat(data.mrp);
+  if (HAS_PRODUCT_ATTRIBUTES) {
+    if (data.type !== undefined) updateData.type = normalizeAllowed(data.type, PRODUCT_TYPES, 'aftermarket');
+    if (data.condition !== undefined) updateData.condition = normalizeAllowed(data.condition, PRODUCT_CONDITIONS, 'new');
+    if (updateData.pricingModel !== undefined) updateData.pricingModel = normalizeAllowed(updateData.pricingModel, PRICING_MODELS, 'retail');
+  } else {
+    delete updateData.type;
+    delete updateData.condition;
+    delete updateData.pricingModel;
+  }
 
   // Regenerate slug only if the title has actually changed
   if (data.title && data.title !== existing.title) {
     updateData.slug = await uniqueSlug(data.title, id);
   }
+
+  if (data.brandId !== undefined || data.brand !== undefined) {
+    const brandData = await resolveBrand({ brandId: data.brandId, brand: data.brand });
+    updateData.brand = brandData.brand;
+    updateData.brandId = brandData.brandId;
+  }
+
+  if (data.isFeatured !== undefined) updateData.isFeatured = toBoolean(data.isFeatured);
 
   // Prevent direct inventory updates through this endpoint
   delete updateData.inventory;

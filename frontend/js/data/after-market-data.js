@@ -5860,4 +5860,4 @@ const afterMarketProducts = [
         "brand": "Volvo"
     }
 ];
-module.exports = afterMarketProducts;
+if (typeof module !== 'undefined') module.exports = afterMarketProducts;

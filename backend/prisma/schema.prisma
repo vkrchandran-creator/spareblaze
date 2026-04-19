@@ -83,9 +83,28 @@ model Category {
   parentId  String?
   parent    Category?  @relation("SubCategory", fields: [parentId], references: [id])
   children  Category[] @relation("SubCategory")
+  isFeatured Boolean   @default(false)
   createdAt DateTime   @default(now())
 
   products Product[]
+
+  @@index([isFeatured])
+}
+
+model Brand {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  slug      String    @unique
+  logoUrl   String?
+  isActive  Boolean   @default(true)
+  isFeatured Boolean  @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  products Product[]
+
+  @@index([isFeatured])
+  @@index([isActive])
 }
 
 model Product {
@@ -95,15 +114,21 @@ model Product {
   description        String?
   sku                String?  @unique
   brand              String?
+  brandId            String?
+  brandRef           Brand?   @relation(fields: [brandId], references: [id], onDelete: SetNull)
   categoryId         String
   category           Category @relation(fields: [categoryId], references: [id])
+  type               String   @default("aftermarket")
+  condition          String   @default("new")
+  pricingModel       String   @default("retail") @map("pricing_model")
   price              Decimal  @db.Decimal(10, 2)
   mrp                Decimal  @db.Decimal(10, 2)
   discountPercent    Int      @default(0)
-  images             String[]
+  images             Json
   specifications     Json?
   compatibleVehicles Json?
   isActive           Boolean  @default(true)
+  isFeatured         Boolean  @default(false)
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 
@@ -113,7 +138,12 @@ model Product {
 
   @@index([categoryId])
   @@index([brand])
+  @@index([brandId])
+  @@index([type])
+  @@index([condition])
+  @@index([pricingModel])
   @@index([isActive])
+  @@index([isFeatured])
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

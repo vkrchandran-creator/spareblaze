@@ -288,6 +288,30 @@ CLOUDINARY_URL=
 
 ## 5. Database Design
 
+### Catalog Category vs Product Attributes
+
+`Category` represents what a product is, such as `Brake Pads`, `Engine Parts`, `Suspension`, or a fallback `General` category when the exact part family is unknown. It should not contain condition, channel, or selling model labels.
+
+`Product` stores selling attributes directly:
+
+| Field | Values | Purpose |
+|---|---|---|
+| `type` | `oem`, `aftermarket` | Product sourcing/manufacturing type |
+| `condition` | `new`, `used`, `refurbished` | Physical condition of the part |
+| `pricingModel` / `pricing_model` | `retail`, `wholesale` | Pricing channel/model |
+
+Filtering is API-first through `GET /api/v1/products?type=oem`, `?condition=refurbished`, and `?pricing_model=wholesale`. Legacy category slugs such as `used`, `refurbished`, `wholesale`, `oem`, and `aftermarket` remain supported as compatibility aliases and are translated into product attribute filters in the product service.
+
+### Brand Normalization
+
+`Brand` is the canonical brand table for product manufacturers and aftermarket/OEM part brands. `Product.brandId` links products to `Brand`; the legacy `Product.brand` text column is kept temporarily as a read-compatible snapshot and should not be treated as the source of truth for new writes.
+
+The clean seed set contains real part brands only: `Generic`, `Bosch`, `Minda`, `NGK`, `Denso`, `Valeo`, `Delphi`, `Mahle`, `SKF`, `Exide`, `Amaron`, `Brembo`, `LUK`, `Hella`, `Monroe`, `Sachs`, `Gabriel`, `Philips`, `TRW`, `Mann Filter`, and `Puro`. Polluted legacy values such as vehicle models, vehicle manufacturers used as fitment data, category names, or generic terms map to `Generic` unless an active matching brand already exists.
+
+Category seeding uses a hierarchy so product listings and admin filters can target useful product families. Examples include `Brake System > Brake Pads`, `Filters > Air Filters`, `Lighting > Headlights`, `Electrical > Control Modules`, `Body Parts > Mirrors`, and `Cooling & AC > AC Compressors`.
+
+Product APIs accept `brandId` for create/update and still accept `brand` text for older clients. API responses include `brandRef { id, name, slug, logoUrl }`, and storefront/admin UIs should display `brandRef.name` before falling back to the legacy `brand` string.
+
 ### Entity Relationship Overview
 
 ```

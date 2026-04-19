@@ -10,6 +10,7 @@
     "db:migrate": "prisma migrate dev",
     "db:migrate:prod": "prisma migrate deploy",
     "db:seed": "node prisma/seed.js",
+    "db:seed:admin": "node prisma/seed-admin.js",
     "db:studio": "prisma studio"
   },
   "dependencies": {

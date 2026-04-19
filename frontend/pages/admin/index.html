@@ -121,6 +121,49 @@
       color: var(--muted)
     }
 
+    .nav-group {
+      margin: .35rem .75rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .02);
+      overflow: hidden
+    }
+
+    .nav-group summary {
+      list-style: none;
+      cursor: pointer;
+      padding: .75rem .9rem;
+      font-size: .78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .nav-group summary::-webkit-details-marker {
+      display: none
+    }
+
+    .nav-group summary::after {
+      content: "\f078";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      font-size: .7rem;
+      color: var(--muted);
+      transition: transform var(--tr)
+    }
+
+    .nav-group[open] summary::after {
+      transform: rotate(180deg)
+    }
+
+    .nav-group .nav-item {
+      padding-left: 1rem
+    }
+
     .topbar {
       display: flex;
       justify-content: space-between;
@@ -747,9 +790,9 @@
         </div>
         <div class="form-group">
           <label class="lbl">Password</label>
-          <input type="password" id="login-password" required autocomplete="current-password">
+          <input type="password" id="legacy-login-password" required autocomplete="current-password">
         </div>
-        <div class="login-error" id="login-error">Invalid username or password.</div>
+        <div class="login-error" id="legacy-login-error">Invalid username or password.</div>
         <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">
           <i class="fa-solid fa-lock-open"></i> Sign In
         </button>
@@ -808,46 +851,54 @@
         <div class="brand"><img src="../../public/images/spareblaze-logo.png" alt="SpareBlaze Logo" style="height:40px;width:auto;object-fit:contain;display:block;"></div>
         <div class="subtitle">CMS Admin</div>
       </div>
-      <div class="nav-section-label">Dashboard</div>
-      <div class="nav-item active" onclick="showPanel('dashboard')"><i class="fa-solid fa-gauge-high"></i> Dashboard
-      </div>
-      <div class="nav-section-label">Site Settings</div>
-      <div class="nav-item" onclick="showPanel('identity')"><i class="fa-solid fa-id-card"></i> Site Identity</div>
-      <div class="nav-item" onclick="showPanel('nav')"><i class="fa-solid fa-bars"></i> Navigation</div>
-      <div class="nav-item" onclick="showPanel('theme')"><i class="fa-solid fa-palette"></i> Theme & Branding</div>
-      <div class="nav-item" onclick="showPanel('footer')"><i class="fa-solid fa-shoe-prints"></i> Footer</div>
-      <div class="nav-section-label">Homepage</div>
-      <div class="nav-item" onclick="showPanel('carousel')"><i class="fa-solid fa-images"></i> Hero Carousel</div>
-      <div class="nav-item" onclick="showPanel('trust')"><i class="fa-solid fa-shield-halved"></i> Trust Bar</div>
-      <div class="nav-item" onclick="showPanel('brands')"><i class="fa-solid fa-car"></i> Car Brands</div>
-      <div class="nav-item" onclick="showPanel('topcats')"><i class="fa-solid fa-layer-group"></i> Top Categories</div>
-      <div class="nav-item" onclick="showPanel('featuredprods')"><i class="fa-solid fa-star"></i> Featured Products
-      </div>
-      <div class="nav-item" onclick="showPanel('ctabanner')"><i class="fa-solid fa-rectangle-ad"></i> CTA Banner</div>
-      <div class="nav-item" onclick="showPanel('testimonials')"><i class="fa-solid fa-comment-dots"></i> Testimonials</div>
-      <div class="nav-label" style="margin-top:1.5rem;padding:0.5rem 1rem;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted)">Content Pages</div>
-      <div class="nav-item" onclick="showPanel('faq')"><i class="fa-solid fa-comments"></i> FAQ Page</div>
-      <div class="nav-item" onclick="showPanel('contact')"><i class="fa-solid fa-headset"></i> Contact Us</div>
-      <div class="nav-item" onclick="showPanel('return-policy')"><i class="fa-solid fa-rotate-left"></i> Return Policy</div>
-      <div class="nav-item" onclick="showPanel('shipping')"><i class="fa-solid fa-truck-fast"></i> Shipping Info</div>
-      <div class="nav-item" onclick="showPanel('size-guide')"><i class="fa-solid fa-ruler"></i> Size Guide</div>
-      <div class="nav-item" onclick="showPanel('track-order')"><i class="fa-solid fa-map-location-dot"></i> Track Order</div>
-      <div class="nav-item" onclick="showPanel('brand-logos')"><i class="fa-solid fa-star"></i> Brand Logos</div>
-      <div class="nav-section-label">Catalog Pages</div>
-      <div class="nav-item" onclick="showPanel('db-categories')"><i class="fa-solid fa-tags"></i> DB Categories</div>
-      <div class="nav-item" onclick="showPanel('db-products')"><i class="fa-solid fa-database"></i> DB Products</div>
-      <div class="nav-item" onclick="showPanel('db-inventory')"><i class="fa-solid fa-boxes-stacked"></i> Inventory</div>
-      <div class="nav-item" onclick="showPanel('categories')"><i class="fa-solid fa-box-open"></i> Category Hero/Info
-      </div>
-      <div class="nav-item" onclick="showPanel('allproducts')"><i class="fa-solid fa-list-check"></i> CMS Products
-      </div>
-      <div class="nav-section-label">Settings</div>
-      <div class="nav-item" onclick="showPanel('security')"><i class="fa-solid fa-shield-halved"></i> Security</div>
-      <div class="nav-section-label">Tools</div>
-      <div class="nav-item" onclick="window.open('../index.html','_blank')"><i
-          class="fa-solid fa-arrow-up-right-from-square"></i> View Site</div>
-      <div class="nav-item" onclick="exportData()"><i class="fa-solid fa-download"></i> Export JSON</div>
-      <div class="nav-item" onclick="resetAll()"><i class="fa-solid fa-rotate-left"></i> Reset All</div>
+      <details class="nav-group" open>
+        <summary><i class="fa-solid fa-gauge-high"></i> Main Menu</summary>
+        <div class="nav-item active" onclick="showPanel('dashboard')"><i class="fa-solid fa-gauge-high"></i> Dashboard</div>
+      </details>
+
+      <details class="nav-group" open>
+        <summary><i class="fa-solid fa-store"></i> Storefront CMS</summary>
+        <div class="nav-item" onclick="showPanel('carousel')"><i class="fa-solid fa-images"></i> Hero Carousel</div>
+        <div class="nav-item" onclick="showPanel('trust')"><i class="fa-solid fa-shield-halved"></i> Trust Bar</div>
+        <div class="nav-item" onclick="showPanel('ctabanner')"><i class="fa-solid fa-rectangle-ad"></i> CTA Banner</div>
+        <div class="nav-item" onclick="showPanel('testimonials')"><i class="fa-solid fa-comment-dots"></i> Testimonials</div>
+      </details>
+
+      <details class="nav-group">
+        <summary><i class="fa-solid fa-file-lines"></i> Content Pages</summary>
+        <div class="nav-item" onclick="showPanel('faq')"><i class="fa-solid fa-comments"></i> FAQ Page</div>
+        <div class="nav-item" onclick="showPanel('contact')"><i class="fa-solid fa-headset"></i> Contact Us</div>
+        <div class="nav-item" onclick="showPanel('return-policy')"><i class="fa-solid fa-rotate-left"></i> Return Policy</div>
+        <div class="nav-item" onclick="showPanel('shipping')"><i class="fa-solid fa-truck-fast"></i> Shipping Info</div>
+        <div class="nav-item" onclick="showPanel('size-guide')"><i class="fa-solid fa-ruler"></i> Size Guide</div>
+        <div class="nav-item" onclick="showPanel('track-order')"><i class="fa-solid fa-map-location-dot"></i> Track Order</div>
+      </details>
+
+      <details class="nav-group" open>
+        <summary><i class="fa-solid fa-database"></i> Catalog DB</summary>
+        <div class="nav-item" onclick="showPanel('db-categories')"><i class="fa-solid fa-tags"></i> DB Categories</div>
+        <div class="nav-item" onclick="showPanel('db-brands')"><i class="fa-solid fa-copyright"></i> DB Brands</div>
+        <div class="nav-item" onclick="showPanel('db-products')"><i class="fa-solid fa-database"></i> DB Products</div>
+        <div class="nav-item" onclick="showPanel('db-inventory')"><i class="fa-solid fa-boxes-stacked"></i> Inventory</div>
+        <div class="nav-item" onclick="showPanel('categories')"><i class="fa-solid fa-box-open"></i> Category Hero/Info</div>
+        <div class="nav-item" onclick="showPanel('allproducts')"><i class="fa-solid fa-list-check"></i> CMS Products</div>
+      </details>
+
+      <details class="nav-group">
+        <summary><i class="fa-solid fa-gears"></i> Settings</summary>
+        <div class="nav-item" onclick="showPanel('identity')"><i class="fa-solid fa-id-card"></i> Site Identity</div>
+        <div class="nav-item" onclick="showPanel('nav')"><i class="fa-solid fa-bars"></i> Navigation</div>
+        <div class="nav-item" onclick="showPanel('theme')"><i class="fa-solid fa-palette"></i> Theme & Branding</div>
+        <div class="nav-item" onclick="showPanel('footer')"><i class="fa-solid fa-shoe-prints"></i> Footer</div>
+        <div class="nav-item" onclick="showPanel('security')"><i class="fa-solid fa-shield-halved"></i> Security</div>
+      </details>
+
+      <details class="nav-group">
+        <summary><i class="fa-solid fa-screwdriver-wrench"></i> Tools</summary>
+        <div class="nav-item" onclick="window.open('../index.html','_blank')"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Site</div>
+        <div class="nav-item" onclick="exportData()"><i class="fa-solid fa-download"></i> Export JSON</div>
+        <div class="nav-item" onclick="resetAll()"><i class="fa-solid fa-rotate-left"></i> Reset All</div>
+      </details>
       <div style="margin-top: auto; padding: 1rem 1.5rem; border-top: 1px solid var(--border);">
         <button class="btn btn-danger" style="width: 100%; justify-content: center;" onclick="handleLogout()">
           <i class="fa-solid fa-right-from-bracket"></i> Sign Out
@@ -1535,6 +1586,10 @@
             <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:.75rem;align-items:end">
               <div><label class="lbl">Category Name *</label><input type="text" id="new-cat-name" style="width:100%" placeholder="e.g. Refurbished"></div>
               <div><label class="lbl">Parent Category (optional)</label><select id="new-cat-parent" style="width:100%"><option value="">None (top-level)</option></select></div>
+              <div style="grid-column:1/-1;display:flex;align-items:center;gap:.6rem">
+                <input type="checkbox" id="new-cat-featured" style="width:auto">
+                <label class="lbl" for="new-cat-featured" style="margin-bottom:0">Show on Home Top Categories</label>
+              </div>
               <div style="display:flex;gap:.5rem">
                 <button class="btn btn-primary btn-sm" onclick="submitAddCategory()">Add</button>
                 <button class="btn btn-outline btn-sm" onclick="document.getElementById('add-cat-form').style.display='none'">Cancel</button>
@@ -1542,19 +1597,47 @@
             </div>
           </div>
           <table class="prod-table">
-            <thead><tr><th>Name</th><th>Slug</th><th>Products</th><th>Parent</th><th>Actions</th></tr></thead>
-            <tbody id="db-cat-tbody"><tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--muted)">Loading…</td></tr></tbody>
+            <thead><tr><th>Name</th><th>Slug</th><th>Products</th><th>Parent</th><th>Featured</th><th>Actions</th></tr></thead>
+            <tbody id="db-cat-tbody"><tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--muted)">Loading…</td></tr></tbody>
           </table>
         </div>
       </div>
 
       <!-- ══════ DB PRODUCTS PANEL ══════ -->
+      <div class="panel" id="panel-db-brands">
+        <div class="topbar">
+          <h1><i class="fa-solid fa-copyright" style="color:var(--primary)"></i> DB Brands</h1>
+          <button class="btn btn-outline" onclick="dbLoadBrands()"><i class="fa-solid fa-refresh"></i> Refresh</button>
+        </div>
+        <div class="card">
+          <p style="color:var(--muted);font-size:.85rem;margin-bottom:1rem">Create and manage database brands used by products and brand listing pages.</p>
+          <div style="display:flex;gap:.75rem;margin-bottom:1rem;align-items:center;flex-wrap:wrap">
+            <input type="text" id="new-db-brand-name" placeholder="Brand name, e.g. Bosch" style="flex:1;max-width:260px">
+            <input type="text" id="new-db-brand-logo" placeholder="Logo URL (optional)" style="flex:1;max-width:320px">
+            <label style="display:flex;align-items:center;gap:.45rem;color:var(--text);font-size:.85rem;font-weight:700">
+              <input type="checkbox" id="new-db-brand-featured" style="width:auto"> Featured
+            </label>
+            <button class="btn btn-primary" onclick="submitAddDbBrand()"><i class="fa-solid fa-plus"></i> Add Brand</button>
+          </div>
+          <div class="login-error" id="db-brand-error" style="display:none;margin-bottom:1rem"></div>
+          <div class="prod-table-wrap">
+            <table class="prod-table">
+              <thead><tr><th>Name</th><th>Slug</th><th>Products</th><th>Logo</th><th>Featured</th><th>Actions</th></tr></thead>
+              <tbody id="db-brand-tbody"><tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--muted)">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <div class="panel" id="panel-db-products">
         <div class="topbar">
           <h1><i class="fa-solid fa-database" style="color:var(--primary)"></i> DB Products</h1>
           <div style="display:flex;gap:.75rem">
             <select id="db-prod-cat-filter" class="form-control" style="width:180px" onchange="dbLoadProducts(1)">
               <option value="">All Categories</option>
+            </select>
+            <select id="db-prod-brand-filter" class="form-control" style="width:180px" onchange="dbLoadProducts(1)">
+              <option value="">All Brands</option>
             </select>
             <button class="btn btn-primary" onclick="openAddProduct()"><i class="fa-solid fa-plus"></i> Add Product</button>
           </div>
@@ -1566,8 +1649,8 @@
           </div>
           <div class="prod-table-wrap">
             <table class="prod-table">
-              <thead><tr><th>Image</th><th>Title</th><th>Brand</th><th>Category</th><th>Price ₹</th><th>MRP ₹</th><th>Disc %</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead>
-              <tbody id="db-prod-tbody"><tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--muted)">Loading…</td></tr></tbody>
+              <thead><tr><th>Image</th><th>Title</th><th>Brand</th><th>Category</th><th>Type</th><th>Condition</th><th>Pricing</th><th>Price ₹</th><th>MRP ₹</th><th>Disc %</th><th>Stock</th><th>Status</th><th>Featured</th><th>Actions</th></tr></thead>
+              <tbody id="db-prod-tbody"><tr><td colspan="14" style="text-align:center;padding:2rem;color:var(--muted)">Loading…</td></tr></tbody>
             </table>
           </div>
           <div id="db-prod-pagination" style="display:flex;gap:.5rem;justify-content:center;margin-top:1rem;flex-wrap:wrap"></div>
@@ -1610,15 +1693,44 @@
       <input type="hidden" id="pm-id">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
         <div style="grid-column:1/-1"><label class="lbl">Title *</label><input type="text" id="pm-title" style="width:100%" placeholder="Full product name"></div>
-        <div><label class="lbl">Brand</label><input type="text" id="pm-brand" style="width:100%" placeholder="e.g. Bosch"></div>
+        <div>
+          <label class="lbl">Brand</label>
+          <select id="pm-brand-id" style="width:100%"></select>
+        </div>
         <div>
           <label class="lbl">Category *</label>
           <select id="pm-cat" style="width:100%"></select>
+        </div>
+        <div>
+          <label class="lbl">Product Type *</label>
+          <select id="pm-type" style="width:100%">
+            <option value="aftermarket">Aftermarket</option>
+            <option value="oem">OEM</option>
+          </select>
+        </div>
+        <div>
+          <label class="lbl">Condition *</label>
+          <select id="pm-condition" style="width:100%">
+            <option value="new">New</option>
+            <option value="used">Used</option>
+            <option value="refurbished">Refurbished</option>
+          </select>
+        </div>
+        <div>
+          <label class="lbl">Pricing Model *</label>
+          <select id="pm-pricing-model" style="width:100%">
+            <option value="retail">Retail</option>
+            <option value="wholesale">Wholesale</option>
+          </select>
         </div>
         <div><label class="lbl">Price ₹ *</label><input type="number" id="pm-price" style="width:100%" placeholder="0" min="0" step="0.01"></div>
         <div><label class="lbl">MRP ₹</label><input type="number" id="pm-mrp" style="width:100%" placeholder="0" min="0" step="0.01"></div>
         <div><label class="lbl">Discount %</label><input type="number" id="pm-disc" style="width:100%" placeholder="0" min="0" max="100"></div>
         <div><label class="lbl">Stock Qty</label><input type="number" id="pm-qty" style="width:100%" placeholder="0" min="0"></div>
+        <div style="grid-column:1/-1;display:flex;align-items:center;gap:.6rem">
+          <input type="checkbox" id="pm-featured" style="width:auto">
+          <label class="lbl" for="pm-featured" style="margin-bottom:0">Show this product in Featured Products</label>
+        </div>
         <div style="grid-column:1/-1"><label class="lbl">Image URL</label><input type="text" id="pm-img" style="width:100%" placeholder="https://... or /product-images/..."></div>
         <div style="grid-column:1/-1"><label class="lbl">Description</label><textarea id="pm-desc" rows="3" style="width:100%" placeholder="Product description"></textarea></div>
         <div style="grid-column:1/-1"><label class="lbl">SKU</label><input type="text" id="pm-sku" style="width:100%" placeholder="Optional unique SKU"></div>

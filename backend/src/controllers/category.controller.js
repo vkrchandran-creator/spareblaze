@@ -3,7 +3,7 @@ const categoryService = require('../services/category.service');
 
 async function list(req, res, next) {
   try {
-    const cats = await categoryService.list();
+    const cats = await categoryService.list(req.query);
     return success(res, cats);
   } catch (err) { next(err); }
 }

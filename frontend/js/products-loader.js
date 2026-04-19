@@ -21,18 +21,18 @@
   var PAGE_LIMIT = 24; // products per API page
 
   /** Map page filename → category slug in the DB */
-  var CATEGORY_MAP = {
-    'after-market': 'aftermarket',
-    'oem':          'oem',
-    'used':         'used',
-    'wholesale':    'wholesale',
-    'refurbished':  'refurbished',
+  var PAGE_FILTER_MAP = {
+    'after-market': { type: 'aftermarket', badge: 'After Market' },
+    'oem':          { type: 'oem', badge: 'OEM' },
+    'used':         { condition: 'used', badge: 'Used' },
+    'wholesale':    { pricing_model: 'wholesale', badge: 'Wholesale' },
+    'refurbished':  { condition: 'refurbished', badge: 'Refurbished' },
   };
 
   // Detect which category this page belongs to
-  var pageSlug = (function () {
+  var pageConfig = (function () {
     var file = window.location.pathname.replace(/\\/g, '/').split('/').pop().replace('.html', '');
-    return CATEGORY_MAP[file] || null;
+    return PAGE_FILTER_MAP[file] || null;
   }());
 
   // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -59,8 +59,7 @@
   }
 
   function badgeLabel(cat) {
-    var map = { aftermarket: 'After Market', oem: 'OEM', used: 'Used', wholesale: 'Wholesale', refurbished: 'Refurbished' };
-    return map[pageSlug] || (cat && cat.name) || 'Part';
+    return (pageConfig && pageConfig.badge) || (cat && cat.name) || 'Part';
   }
 
   // ── Card HTML ────────────────────────────────────────────────────────────────
@@ -72,12 +71,13 @@
     var disc     = p.discountPercent     || 0;
     var inStock  = p.inventory && p.inventory.quantity > 0;
     var vehicles = vehicleAttr(p.compatibleVehicles);
-    var detailUrl = 'product.html?id=' + encodeURIComponent(p.title);
+    var brandName = (p.brandRef && p.brandRef.name) || p.brand || '';
+    var detailUrl = 'product.html?id=' + encodeURIComponent(p.slug || p.id || p.title);
 
     return '<div class="product-card"' +
       ' data-price="'    + price.toFixed(2)    + '"' +
       ' data-discount="' + disc                + '"' +
-      ' data-vehicles="' + (vehicles || (p.brand || '').toLowerCase()) + '"' +
+      ' data-vehicles="' + (vehicles || brandName.toLowerCase()) + '"' +
       ' data-fast-delivery="' + (inStock ? 'true' : 'false') + '">' +
 
       '<div class="product-img-wrap">' +
@@ -89,7 +89,7 @@
       '</div>' +
 
       '<div class="product-info">' +
-        (p.brand ? '<div class="product-brand">' + p.brand + '</div>' : '') +
+        (brandName ? '<div class="product-brand">' + brandName + '</div>' : '') +
         '<h3 class="product-title">' + p.title + '</h3>' +
 
         '<div class="prod-price-area" style="margin-top:.5rem;margin-bottom:.5rem">' +
@@ -125,12 +125,91 @@
     totalPages:  1,
     total:       0,
     loading:     false,
-    allProducts: [],   // accumulated across pages (for client-side filter/sort)
+  };
+
+  var activeFilters = {
+    minPrice: null,
+    maxPrice: null,
+    brands: [],
+    type: [],
+    condition: [],
+    pricing_model: [],
+    minDiscount: 0,
+    inStock: false,
+    sortLabel: 'Best Match',
+    q: ''
   };
 
   // ── DOM refs (set after DOMContentLoaded) ────────────────────────────────────
 
   var grid, countEl, loadMoreBtn;
+
+  function mapSortValue(label) {
+    if (label === 'Price: Low to High') return 'price_asc';
+    if (label === 'Price: High to Low') return 'price_desc';
+    if (label === 'Discount') return 'discount_desc';
+    return 'newest';
+  }
+
+  function buildUrl(page) {
+    var params = new URLSearchParams();
+    params.set('page', String(page));
+    params.set('limit', String(PAGE_LIMIT));
+    params.set('sort', mapSortValue(activeFilters.sortLabel));
+
+    if (activeFilters.minPrice !== null && activeFilters.minPrice !== undefined) {
+      params.set('minPrice', String(activeFilters.minPrice));
+    }
+
+    if (activeFilters.maxPrice !== null && activeFilters.maxPrice !== undefined) {
+      params.set('maxPrice', String(activeFilters.maxPrice));
+    }
+
+    if (activeFilters.brands && activeFilters.brands.length) {
+      params.set('brands', activeFilters.brands.join(','));
+    }
+
+    if (activeFilters.type && activeFilters.type.length) {
+      params.set('type', activeFilters.type.join(','));
+    }
+
+    if (activeFilters.condition && activeFilters.condition.length) {
+      params.set('condition', activeFilters.condition.join(','));
+    }
+
+    if (activeFilters.pricing_model && activeFilters.pricing_model.length) {
+      params.set('pricing_model', activeFilters.pricing_model.join(','));
+    }
+
+    if (activeFilters.minDiscount) {
+      params.set('minDiscount', String(activeFilters.minDiscount));
+    }
+
+    if (activeFilters.inStock) {
+      params.set('inStock', 'true');
+    }
+
+    if (activeFilters.q) {
+      params.set('q', activeFilters.q);
+    }
+
+    if (pageConfig) {
+      Object.keys(pageConfig).forEach(function (key) {
+        if (key !== 'badge') params.set(key, pageConfig[key]);
+      });
+    }
+
+    return API_BASE + '/api/v1/products?' + params.toString();
+  }
+
+  function resetAndFetch(filters) {
+    activeFilters = Object.assign({}, activeFilters, filters || {});
+    state.page = 1;
+    state.totalPages = 1;
+    state.total = 0;
+    showSkeleton();
+    fetchPage(1);
+  }
 
   // ── Fetch ────────────────────────────────────────────────────────────────────
 
@@ -139,8 +218,7 @@
     state.loading = true;
     if (loadMoreBtn) { loadMoreBtn.disabled = true; loadMoreBtn.textContent = 'Loading…'; }
 
-    var url = API_BASE + '/api/v1/products/category/' + pageSlug +
-              '?page=' + page + '&limit=' + PAGE_LIMIT;
+    var url = buildUrl(page);
 
     fetch(url)
       .then(function (r) { return r.json(); })
@@ -153,15 +231,10 @@
         state.page       = pg.page       || page;
         state.totalPages = pg.totalPages || 1;
         state.total      = pg.total      || products.length;
-        state.allProducts = state.allProducts.concat(products);
-
         renderProducts(products);
         updateCount();
         renderPagination();
 
-        // Re-trigger filter.js on newly added cards
-        var evt = new Event('products-loaded', { bubbles: true });
-        grid.dispatchEvent(evt);
       })
       .catch(function (err) {
         console.warn('[products-loader] API fetch failed, keeping static content.', err);
@@ -177,6 +250,15 @@
   // ── Render ───────────────────────────────────────────────────────────────────
 
   function renderProducts(products) {
+    if (state.page === 1) {
+      grid.innerHTML = '';
+    }
+
+    if (!products.length && state.page === 1) {
+      grid.innerHTML = '<div class="empty-cart-msg" style="grid-column:1/-1;text-align:center;padding:2rem 1rem">No products found in this category.</div>';
+      return;
+    }
+
     products.forEach(function (p) {
       grid.insertAdjacentHTML('beforeend', buildCard(p));
     });
@@ -220,7 +302,7 @@
   // ── Init ─────────────────────────────────────────────────────────────────────
 
   function init() {
-    if (!pageSlug) return; // not a recognized category page
+    if (!pageConfig) return; // not a recognized catalog listing page
 
     grid    = document.querySelector('.prod-grid') || document.querySelector('.products-grid');
     countEl = document.querySelector('.catalog-header strong') || document.getElementById('product-count');
@@ -240,20 +322,18 @@
     });
     grid.parentNode.insertBefore(loadMoreBtn, grid.nextSibling);
 
+    window.SB_DB_PRODUCTS_LOADER = {
+      refresh: resetAndFetch
+    };
+
+    document.addEventListener('sb:product-filters-change', function (event) {
+      resetAndFetch(event.detail || {});
+    });
+
     // Clear static content and show skeleton while API loads
     showSkeleton();
     fetchPage(1);
   }
-
-  // Make filter.js re-apply after dynamic load
-  document.addEventListener('products-loaded', function () {
-    // Re-wire filter inputs to include newly rendered cards
-    // filter.js already handles .prod-grid cards — they just need the event re-dispatched
-    var sortEl = document.getElementById('sort-by');
-    if (sortEl && sortEl.value && sortEl.value !== 'Best Match') {
-      sortEl.dispatchEvent(new Event('change'));
-    }
-  });
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

@@ -36,6 +36,20 @@ Open `frontend/pages/index.html` in your browser, or serve with:
 npx serve frontend
 ```
 
+## Catalog Attribute Migration Note
+
+SpareBlaze separates product categories from product selling attributes. Categories now mean what the part is, for example `Brake Pads`, `Engine Parts`, or `Suspension`. Product attributes now hold how it is sold: `type` (`oem`, `aftermarket`), `condition` (`new`, `used`, `refurbished`), and `pricing_model` (`retail`, `wholesale`).
+
+Run the Prisma migration `20260419090000_add_product_attributes` before reseeding or editing DB products. It preserves existing rows, adds default-safe fields, moves legacy `Used`, `Refurbished`, `Wholesale`, `OEM`, and `Aftermarket` category assignments into product attributes, and assigns unknown real categories to `General`.
+
+## Brand Normalization Note
+
+Products now use `brandId` as the canonical relation to the `Brand` table. The old `brand` text column remains temporarily for backward compatibility, but new product writes from the admin panel send `brandId`.
+
+Run migration `20260419103000_normalize_brands` to add `Brand.isActive`, seed the clean brand set, and backfill existing products from legacy `brand` text to `brandId`. Polluted brand values are preserved in the text column but mapped to the `Generic` brand relation.
+
+The product seed now creates a category/subcategory hierarchy and infers product categories from titles, for example brake pads, air filters, mirrors, lighting, electrical modules, and AC compressors. It also infers known part manufacturers from titles before falling back to `Generic`.
+
 ## Development Phases
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the full 11-phase development roadmap.

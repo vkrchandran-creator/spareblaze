@@ -23,7 +23,7 @@ router.get('/brands', async (req, res, next) => {
   try {
     const adminService = require('../services/admin.service');
     const { success } = require('../utils/apiResponse');
-    const list = await adminService.getBrands();
+    const list = await adminService.getBrands(req.query);
     return success(res, list);
   } catch (err) { next(err); }
 });

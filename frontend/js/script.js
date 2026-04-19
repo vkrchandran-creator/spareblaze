@@ -246,7 +246,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initSlider();
     initTestimonialsCarousel();
     initCustomDropdown();
+    hydrateVehicleBrandDropdowns();
     renderFeaturedProducts();
+    renderDbHomepageSections();
     setupCartListeners();
     setupSearch();
     setupScrollEffects();
@@ -326,7 +328,7 @@ function initCustomDropdown() {
     if (!customDropdown) return;
 
     const dropdownText = document.getElementById('dropdown-text');
-    const dropdownOptions = document.querySelectorAll('.dropdown-options li');
+    const dropdownList = customDropdown.querySelector('.dropdown-options');
 
     // Toggle dropdown
     customDropdown.addEventListener('click', (e) => {
@@ -334,21 +336,24 @@ function initCustomDropdown() {
         customDropdown.classList.toggle('active');
     });
 
-    // Select option
-    dropdownOptions.forEach(option => {
-        option.addEventListener('click', () => {
+    if (dropdownList) {
+        dropdownList.addEventListener('click', (event) => {
+            const option = event.target.closest('li');
+            if (!option) return;
+
             const value = option.getAttribute('data-value');
+            const label = option.textContent.trim() || 'All Brands';
+            if (dropdownText) dropdownText.textContent = label;
+            customDropdown.dataset.selectedBrand = value || '';
+
             if (value) {
-                const prefix = window.location.pathname.includes('/after-market-parts/') ? '../' : '';
-                window.location.href = prefix + `brand.html?id=${value}`;
-            } else if (!window.location.pathname.endsWith('index.html') && window.location.pathname !== '/') {
-                const prefix = window.location.pathname.includes('/after-market-parts/') ? '../' : '';
-                window.location.href = prefix + 'index.html';
+                window.location.href = `/pages/brand?id=${encodeURIComponent(value)}`;
+            } else {
+                window.location.href = '/pages/index';
             }
-            if (dropdownText) dropdownText.textContent = option.textContent;
             customDropdown.classList.remove('active');
         });
-    });
+    }
 
     document.addEventListener('click', (e) => {
         if (!e.target.closest('#custom-dropdown')) {
@@ -504,12 +509,234 @@ const formatCurrency = (amount) => {
     }).format(amount);
 };
 
+function getApiBase() {
+    const configured = window.BACKEND_URL || window.API_BASE;
+    if (configured) return String(configured).replace(/\/$/, '');
+    const isLocalFrontend = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+    return isLocalFrontend ? 'http://localhost:5000' : '';
+}
+
+async function fetchStorefrontApi(path) {
+    const apiBase = getApiBase();
+    const response = await fetch(apiBase + path);
+    const payload = await response.json();
+    if (!response.ok || !payload.success) {
+        throw new Error(payload.message || ('Request failed: ' + path));
+    }
+    return payload;
+}
+
+function normalizeDbProduct(product) {
+    return {
+        id: product.id,
+        slug: product.slug,
+        title: product.title,
+        brand: product.brandRef?.name || product.brand || 'SpareBlaze',
+        compatibility: product.category?.name || 'Genuine Spare Part',
+        price: Number(product.price || 0),
+        originalPrice: Number(product.mrp || product.price || 0),
+        image: (product.images && product.images[0]) ? product.images[0] : 'https://dummyimage.com/300x300/20243a/888',
+        category: product.category?.slug || '',
+        badge: product.discountPercent ? `${product.discountPercent}% OFF` : '',
+        fastDelivery: Number(product.inventory?.quantity || 0) > 0,
+    };
+}
+
+function getCategoryPageHref(slug) {
+    const knownCategoryPages = {
+        aftermarket: 'after-market.html',
+        refurbished: 'refurbished.html',
+        used: 'used.html',
+        oem: 'oem.html',
+        wholesale: 'wholesale.html',
+    };
+    return knownCategoryPages[slug] || ('categories.html?category=' + encodeURIComponent(slug));
+}
+
+function buildSearchUrl(term) {
+    return '/pages/search?q=' + encodeURIComponent(String(term || '').trim());
+}
+
+function updateResultCount(count) {
+    const safeCount = Number(count) || 0;
+    const headerCount = document.querySelector('.catalog-header strong');
+    const searchCount = document.getElementById('product-count');
+    if (headerCount) headerCount.textContent = safeCount;
+    if (searchCount) searchCount.textContent = safeCount;
+}
+
+async function hydrateVehicleBrandDropdowns() {
+    const desktopDropdowns = document.querySelectorAll('#custom-dropdown');
+    const mobileSelects = document.querySelectorAll('#mobile-vehicle-select');
+    if (!desktopDropdowns.length && !mobileSelects.length) return;
+
+    desktopDropdowns.forEach((dropdown) => {
+        const label = dropdown.querySelector('#dropdown-text') || document.getElementById('dropdown-text');
+        if (label && label.textContent.trim() === 'Select Vehicle') label.textContent = 'Select Brand';
+    });
+    mobileSelects.forEach((select) => {
+        if (select.options.length && select.options[0].textContent.trim() === 'All Vehicles') {
+            select.options[0].textContent = 'All Brands';
+        }
+    });
+
+    try {
+        const payload = await fetchStorefrontApi('/api/v1/products/brands');
+        const brands = (payload.data || [])
+            .filter((brand) => brand && (brand.slug || brand.name))
+            .sort((a, b) => String(a.name || '').localeCompare(String(b.name || '')));
+        if (!brands.length) return;
+
+        const currentBrand = new URLSearchParams(window.location.search).get('id') || '';
+
+        desktopDropdowns.forEach((dropdown) => {
+            const list = dropdown.querySelector('.dropdown-options');
+            const label = dropdown.querySelector('#dropdown-text') || document.getElementById('dropdown-text');
+            if (list) {
+                list.innerHTML = '<li data-value="">All Brands</li>' + brands.map((brand) => {
+                    const slug = brand.slug || brand.name;
+                    return `<li data-value="${slug}">${String(brand.name || slug).toUpperCase()}</li>`;
+                }).join('');
+            }
+            if (label && currentBrand) {
+                const selected = brands.find((brand) => (brand.slug || brand.name) === currentBrand);
+                if (selected) label.textContent = String(selected.name || selected.slug || 'Select Brand').toUpperCase();
+            } else if (label && label.textContent.trim() === 'Select Vehicle') {
+                label.textContent = 'Select Brand';
+            }
+        });
+
+        mobileSelects.forEach((select) => {
+            const selectedValue = select.value || currentBrand || '';
+            select.innerHTML = '<option value="">All Brands</option>' + brands.map((brand) => {
+                const slug = brand.slug || brand.name;
+                const selectedAttr = selectedValue && slug === selectedValue ? ' selected' : '';
+                return `<option value="${slug}"${selectedAttr}>${String(brand.name || slug).toUpperCase()}</option>`;
+            }).join('');
+        });
+    } catch (error) {
+        console.warn('Using static brand dropdown fallback:', error.message);
+    }
+}
+
+function renderProductCards(productsToRender, featuredGrid) {
+    featuredGrid.innerHTML = '';
+    updateResultCount(productsToRender.length);
+
+    if (!productsToRender.length) {
+        featuredGrid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--color-text-muted);font-size:1rem;">No products found for this search.</p>';
+        return;
+    }
+
+    productsToRender.forEach((product, index) => {
+        const delay = index * 0.1;
+        const card = document.createElement('div');
+        card.className = 'product-card fade-in';
+        card.style.animationDelay = `${delay}s`;
+
+        const discountVal = product.originalPrice > product.price
+            ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+            : 0;
+
+        card.setAttribute('data-price', product.price);
+        card.setAttribute('data-vehicles', String(product.compatibility || '').toLowerCase());
+        card.setAttribute('data-discount', discountVal);
+        card.setAttribute('data-fast-delivery', product.fastDelivery ? 'true' : 'false');
+
+        const badgeHtml = product.badge ? `<span class="product-badge">${product.badge}</span>` : '';
+        const isInCart = cart.some(item => item.id === product.id);
+        const btnClass = isInCart ? 'add-cart-btn added' : 'add-cart-btn';
+        const btnIcon = isInCart ? 'fa-check' : 'fa-plus';
+        const detailKey = product.slug || product.id || product.title;
+        const detailUrl = `product.html?id=${encodeURIComponent(detailKey)}&price=${product.price}&mrp=${product.originalPrice || product.price}&img=${encodeURIComponent(product.image)}&brand=${encodeURIComponent(product.brand)}&vehicle=${encodeURIComponent(product.compatibility || '')}`;
+        const productIdLiteral = JSON.stringify(product.id);
+
+        card.innerHTML = `
+            <div class="product-img-wrap">
+                ${badgeHtml}
+                <a href="${detailUrl}">
+                    <img src="${product.image}" alt="${product.title}" loading="lazy">
+                </a>
+            </div>
+            <div class="product-info">
+                <div class="product-brand">${product.brand}</div>
+                <h3 class="product-title"><a href="${detailUrl}">${product.title}</a></h3>
+                <div class="product-price">
+                    ${formatCurrency(product.price)}
+                    ${product.originalPrice > product.price ? `<span>${formatCurrency(product.originalPrice)}</span>` : ''}
+                </div>
+                <div class="product-compatibility">
+                    <i class="fa-solid fa-circle-check"></i> ${product.compatibility}
+                </div>
+                <div class="product-actions">
+                    <button class="btn view-details-btn" onclick="window.location.href='${detailUrl}'">
+                        <i class="fa-solid fa-eye"></i> View Details
+                    </button>
+                    <button class="btn btn-primary ${btnClass}" data-id="${product.id}" onclick='toggleCartItem(${productIdLiteral}, this)'>
+                        <i class="fa-solid ${btnIcon}"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+        `;
+
+        featuredGrid.appendChild(card);
+    });
+}
+
+async function renderDbHomepageSections() {
+    const makersGrid = document.querySelector('.makers-grid');
+    const categoriesGrid = document.getElementById('top-categories-grid');
+    const carouselTrack = document.querySelector('.carousel-track');
+    if (!makersGrid && !categoriesGrid && !carouselTrack) return;
+
+    try {
+        const [brandsPayload, categoriesPayload] = await Promise.all([
+            fetchStorefrontApi('/api/v1/products/brands?featuredOnly=true'),
+            fetchStorefrontApi('/api/v1/categories?featuredOnly=true'),
+        ]);
+
+        const brands = brandsPayload.data || [];
+        const categories = categoriesPayload.data || [];
+
+        if (makersGrid && brands.length) {
+            makersGrid.innerHTML = brands.map((brand) => `
+                <a href="/pages/brand?id=${encodeURIComponent(brand.slug || brand.name || '')}" class="maker-card">${(brand.name || '').toUpperCase()}</a>
+            `).join('');
+        }
+
+        if (categoriesGrid && categories.length) {
+            categoriesGrid.innerHTML = categories.map((category) => `
+                <div class="category-card">
+                    <div class="cat-icon">
+                        <i class="fa-solid fa-gears" style="font-size:3rem;color:var(--color-primary);"></i>
+                    </div>
+                    <div class="cat-content">
+                        <h3>${category.name}</h3>
+                        <a href="${getCategoryPageHref(category.slug)}" class="cat-action">Explore <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        if (carouselTrack && brands.length) {
+            const logoItems = brands.map((brand) => `
+                <a href="/pages/brand?id=${encodeURIComponent(brand.slug || brand.name || '')}" class="carousel-item">
+                    ${brand.logoUrl
+                        ? `<img src="${brand.logoUrl}" alt="${brand.name || 'Brand'}" loading="lazy">`
+                        : `<div style="font-weight:800;color:var(--color-text-main);font-size:1rem;letter-spacing:.08em">${(brand.name || 'BRAND').toUpperCase()}</div>`}
+                </a>
+            `).join('');
+            carouselTrack.innerHTML = logoItems + logoItems;
+        }
+    } catch (error) {
+        console.warn('Using static homepage catalog fallback:', error.message);
+    }
+}
+
 // --- Product Rendering ---
-function renderFeaturedProducts() {
+async function renderFeaturedProducts() {
     const featuredGrid = document.getElementById('featured-products');
     if (!featuredGrid) return;
-
-    featuredGrid.innerHTML = '';
 
     const params = new URLSearchParams(window.location.search);
     const catParam = params.get('category');
@@ -522,6 +749,32 @@ function renderFeaturedProducts() {
             const displayTitle = catParam.charAt(0).toUpperCase() + catParam.slice(1) + " Components";
             pageTitle.innerHTML = `${displayTitle.replace("Brakes Components", "Brake Systems").replace("Electricals Components", "Electricals & Lighting")}`;
         }
+    }
+
+    try {
+        const apiPath = qParam
+            ? '/api/v1/products?q=' + encodeURIComponent(qParam) + '&limit=24'
+            : catParam
+                ? '/api/v1/products?category=' + encodeURIComponent(catParam) + '&limit=24'
+                : '/api/v1/products?isFeatured=true&limit=12';
+        const response = await fetchStorefrontApi(apiPath);
+        const productsToRender = (response.data || []).map(normalizeDbProduct);
+
+        if (qParam) {
+            const searchTermEl = document.querySelector('.search-term');
+            if (searchTermEl) searchTermEl.textContent = '"' + qParam + '"';
+            const countEl = document.getElementById('product-count');
+            if (countEl) countEl.textContent = productsToRender.length;
+            const searchInputEl = document.getElementById('search-input');
+            if (searchInputEl) searchInputEl.value = qParam;
+            const mobileInputEl = document.getElementById('mobile-search-input');
+            if (mobileInputEl) mobileInputEl.value = qParam;
+        }
+
+        renderProductCards(productsToRender, featuredGrid);
+        return;
+    } catch (error) {
+        console.warn('Using local product fallback:', error.message);
     }
 
     let productsToRender = products;
@@ -564,63 +817,7 @@ function renderFeaturedProducts() {
         productsToRender = products.filter(p => p.category === window.ACTIVE_CATEGORY);
     }
 
-    productsToRender.forEach((product, index) => {
-        // Add staggered animation delay
-        const delay = index * 0.1;
-
-        const card = document.createElement('div');
-        card.className = 'product-card fade-in';
-        card.style.animationDelay = `${delay}s`;
-
-        // Add data attributes for filtering
-        const discountVal = product.originalPrice > product.price
-            ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-            : 0;
-
-        card.setAttribute('data-price', product.price);
-        card.setAttribute('data-vehicles', product.compatibility.toLowerCase());
-        card.setAttribute('data-discount', discountVal);
-        card.setAttribute('data-fast-delivery', product.fastDelivery ? 'true' : 'false');
-
-        const badgeHtml = product.badge ? `<span class="product-badge">${product.badge}</span>` : '';
-
-        // Check if item is already in cart
-        const isInCart = cart.some(item => item.id === product.id);
-        const btnClass = isInCart ? 'add-cart-btn added' : 'add-cart-btn';
-        const btnIcon = isInCart ? 'fa-check' : 'fa-plus';
-
-        const detailUrl = `product.html?id=${encodeURIComponent(product.title)}&price=${product.price}&mrp=${product.originalPrice || product.price}&img=${encodeURIComponent(product.image)}&brand=${encodeURIComponent(product.brand)}&vehicle=${encodeURIComponent(product.compatibility || '')}`;
-
-        card.innerHTML = `
-            <div class="product-img-wrap">
-                ${badgeHtml}
-                <a href="${detailUrl}">
-                    <img src="${product.image}" alt="${product.title}" loading="lazy">
-                </a>
-            </div>
-            <div class="product-info">
-                <div class="product-brand">${product.brand}</div>
-                <h3 class="product-title"><a href="${detailUrl}">${product.title}</a></h3>
-                <div class="product-price">
-                    ${formatCurrency(product.price)}
-                    ${product.originalPrice > product.price ? `<span>${formatCurrency(product.originalPrice)}</span>` : ''}
-                </div>
-                <div class="product-compatibility">
-                    <i class="fa-solid fa-circle-check"></i> ${product.compatibility}
-                </div>
-                <div class="product-actions">
-                    <button class="btn view-details-btn" onclick="window.location.href='${detailUrl}'">
-                        <i class="fa-solid fa-eye"></i> View Details
-                    </button>
-                    <button class="btn btn-primary ${btnClass}" data-id="${product.id}" onclick="toggleCartItem(${product.id}, this)">
-                        <i class="fa-solid ${btnIcon}"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-        `;
-
-        featuredGrid.appendChild(card);
-    });
+    renderProductCards(productsToRender, featuredGrid);
 }
 
 // --- Cart Logic ---
@@ -1076,7 +1273,7 @@ function setupSearch() {
     function navigateToSearch() {
         const q = searchInput.value.trim();
         if (!q) return;
-        window.location.href = 'search.html?q=' + encodeURIComponent(q);
+        window.location.href = buildSearchUrl(q);
     }
 
     // Wire the search button
@@ -1106,17 +1303,71 @@ function setupSearch() {
             return;
         }
 
+        clearTimeout(window.__sbDesktopSearchTimer);
+        window.__sbDesktopSearchTimer = setTimeout(async () => {
+            const searchUrl = buildSearchUrl(rawQuery);
+            try {
+                const payload = await fetchStorefrontApi('/api/v1/products?q=' + encodeURIComponent(rawQuery) + '&limit=5');
+                const apiResults = (payload.data || []).map(normalizeDbProduct);
+                searchResults.innerHTML = apiResults.length > 0
+                    ? apiResults.map(p => `
+                        <div class="search-result-item" onclick="window.location.href='${buildSearchUrl(p.title || rawQuery)}'">
+                            <i class="fa-solid fa-cog" style="font-size: 1.5rem; color: var(--color-text-muted);"></i>
+                            <div class="search-result-info">
+                                <h4>${p.title}</h4>
+                                <p>${p.brand} · ${formatCurrency(p.price)}</p>
+                            </div>
+                        </div>
+                    `).join('') + `
+                        <div class="search-result-item" style="justify-content: center; color: var(--color-primary); font-weight: 500;" onclick="window.location.href='${searchUrl}'">
+                            View all results
+                        </div>
+                    `
+                    : `
+                        <div class="search-result-item" style="justify-content: center; color: var(--color-text-muted);">
+                            No parts found for "${rawQuery}"
+                        </div>
+                    `;
+                searchResults.classList.add('active');
+                return;
+            } catch (_) {
+                const filtered = products.filter(p =>
+                    p.title.toLowerCase().includes(query) ||
+                    p.brand.toLowerCase().includes(query) ||
+                    p.compatibility.toLowerCase().includes(query)
+                );
+
+                searchResults.innerHTML = filtered.length > 0
+                    ? filtered.slice(0, 5).map(p => `
+                        <div class="search-result-item" onclick="window.location.href='${buildSearchUrl(p.title || rawQuery)}'">
+                            <i class="fa-solid fa-cog" style="font-size: 1.5rem; color: var(--color-text-muted);"></i>
+                            <div class="search-result-info">
+                                <h4>${p.title}</h4>
+                                <p>${p.brand} · ${formatCurrency(p.price)}</p>
+                            </div>
+                        </div>
+                    `).join('')
+                    : `
+                        <div class="search-result-item" style="justify-content: center; color: var(--color-text-muted);">
+                            No parts found for "${rawQuery}"
+                        </div>
+                    `;
+                searchResults.classList.add('active');
+            }
+        }, 250);
+        return;
+
         const filtered = products.filter(p =>
             p.title.toLowerCase().includes(query) ||
             p.brand.toLowerCase().includes(query) ||
             p.compatibility.toLowerCase().includes(query)
         );
 
-        const searchUrl = 'search.html?q=' + encodeURIComponent(rawQuery);
+        const searchUrl = buildSearchUrl(rawQuery);
 
         if (filtered.length > 0) {
             searchResults.innerHTML = filtered.slice(0, 5).map(p => `
-            <div class="search-result-item" onclick="window.location.href='${searchUrl}'">
+            <div class="search-result-item" onclick="window.location.href='${buildSearchUrl(p.title || rawQuery)}'">
                     <i class="fa-solid fa-cog" style="font-size: 1.5rem; color: var(--color-text-muted);"></i>
                     <div class="search-result-info">
                         <h4>${p.title}</h4>
@@ -1238,8 +1489,7 @@ function setupMobileSearch() {
         mobileSelect.addEventListener('change', () => {
             const value = mobileSelect.value;
             if (!value) return;
-            const prefix = window.location.pathname.includes('/after-market-parts/') ? '../' : '';
-            window.location.href = prefix + `brand.html?id=${value}`;
+            window.location.href = `/pages/brand?id=${encodeURIComponent(value)}`;
         });
     }
 
@@ -1247,7 +1497,7 @@ function setupMobileSearch() {
     function navigateToMobileSearch() {
         const q = mobileInput.value.trim();
         if (!q) return;
-        window.location.href = 'search.html?q=' + encodeURIComponent(q);
+        window.location.href = buildSearchUrl(q);
     }
 
     // Wire the mobile search button
@@ -1274,17 +1524,62 @@ function setupMobileSearch() {
             return;
         }
 
+        clearTimeout(window.__sbMobileSearchTimer);
+        window.__sbMobileSearchTimer = setTimeout(async () => {
+            const searchUrl = buildSearchUrl(rawQuery);
+            try {
+                const payload = await fetchStorefrontApi('/api/v1/products?q=' + encodeURIComponent(rawQuery) + '&limit=5');
+                const apiResults = (payload.data || []).map(normalizeDbProduct);
+                mobileResults.innerHTML = apiResults.length > 0
+                    ? apiResults.map(p => `
+                        <div class="search-result-item" onclick="window.location.href='${buildSearchUrl(p.title || rawQuery)}'">
+                            <i class="fa-solid fa-cog" style="font-size:1.3rem;color:var(--color-text-muted)"></i>
+                            <div class="search-result-info">
+                                <h4>${p.title}</h4>
+                                <p>${p.brand} · ${formatCurrency(p.price)}</p>
+                            </div>
+                        </div>
+                    `).join('') + `
+                        <div class="search-result-item" style="justify-content:center;color:var(--color-primary);font-weight:500" onclick="window.location.href='${searchUrl}'">
+                            View all results
+                        </div>`
+                    : `<div class="search-result-item" style="justify-content:center;color:var(--color-text-muted)">No parts found for "${rawQuery}"</div>`;
+                mobileResults.classList.add('active');
+                return;
+            } catch (_) {
+                const filtered = products.filter(p =>
+                    p.title.toLowerCase().includes(query) ||
+                    p.brand.toLowerCase().includes(query) ||
+                    (p.compatibility && p.compatibility.toLowerCase().includes(query))
+                );
+
+                mobileResults.innerHTML = filtered.length > 0
+                    ? filtered.slice(0, 5).map(p => `
+                        <div class="search-result-item" onclick="window.location.href='${buildSearchUrl(p.title || rawQuery)}'">
+                            <i class="fa-solid fa-cog" style="font-size:1.3rem;color:var(--color-text-muted)"></i>
+                            <div class="search-result-info">
+                                <h4>${p.title}</h4>
+                                <p>${p.brand} · ${formatCurrency(p.price)}</p>
+                            </div>
+                        </div>
+                    `).join('')
+                    : `<div class="search-result-item" style="justify-content:center;color:var(--color-text-muted)">No parts found for "${rawQuery}"</div>`;
+                mobileResults.classList.add('active');
+            }
+        }, 250);
+        return;
+
         const filtered = products.filter(p =>
             p.title.toLowerCase().includes(query) ||
             p.brand.toLowerCase().includes(query) ||
             (p.compatibility && p.compatibility.toLowerCase().includes(query))
         );
 
-        const searchUrl = 'search.html?q=' + encodeURIComponent(rawQuery);
+        const searchUrl = buildSearchUrl(rawQuery);
 
         if (filtered.length > 0) {
             mobileResults.innerHTML = filtered.slice(0, 5).map(p => `
-                <div class="search-result-item" onclick="window.location.href='${searchUrl}'">
+                <div class="search-result-item" onclick="window.location.href='${buildSearchUrl(p.title || rawQuery)}'">
                     <i class="fa-solid fa-cog" style="font-size:1.3rem;color:var(--color-text-muted)"></i>
                     <div class="search-result-info">
                         <h4>${p.title}</h4>

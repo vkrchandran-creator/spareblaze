@@ -1,5 +1,11 @@
 const prisma = require('../config/db');
 
+function toBoolean(value) {
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'string') return value.toLowerCase() === 'true';
+  return Boolean(value);
+}
+
 async function getDashboardStats() {
   // Fetch all inventory rows to do per-row low-stock comparison
   const allInv = await prisma.inventory.findMany({ select: { quantity: true, lowStockThreshold: true } });
@@ -65,14 +71,160 @@ async function getUsers({ page = 1, limit = 20 } = {}) {
 }
 
 // Get all distinct brands from active products
-async function getBrands() {
-  const results = await prisma.product.findMany({
+async function getBrands(query = {}) {
+  const where = {};
+  if (query.featuredOnly === 'true') where.isFeatured = true;
+  if (query.includeInactive !== 'true') where.isActive = true;
+
+  const brands = await prisma.brand.findMany({
+    where,
+    orderBy: { name: 'asc' },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      logoUrl: true,
+      isActive: true,
+      isFeatured: true,
+      _count: { select: { products: true } },
+    },
+  });
+
+  if (brands.length) return brands;
+
+  const fallback = await prisma.product.findMany({
     where: { isActive: true, NOT: { brand: null } },
     select: { brand: true },
     distinct: ['brand'],
     orderBy: { brand: 'asc' },
   });
-  return results.map(r => r.brand).filter(Boolean);
+
+  return fallback
+    .map((row) => row.brand)
+    .filter(Boolean)
+    .map((name) => ({
+      id: name,
+      name,
+      slug: name.toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-'),
+      logoUrl: null,
+      isFeatured: false,
+      _count: { products: 0 },
+    }));
 }
 
-module.exports = { getDashboardStats, getInventory, updateStock, getUsers, getBrands };
+async function createBrand({ name, logoUrl, isFeatured = false, isActive = true }) {
+  const cleanName = String(name || '').trim();
+  if (!cleanName) {
+    const err = new Error('Brand name is required.');
+    err.status = 400;
+    throw err;
+  }
+
+  const slug = cleanName
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+
+  const existing = await prisma.brand.findUnique({ where: { slug } });
+  if (existing) {
+    const err = new Error(`Brand "${cleanName}" already exists.`);
+    err.status = 409;
+    throw err;
+  }
+
+  return prisma.brand.create({
+    data: {
+      name: cleanName,
+      slug,
+      logoUrl: logoUrl || null,
+      isActive: toBoolean(isActive),
+      isFeatured: toBoolean(isFeatured),
+    },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      logoUrl: true,
+      isActive: true,
+      isFeatured: true,
+      _count: { select: { products: true } },
+    },
+  });
+}
+
+async function updateBrand(id, { name, logoUrl, isFeatured, isActive }) {
+  const brand = await prisma.brand.findUnique({ where: { id } });
+  if (!brand) {
+    const err = new Error('Brand not found.');
+    err.status = 404;
+    throw err;
+  }
+
+  const data = {};
+  if (name !== undefined) {
+    const cleanName = String(name || '').trim();
+    if (!cleanName) {
+      const err = new Error('Brand name is required.');
+      err.status = 400;
+      throw err;
+    }
+    data.name = cleanName;
+    data.slug = cleanName
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
+  }
+  if (logoUrl !== undefined) data.logoUrl = logoUrl || null;
+  if (isActive !== undefined) data.isActive = toBoolean(isActive);
+  if (isFeatured !== undefined) data.isFeatured = toBoolean(isFeatured);
+
+  return prisma.brand.update({
+    where: { id },
+    data,
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      logoUrl: true,
+      isActive: true,
+      isFeatured: true,
+      _count: { select: { products: true } },
+    },
+  });
+}
+
+async function deleteBrand(id) {
+  const brand = await prisma.brand.findUnique({
+    where: { id },
+    include: { _count: { select: { products: true } } },
+  });
+
+  if (!brand) {
+    const err = new Error('Brand not found.');
+    err.status = 404;
+    throw err;
+  }
+
+  if (brand._count.products > 0) {
+    const err = new Error(`Cannot delete brand "${brand.name}" because ${brand._count.products} products use it.`);
+    err.status = 409;
+    throw err;
+  }
+
+  await prisma.brand.delete({ where: { id } });
+}
+
+module.exports = {
+  getDashboardStats,
+  getInventory,
+  updateStock,
+  getUsers,
+  getBrands,
+  createBrand,
+  updateBrand,
+  deleteBrand,
+};

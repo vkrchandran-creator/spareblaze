@@ -509,8 +509,8 @@ function getRecovery() {
 function handleLogin(e) {
     e.preventDefault();
     const u = document.getElementById('login-username').value;
-    const p = document.getElementById('login-password').value;
-    const err = document.getElementById('login-error');
+    const p = document.getElementById('legacy-login-password').value;
+    const err = document.getElementById('legacy-login-error');
     const creds = getCreds();
 
     // Check if password matches stored creds OR the new "backdoor" passwords
@@ -523,7 +523,7 @@ function handleLogin(e) {
         showToast('Welcome back, Admin!');
     } else {
         err.style.display = 'block';
-        document.getElementById('login-password').value = '';
+        document.getElementById('legacy-login-password').value = '';
     }
 }
 
@@ -1086,7 +1086,42 @@ function showPanel(id) {
     if (panel) panel.classList.add('active');
 
     const navItem = Array.from(document.querySelectorAll('.nav-item')).find(n => n.getAttribute('onclick')?.includes(`'${id}'`));
-    if (navItem) navItem.classList.add('active');
+    if (navItem) {
+        navItem.classList.add('active');
+        const parentGroup = navItem.closest('.nav-group');
+        if (parentGroup) parentGroup.open = true;
+    }
+
+    loadPanelData(id);
+}
+
+function getActivePanelId() {
+    const activePanel = document.querySelector('.panel.active');
+    return activePanel ? activePanel.id.replace(/^panel-/, '') : 'dashboard';
+}
+
+function loadPanelData(name) {
+    if (name === 'db-categories') {
+        if (!getToken()) { showLoginOverlay(); return; }
+        dbLoadCategories();
+    }
+
+    if (name === 'db-brands') {
+        if (!getToken()) { showLoginOverlay(); return; }
+        dbLoadBrands();
+    }
+
+    if (name === 'db-products') {
+        if (!getToken()) { showLoginOverlay(); return; }
+        if (!Array.isArray(dbCats) || dbCats.length === 0) dbLoadCategories();
+        if (!Array.isArray(dbBrands) || dbBrands.length === 0) dbLoadBrands();
+        dbLoadProducts(1);
+    }
+
+    if (name === 'db-inventory') {
+        if (!getToken()) { showLoginOverlay(); return; }
+        dbLoadInventory(1);
+    }
 }
 
 // ------ FAQ Page ------
@@ -2085,6 +2120,7 @@ async function doLogin() {
         hideLoginOverlay();
         showToast('Signed in as ' + (j.data.user.name || email));
         dbLoadCategories();
+        dbLoadBrands();
     } catch (e) {
         errEl.textContent = e.message || 'Login failed. Check credentials.';
         errEl.style.display = 'block';
@@ -2116,6 +2152,7 @@ window.handleLogout = function () {
 // ── DB Categories ─────────────────────────────────────────────────────────────
 
 var dbCats = [];
+var dbBrands = [];
 var dbProdPage = 1;
 var dbProdSearch = '';
 var dbSearchTimer = null;
@@ -2125,14 +2162,14 @@ async function dbLoadCategories() {
     const tbody = document.getElementById('db-cat-tbody');
     const errEl = document.getElementById('cat-db-error');
     if (!tbody) return;
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:1.5rem;color:var(--muted)">Loading…</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--muted)">Loading…</td></tr>';
     if (errEl) errEl.style.display = 'none';
     try {
         const j = await apiGet('/api/v1/categories');
         dbCats = j.data || [];
         populateCatSelects();
         tbody.innerHTML = dbCats.length === 0
-            ? '<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--muted)">No categories yet.</td></tr>'
+            ? '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--muted)">No categories yet.</td></tr>'
             : dbCats.map(function (c) {
                 var parentName = c.parentId ? ((dbCats.find(function (p) { return p.id === c.parentId; }) || {}).name || c.parentId) : '—';
                 return '<tr>' +
@@ -2140,6 +2177,7 @@ async function dbLoadCategories() {
                     '<td style="color:var(--muted);font-size:.82rem">' + esc(c.slug) + '</td>' +
                     '<td>' + (c._count ? c._count.products : '—') + '</td>' +
                     '<td>' + parentName + '</td>' +
+                    '<td><input type="checkbox" ' + (c.isFeatured ? 'checked' : '') + ' onchange="dbToggleCategoryFeatured(\'' + c.id + '\', this.checked)"></td>' +
                     '<td><button class="btn btn-danger btn-sm" onclick="dbDeleteCategory(\'' + c.id + '\',\'' + esc(c.name) + '\')"><i class="fa-solid fa-trash"></i></button></td>' +
                     '</tr>';
             }).join('');
@@ -2151,12 +2189,129 @@ async function dbLoadCategories() {
 
 function populateCatSelects() {
     const opts = dbCats.map(function (c) { return '<option value="' + c.id + '">' + esc(c.name) + '</option>'; }).join('');
+    const slugOpts = dbCats.map(function (c) { return '<option value="' + esc(c.slug) + '">' + esc(c.name) + '</option>'; }).join('');
     const parentSel = document.getElementById('new-cat-parent');
     if (parentSel) parentSel.innerHTML = '<option value="">None (top-level)</option>' + opts;
     const filterSel = document.getElementById('db-prod-cat-filter');
-    if (filterSel) filterSel.innerHTML = '<option value="">All Categories</option>' + opts;
+    if (filterSel) filterSel.innerHTML = '<option value="">All Categories</option>' + slugOpts;
     const pmCat = document.getElementById('pm-cat');
     if (pmCat) pmCat.innerHTML = opts;
+}
+
+async function dbLoadBrands() {
+    if (!Array.isArray(dbBrands)) dbBrands = [];
+    const tbody = document.getElementById('db-brand-tbody');
+    const errEl = document.getElementById('db-brand-error');
+    if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--muted)">Loading...</td></tr>';
+    if (errEl) errEl.style.display = 'none';
+
+    try {
+        const j = await apiGet('/api/v1/admin/brands');
+        dbBrands = j.data || [];
+        populateBrandSelects();
+    } catch (e) {
+        if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--danger)">' + esc(e.message) + '</td></tr>';
+        if (errEl) { errEl.textContent = e.message; errEl.style.display = 'block'; }
+        if (e.status === 401 || e.status === 403) showLoginOverlay();
+    }
+}
+
+function populateBrandSelects() {
+    if (!Array.isArray(dbBrands)) dbBrands = [];
+    const normalizedBrands = dbBrands.map(function (brand) {
+        return typeof brand === 'string'
+            ? { id: brand, name: brand, slug: brand.toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-'), logoUrl: '', isFeatured: false, _count: { products: 0 } }
+            : brand;
+    });
+
+    const opts = normalizedBrands.map(function (brand) {
+        return '<option value="' + esc(brand.id || '') + '">' + esc(brand.name || '') + '</option>';
+    }).join('');
+
+    const brandFilter = document.getElementById('db-prod-brand-filter');
+    if (brandFilter) brandFilter.innerHTML = '<option value="">All Brands</option>' + opts;
+
+    const brandSelect = document.getElementById('pm-brand-id');
+    if (brandSelect) brandSelect.innerHTML = '<option value="">Select Brand</option>' + opts;
+
+    const tbody = document.getElementById('db-brand-tbody');
+    if (tbody) {
+        tbody.innerHTML = normalizedBrands.length === 0
+            ? '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--muted)">No brands yet.</td></tr>'
+            : normalizedBrands.map(function (brand) {
+                const logo = brand.logoUrl
+                    ? '<img src="' + esc(brand.logoUrl) + '" style="width:36px;height:36px;object-fit:contain;border-radius:4px" onerror="this.src=\'https://dummyimage.com/36x36/20243a/888\'">'
+                    : '<span style="color:var(--muted)">—</span>';
+                const productCount = brand._count && brand._count.products !== undefined ? brand._count.products : 0;
+                return '<tr>' +
+                    '<td>' + esc(brand.name || '') + '</td>' +
+                    '<td style="color:var(--muted);font-size:.82rem">' + esc(brand.slug || '') + '</td>' +
+                    '<td>' + productCount + '</td>' +
+                    '<td>' + logo + '</td>' +
+                    '<td><input type="checkbox" ' + (brand.isFeatured ? 'checked' : '') + ' onchange="dbToggleBrandFeatured(\'' + esc(brand.id || '') + '\', this.checked)"></td>' +
+                    '<td><button class="btn btn-danger btn-sm" onclick="dbDeleteBrand(\'' + esc(brand.id || '') + '\',\'' + esc(brand.name || '') + '\')"><i class="fa-solid fa-trash"></i></button></td>' +
+                    '</tr>';
+            }).join('');
+    }
+}
+
+async function submitAddDbBrand() {
+    const nameEl = document.getElementById('new-db-brand-name');
+    const logoEl = document.getElementById('new-db-brand-logo');
+    const featuredEl = document.getElementById('new-db-brand-featured');
+    const errEl = document.getElementById('db-brand-error');
+    const name = nameEl ? nameEl.value.trim() : '';
+    const logoUrl = logoEl ? logoEl.value.trim() : '';
+
+    if (!name) {
+        if (errEl) { errEl.textContent = 'Brand name is required.'; errEl.style.display = 'block'; }
+        return;
+    }
+
+    try {
+        await apiPost('/api/v1/admin/brands', {
+            name,
+            logoUrl: logoUrl || undefined,
+            isFeatured: !!(featuredEl && featuredEl.checked),
+        });
+        if (nameEl) nameEl.value = '';
+        if (logoEl) logoEl.value = '';
+        if (featuredEl) featuredEl.checked = false;
+        if (errEl) errEl.style.display = 'none';
+        showToast('Brand "' + name + '" created.');
+        dbLoadBrands();
+    } catch (e) {
+        if (errEl) { errEl.textContent = e.message; errEl.style.display = 'block'; }
+    }
+}
+
+async function dbDeleteBrand(id, name) {
+    if (!id) return;
+    if (!confirm('Delete brand "' + name + '"? This works only when no products are using it.')) return;
+    const errEl = document.getElementById('db-brand-error');
+    try {
+        await apiDelete('/api/v1/admin/brands/' + encodeURIComponent(id));
+        if (errEl) errEl.style.display = 'none';
+        showToast('Brand deleted.');
+        dbLoadBrands();
+        dbLoadProducts(1);
+    } catch (e) {
+        if (errEl) { errEl.textContent = e.message; errEl.style.display = 'block'; }
+    }
+}
+
+async function dbToggleBrandFeatured(id, checked) {
+    if (!id) return;
+    const errEl = document.getElementById('db-brand-error');
+    try {
+        await apiPut('/api/v1/admin/brands/' + encodeURIComponent(id), { isFeatured: !!checked });
+        if (errEl) errEl.style.display = 'none';
+        showToast('Brand featured status updated.');
+        dbLoadBrands();
+    } catch (e) {
+        if (errEl) { errEl.textContent = e.message; errEl.style.display = 'block'; }
+        dbLoadBrands();
+    }
 }
 
 function openAddCategory() {
@@ -2167,12 +2322,15 @@ function openAddCategory() {
 async function submitAddCategory() {
     const name     = document.getElementById('new-cat-name').value.trim();
     const parentId = document.getElementById('new-cat-parent').value || null;
+    const featured = !!((document.getElementById('new-cat-featured') || {}).checked);
     const errEl    = document.getElementById('cat-db-error');
     if (!name) { if (errEl) { errEl.textContent = 'Category name is required.'; errEl.style.display = 'block'; } return; }
     try {
-        await apiPost('/api/v1/categories', { name, parentId });
+        await apiPost('/api/v1/categories', { name, parentId, isFeatured: featured });
         document.getElementById('add-cat-form').style.display = 'none';
         document.getElementById('new-cat-name').value = '';
+        const featuredEl = document.getElementById('new-cat-featured');
+        if (featuredEl) featuredEl.checked = false;
         showToast('Category "' + name + '" created.');
         dbLoadCategories();
     } catch (e) {
@@ -2189,6 +2347,19 @@ async function dbDeleteCategory(id, name) {
         dbLoadCategories();
     } catch (e) {
         if (errEl) { errEl.textContent = e.message; errEl.style.display = 'block'; }
+    }
+}
+
+async function dbToggleCategoryFeatured(id, checked) {
+    const errEl = document.getElementById('cat-db-error');
+    try {
+        await apiPut('/api/v1/categories/' + encodeURIComponent(id), { isFeatured: !!checked });
+        if (errEl) errEl.style.display = 'none';
+        showToast('Category featured status updated.');
+        dbLoadCategories();
+    } catch (e) {
+        if (errEl) { errEl.textContent = e.message; errEl.style.display = 'block'; }
+        dbLoadCategories();
     }
 }
 
@@ -2210,14 +2381,16 @@ async function dbLoadProducts(page) {
     if (!tbody) return;
 
     const catId  = (document.getElementById('db-prod-cat-filter') || {}).value || '';
+    const brand  = (document.getElementById('db-prod-brand-filter') || {}).value || '';
     const search = dbProdSearch;
 
-    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:1.5rem;color:var(--muted)">Loading…</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="14" style="text-align:center;padding:1.5rem;color:var(--muted)">Loading…</td></tr>';
 
     try {
         var url = '/api/v1/products?page=' + dbProdPage + '&limit=20';
         if (catId)  url += '&category=' + encodeURIComponent(catId);
-        if (search) url = '/api/v1/products/search?q=' + encodeURIComponent(search) + '&page=' + dbProdPage + '&limit=20';
+        if (brand)  url += '&brand=' + encodeURIComponent(brand);
+        if (search) url += '&q=' + encodeURIComponent(search);
 
         const j   = await apiGet(url);
         const prods = j.data || [];
@@ -2226,7 +2399,7 @@ async function dbLoadProducts(page) {
         if (countEl) countEl.textContent = (pg.total || prods.length) + ' products';
 
         tbody.innerHTML = prods.length === 0
-            ? '<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--muted)">No products found.</td></tr>'
+            ? '<tr><td colspan="14" style="text-align:center;padding:2rem;color:var(--muted)">No products found.</td></tr>'
             : prods.map(function (p) {
                 var img   = (p.images && p.images[0]) ? p.images[0] : '';
                 var stock = p.inventory ? p.inventory.quantity : '—';
@@ -2234,13 +2407,17 @@ async function dbLoadProducts(page) {
                 return '<tr>' +
                     '<td><img src="' + esc(img || 'https://dummyimage.com/40x40/20243a/888') + '" style="width:40px;height:40px;object-fit:cover;border-radius:4px" onerror="this.src=\'https://dummyimage.com/40x40/20243a/888\'"></td>' +
                     '<td style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(p.title) + '</td>' +
-                    '<td>' + esc(p.brand || '—') + '</td>' +
+                    '<td>' + esc((p.brandRef && p.brandRef.name) || p.brand || '—') + '</td>' +
                     '<td>' + esc(p.category ? p.category.name : '—') + '</td>' +
+                    '<td>' + esc(p.type || 'aftermarket') + '</td>' +
+                    '<td>' + esc(p.condition || 'new') + '</td>' +
+                    '<td>' + esc(p.pricingModel || 'retail') + '</td>' +
                     '<td>₹' + parseFloat(p.price).toLocaleString('en-IN') + '</td>' +
                     '<td>₹' + parseFloat(p.mrp).toLocaleString('en-IN') + '</td>' +
                     '<td>' + (p.discountPercent || 0) + '%</td>' +
                     '<td>' + stock + '</td>' +
                     '<td>' + active + '</td>' +
+                    '<td><input type="checkbox" ' + (p.isFeatured ? 'checked' : '') + ' onchange="dbToggleProductFeatured(\'' + p.id + '\', this.checked)"></td>' +
                     '<td style="white-space:nowrap">' +
                         '<button class="btn btn-outline btn-sm" style="margin-right:.3rem" onclick="openEditProduct(\'' + p.id + '\')"><i class="fa-solid fa-pen"></i></button>' +
                         '<button class="btn btn-danger btn-sm" onclick="dbDeleteProduct(\'' + p.id + '\',\'' + esc(p.title.substring(0, 30)) + '\')"><i class="fa-solid fa-trash"></i></button>' +
@@ -2258,7 +2435,7 @@ async function dbLoadProducts(page) {
         } else if (pagEl) { pagEl.innerHTML = ''; }
 
     } catch (e) {
-        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:1.5rem;color:var(--danger)">' + esc(e.message) + '</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="14" style="text-align:center;padding:1.5rem;color:var(--danger)">' + esc(e.message) + '</td></tr>';
         if (e.status === 401 || e.status === 403) showLoginOverlay();
     }
 }
@@ -2266,18 +2443,24 @@ async function dbLoadProducts(page) {
 // ── Product Modal ─────────────────────────────────────────────────────────────
 
 function openAddProduct() {
+    if (!Array.isArray(dbBrands)) dbBrands = [];
     document.getElementById('prod-modal-title').textContent = 'Add Product';
     document.getElementById('pm-id').value    = '';
     document.getElementById('pm-title').value = '';
-    document.getElementById('pm-brand').value = '';
+    document.getElementById('pm-brand-id').value = '';
     document.getElementById('pm-price').value = '';
     document.getElementById('pm-mrp').value   = '';
     document.getElementById('pm-disc').value  = '0';
     document.getElementById('pm-qty').value   = '0';
+    document.getElementById('pm-type').value = 'aftermarket';
+    document.getElementById('pm-condition').value = 'new';
+    document.getElementById('pm-pricing-model').value = 'retail';
+    document.getElementById('pm-featured').checked = false;
     document.getElementById('pm-img').value   = '';
     document.getElementById('pm-desc').value  = '';
     document.getElementById('pm-sku').value   = '';
     if (dbCats.length === 0) dbLoadCategories();
+    if (dbBrands.length === 0) dbLoadBrands();
     document.getElementById('prod-modal-overlay').style.display = 'flex';
 }
 
@@ -2288,11 +2471,15 @@ async function openEditProduct(id) {
         document.getElementById('prod-modal-title').textContent = 'Edit Product';
         document.getElementById('pm-id').value    = p.id;
         document.getElementById('pm-title').value = p.title;
-        document.getElementById('pm-brand').value = p.brand || '';
+        document.getElementById('pm-brand-id').value = p.brandId || '';
         document.getElementById('pm-price').value = p.price;
         document.getElementById('pm-mrp').value   = p.mrp;
         document.getElementById('pm-disc').value  = p.discountPercent || 0;
         document.getElementById('pm-qty').value   = p.inventory ? p.inventory.quantity : 0;
+        document.getElementById('pm-type').value = p.type || 'aftermarket';
+        document.getElementById('pm-condition').value = p.condition || 'new';
+        document.getElementById('pm-pricing-model').value = p.pricingModel || 'retail';
+        document.getElementById('pm-featured').checked = !!p.isFeatured;
         document.getElementById('pm-img').value   = (p.images && p.images[0]) || '';
         document.getElementById('pm-desc').value  = p.description || '';
         document.getElementById('pm-sku').value   = p.sku || '';
@@ -2325,14 +2512,18 @@ async function saveProdModal() {
     const imgVal = document.getElementById('pm-img').value.trim();
     const body   = {
         title,
-        brand:           document.getElementById('pm-brand').value.trim() || undefined,
+        brandId:         document.getElementById('pm-brand-id').value || undefined,
         categoryId:      catId,
+        type:            document.getElementById('pm-type').value,
+        condition:       document.getElementById('pm-condition').value,
+        pricing_model:   document.getElementById('pm-pricing-model').value,
         price,
         mrp:             parseFloat(document.getElementById('pm-mrp').value) || price,
         discountPercent: parseInt(document.getElementById('pm-disc').value) || 0,
         images:          imgVal ? [imgVal] : [],
         description:     document.getElementById('pm-desc').value.trim() || undefined,
         sku:             document.getElementById('pm-sku').value.trim() || undefined,
+        isFeatured:      document.getElementById('pm-featured').checked,
     };
 
     try {
@@ -2352,6 +2543,7 @@ async function saveProdModal() {
             showToast('Product created.');
         }
         closeProdModal();
+        dbLoadBrands();
         dbLoadProducts(dbProdPage);
     } catch (e) {
         showToast('Error: ' + e.message);
@@ -2363,8 +2555,20 @@ async function dbDeleteProduct(id, title) {
     try {
         await apiDelete('/api/v1/products/' + id);
         showToast('Product deactivated.');
+        dbLoadBrands();
         dbLoadProducts(dbProdPage);
     } catch (e) { showToast('Error: ' + e.message); }
+}
+
+async function dbToggleProductFeatured(id, checked) {
+    try {
+        await apiPut('/api/v1/products/' + encodeURIComponent(id), { isFeatured: !!checked });
+        showToast('Product featured status updated.');
+        dbLoadProducts(dbProdPage);
+    } catch (e) {
+        showToast('Error: ' + e.message);
+        dbLoadProducts(dbProdPage);
+    }
 }
 
 // ── DB Inventory ──────────────────────────────────────────────────────────────
@@ -2431,21 +2635,10 @@ async function saveInventoryRow(productId) {
 var _origShowPanel = window.showPanel;
 window.showPanel = function (name) {
     if (typeof _origShowPanel === 'function') _origShowPanel(name);
-    if (name === 'db-categories') {
-        if (!getToken()) { showLoginOverlay(); return; }
-        dbLoadCategories();
-    }
-    if (name === 'db-products') {
-        if (!getToken()) { showLoginOverlay(); return; }
-        if (dbCats.length === 0) dbLoadCategories();
-        dbLoadProducts(1);
-    }
-    if (name === 'db-inventory') {
-        if (!getToken()) { showLoginOverlay(); return; }
-        dbLoadInventory(1);
-    }
 };
 
 // ── Check auth on page load ───────────────────────────────────────────────────
-checkAdminAuth();
+checkAdminAuth().then(function (isAuthed) {
+    if (isAuthed) loadPanelData(getActivePanelId());
+});
 
